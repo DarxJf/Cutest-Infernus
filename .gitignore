@@ -1,0 +1,7 @@
+# Folders
+.venv/
+venv/
+__pycache__/
+.vscode/
+
+# type
