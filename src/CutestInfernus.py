@@ -8,16 +8,22 @@ from gale.game import Game
 from gale.input_handler import InputData
 from gale.state import StateMachine, StateStack
 
+from src.States.Game.StartState import StartState
+
 # Name probably will change
 class CutestInfernus(Game):
-    def __init__(self):
-        pass
+    def init(self) -> None:
+        self.stateStack = StateStack()
+        self.stateStack.push(StartState(self.stateStack))
 
     def update(self, dt: float) -> None:
-        pass
+        self.stateStack.update(dt)
 
     def render(self, surface: pygame.Surface) -> None:
-        pass
+        self.stateStack.render(surface)
 
-    def on_input(self, input_id: str, input_data: InputData) -> None:
-        pass
+    def on_input(self, inputId: str, inputData: InputData) -> None:
+        if inputId == "quit" and inputData.pressed:
+            self.quit()
+        else:
+            self.stateStack.on_input(inputId, inputData)
