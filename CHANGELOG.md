@@ -9,3 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The definitions for entities, actions, and objects have been completed, so that more can be added in the future in a stable manner.
 - The `Entity` model, responsible for placing entities on the grid; the `BattleEntity` class, which inherits from `Entity` to provide combat stats and actions performed by allies and enemies; and the class for managing equipable items. All classes safely handle the parameters of their definitions. They are also compatible with the factory pattern.
+- The `CutestInfernus` game class has been set up as the entry point of the program. It creates a single `StateStack` and delegates `update`, `render`, and `on_input` to it, so every screen from here on lives on the stack instead of being managed ad hoc.
+- The `settings` module now centralizes all constants the game needs: input bindings (`quit`, `moveLeft`, `moveRight`, `moveUp`, `moveDown`, `enter`, `pause`), virtual and window resolutions, the font registry, the texture and frame registries, the tile id map, the sound registry, and the save system configuration (`SAVE_DIR` and `SAVE_SLOTS`).
+- A reusable `Menu` widget has been built on top of `gale.ui.ListView`. It handles cursor rendering, item navigation, confirmation, and the selection sound, so every screen that needs a menu (main menu, pause menu, confirm dialogs, slot selectors) can reuse it without duplicating layout code.
+- The `StartState` has been added as the main menu of the game, offering `New game` and `Load game` options with keyboard navigation.
+- The `SelectCharacterState` has been added so the player can pick the main character of the run with left/right navigation and confirm with Enter.
+- The `PlayState` has been added as a placeholder for the active run. It exposes the pause menu through the `P` key and renders a minimal run-in-progress screen until later phases fill it with the board, party, and combat.
+- The `PauseMenuState` has been added as an overlay on top of `PlayState`, offering `Continue`, `Save game`, `Load game`, and `Quit game`.
+- The `SlotSelectState` has been added to let the player pick one of the three save slots in either `save` or `load` mode. It lays out one card per slot, highlights the selected one, and supports cancel with `P`.
+- The `GameOverState` has been added as the end-of-run screen. Confirming with Enter clears the entire state stack and pushes a fresh `StartState`, so the discarded run cannot be recovered.
+- The `FadeInState` and `FadeOutState` have been added for full-screen color transitions. Both run a `Timer` tween over the requested duration and call an `onComplete` callback once the tween finishes, so callers can swap scenes at the blind spot of the transition.
+
+
+
+
+
+
