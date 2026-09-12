@@ -1,6 +1,7 @@
-from typing import Any, Dict
+from typing import Any, Dict, Callable, Set, Tuple
 
 from src.Models.Entity import Entity
+from src.Utils.MovementCalculator import MovementCalculator
 
 class BattleEntity(Entity):
     def __init__(self, definition: Dict[str, Any], x: int = 0, y: int = 0) -> None:
@@ -19,6 +20,7 @@ class BattleEntity(Entity):
         self.baseDefense      = definition.get("base_defense", 5)
         self.baseMagicDefense = definition.get("base_magic_defense", 5)
         self.baseRest         = definition.get("base_rest", 3.0)  # Time to recover after action
+        self.baseMovement     = definition.get("base_movement", 3)
         
         # Actions and abilities
         self.basicAttack    = definition.get("basic_attack")
@@ -48,3 +50,12 @@ class BattleEntity(Entity):
         self.currentHp += amount
         if self.currentHp > self.hp:
             self.currentHp = self.hp
+
+    def get_reachable_tiles(self, is_walkable: Callable[[int, int], bool]) -> Set[Tuple[int, int]]:
+        """Requests reachable grid coordinates based on fixed base_movement."""
+        return MovementCalculator.get_available_moves(
+            self.mapX, 
+            self.mapY, 
+            self.baseMovement, 
+            is_walkable,
+        )
