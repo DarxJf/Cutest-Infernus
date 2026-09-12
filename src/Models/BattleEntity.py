@@ -51,11 +51,11 @@ class BattleEntity(Entity):
         if self.currentHp > self.hp:
             self.currentHp = self.hp
 
-    def get_reachable_tiles(self, is_walkable: Callable[[int, int], bool]) -> Set[Tuple[int, int]]:
+    def get_reachable_tiles(self, isWalkable: Callable[[int, int], bool]) -> Set[Tuple[int, int]]:
         """Requests reachable grid coordinates based on fixed base_movement."""
         return MovementCalculator.get_available_moves(
             self.mapX, 
             self.mapY, 
             self.baseMovement, 
-            is_walkable,
+            isWalkable,
         )
