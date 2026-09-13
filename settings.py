@@ -31,24 +31,84 @@ VIRTUAL_HEIGHT = 224
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
+TILE_SIZE = 16
+
 FONTS = {
     "small": pygame.font.Font(BASE_DIR / "assets" / "Fonts" / "BoldPixels.ttf", 12),
     "medium": pygame.font.Font(BASE_DIR / "assets"/ "Fonts" / "BoldPixels.ttf", 16 ),
     "large": pygame.font.Font(BASE_DIR / "assets"/ "Fonts" / "BoldPixels.ttf", 24)   
 }
 
+ROOM_PALETTES = ["blue", "red", "green", "brown", "gray"]
+
 TEXTURES = {
-    "cursors": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "cursors.png")
+    "cursors": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "cursors.png"),
+    **{
+        f"room_{p}": pygame.image.load(
+            BASE_DIR / "assets"/ "Sprites" / "Rooms" / f"room_{p}.png"
+        )
+        for p in ROOM_PALETTES
+    },
+    "rock": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Objects" / "rock.png"),
+    "floor_torch": pygame.image.load(BASE_DIR / "assets" /"Sprites" / "Objects" / "floor_torch.png"),
 }
 
 FRAMES = {
-    "cursors": frames.generate_frames(TEXTURES["cursors"], 16, 16)
+    "cursors": frames.generate_frames(TEXTURES["cursors"], 16, 16),
+     **{
+        f"room_{p}": frames.generate_frames(TEXTURES[f"room_{p}"], 16, 16)
+        for p in ROOM_PALETTES
+    },
+    "rock": frames.generate_frames(TEXTURES["rock"], 15, 15),
+    "floor_torch": frames.generate_frames(TEXTURES["floor_torch"], 16, 32)
 }
 
 TILE_IDS = {
+  
+    "floor": 1,
+
+    "wallTopLeftCorner":  13,
+    "wallTopRightCorner": 17,
+  
+    "wallTopOuterLeft":  14,
+    "wallTopOuterMid":   15,
+    "wallTopOuterRight": 16,
+ 
+    "wallTopInnerLeft":  27,
+    "wallTopInnerMid":   28,
+    "wallTopInnerRight": 29,
+
+    "wallLeftTop":    26,
+    "wallLeftMid":    39, 
+    "wallLeftBottom": 52,
+  
+    "wallRightTop":    30,
+    "wallRightMid":    43,
+    "wallRightBottom": 56,
+   
+    "wallBottomLeftUpper": 65,
+    "wallBottomLeftLower": 78,
+    "wallBottomRightUpper": 69,
+    "wallBottomRightLower": 82,
+
+    "wallBottomOuterLeft":  66,
+    "wallBottomOuterMid":   67,
+    "wallBottomOuterRight": 68,
+   
+    "wallBottomInnerLeft":  79,
+    "wallBottomInnerMid":   80,
+    "wallBottomInnerRight": 81,
+
+    "doorTopFrames":    [19, 20, 21, 32, 33, 34],
+    "doorLeftFrames":   [44, 45, 57, 58, 70, 71],
+    "doorBottomFrames": [84, 85, 86, 97, 98, 99],
+    "doorRightFrames":  [47, 48, 60, 61, 73, 74],
+    "doorOpenFrames":   [87, 88, 89, 100, 101, 102],
+    
     "cursorRight": 61,
     "arrowRight":133,
     "arrowLeft": 132,
+    
 }
 
 SOUNDS = {
