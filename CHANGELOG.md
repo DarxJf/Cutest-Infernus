@@ -19,9 +19,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `SlotSelectState` has been added to let the player pick one of the three save slots in either `save` or `load` mode. It lays out one card per slot, highlights the selected one, and supports cancel with `P`.
 - The `GameOverState` has been added as the end-of-run screen. Confirming with Enter clears the entire state stack and pushes a fresh `StartState`, so the discarded run cannot be recovered.
 - The `FadeInState` and `FadeOutState` have been added for full-screen color transitions. Both run a `Timer` tween over the requested duration and call an `onComplete` callback once the tween finishes, so callers can swap scenes at the blind spot of the transition.
-
-
-
-
-
-
+- The `MovementCalculator` for player and ai is complete.
+- Glow effect for avaivable movement.
