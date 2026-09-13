@@ -142,15 +142,15 @@ class Room(BaseState):
                     self.objects.append({"x": mx, "y": ry, "def": SCENERY["rock"], "anim_timer": 0.0, "anim_frame": 0})
                     self.logicalGrid[ry][mx] = OBSTACLE
 
-            torch_colors = ["torch_red", "torch_green", "torch_blue", "torch_purple"]
-            room_torch_key = random.choice(torch_colors)
+            torchColors = ["torch_red", "torch_green", "torch_blue", "torch_purple"]
+            roomTorchkey = random.choice(torchColors)
             
             doorTopX = (self.cols - 3) // 2
             
             self.objects.append({
                 "x": doorTopX - 1, 
                 "y": 1, 
-                "def": SCENERY[room_torch_key],
+                "def": SCENERY[roomTorchkey],
                 "anim_timer": 0.0,
                 "anim_frame": 0
             })
@@ -158,19 +158,19 @@ class Room(BaseState):
             self.objects.append({
                 "x": doorTopX + 3, 
                 "y": 1, 
-                "def": SCENERY[room_torch_key],
+                "def": SCENERY[roomTorchkey],
                 "anim_timer": 0.0,
                 "anim_frame": 0
             })
 
     def update(self, dt: float) -> None:
         for obj in self.objects:
-            obj_def = obj["def"]        
-            if "animation" in obj_def:
+            objDef = obj["def"]        
+            if "animation" in objDef:
                 obj["anim_timer"] += dt
-                if obj["anim_timer"] >= obj_def["animation_interval"]:
+                if obj["anim_timer"] >= objDef["animation_interval"]:
                     obj["anim_timer"] = 0.0
-                    obj["anim_frame"] = (obj["anim_frame"] + 1) % len(obj_def["animation"])
+                    obj["anim_frame"] = (obj["anim_frame"] + 1) % len(objDef["animation"])
    
     def render(self, surface: pygame.Surface) -> None:
         texture = settings.TEXTURES[self.textureKey]
@@ -194,21 +194,21 @@ class Room(BaseState):
             )
 
         for obj in self.objects:
-            obj_def = obj["def"]
-            tex_id = obj_def["texture_id"]
+            objDef = obj["def"]
+            texId = objDef["texture_id"]
         
-            if "animation" in obj_def:
-                frame_list = obj_def["animation"]
-                actual_frame_idx = frame_list[obj["anim_frame"]]
+            if "animation" in objDef:
+                frameList = objDef["animation"]
+                actualFrameIdx = frameList[obj["anim_frame"]]
             else:
-                actual_frame_idx = obj_def["frame_index"]
+                actualFrameIdx = objDef["frame_index"]
             
-            texture = settings.TEXTURES[tex_id]
-            frames = settings.FRAMES[tex_id]
+            texture = settings.TEXTURES[texId]
+            frames = settings.FRAMES[texId]
             
             px = self.offsetX + (obj["x"] * settings.TILE_SIZE)
             py = self.offsetY + (obj["y"] * settings.TILE_SIZE)
             
-            frame_rect = frames[actual_frame_idx]
+            frameRect = frames[actualFrameIdx]
          
-            surface.blit(texture, (px, py - (frame_rect.height - settings.TILE_SIZE)), frame_rect)
+            surface.blit(texture, (px, py - (frameRect.height - settings.TILE_SIZE)), frameRect)
