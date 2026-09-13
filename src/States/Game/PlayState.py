@@ -6,11 +6,12 @@ from gale.state import BaseState
 import settings
 from src.States.Game.PauseMenuState import PauseMenuState
 
+from src.Definitions.Entity import PLAYER_CHARACTERS
 from src.Models.Room import Room
-
+from src.Models.BattleEntity import BattleEntity
 
 class PlayState(BaseState):
-    def enter(self) -> None:
+    def enter(self, **kwargs: dict) -> None:
         # glow
         self.glowSurface = pygame.Surface((settings.TILE_SIZE, settings.TILE_SIZE), pygame.SRCALPHA)
         pygame.draw.rect(
@@ -18,7 +19,27 @@ class PlayState(BaseState):
             (0, 150, 255, 128), 
             (0, 0, settings.TILE_SIZE, settings.TILE_SIZE)
         )
+
+        # Room
         self.room = Room(cols=20, rows=12)
+
+        # character and entities
+        self.charKey = kwargs.get("character_selected", 0)
+
+        charNames = { # Could change this in SelectCharacterState
+            0: "Cloud",
+            1: "Chloe",
+            2: "Balthazar",
+            3: "Pelusa",
+        }
+        characterName = charNames.get(self.charKey, "Cloud")
+        self.definition = PLAYER_CHARACTERS.get(characterName)
+
+        spawnX, spawnY = 5, 5
+
+        self.playerChar = BattleEntity(x = spawnX, y = spawnY, definition = self.definition)
+
+        self.entities: list[BattleEntity] = [self.playerChar]
 
     def update(self, dt: float) -> None:
          self.room.update(dt) 
@@ -38,6 +59,10 @@ class PlayState(BaseState):
         if hasattr(self, 'reachableTiles') and self.reachableTiles:
             for gridX, gridY in self.reachableTiles:
                 self._glow_tile(surface, gridX, gridY)
+
+        # Entities
+        for entity in self.entities:
+            entity.render(surface)
 
     def _glow_tile(self, surface: pygame.Surface, gridX: int, gridY: int) -> None:
         pixelX = gridX * settings.TILE_SIZE

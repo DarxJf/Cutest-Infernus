@@ -7,6 +7,9 @@ import pygame
 
 # from gale.state import StateMachine
 
+import settings
+
+
 class Entity():
     def __init__(self, definition: Dict[str, Any], x: int = 0, y: int = 0) -> None:
         self.x = x
@@ -44,11 +47,11 @@ class Entity():
             self.currentAnimation.update(dt)
 
     def render(self, surface: pygame.Surface) -> None:
-        # if self.textureId in settings.TEXTURES:
-        #     if self.currentAnimation:
-        #         frame = self.currentAnimation.get_current_frame()
-        #     else:
-        #         frame = settings.FRAMES[self.textureId][self.frameIndex]
-                
-        #     surface.blit(settings.TEXTURES[self.textureId], (self.x, self.y), frame)
+        if self.textureId in settings.TEXTURES:
+            if self.currentAnimation:
+                frame = self.currentAnimation.get_current_frame()
+            else:
+                frame = settings.FRAMES[self.textureId][self.frameIndex]
+          
+            surface.blit(settings.TEXTURES[self.textureId], (self.x, self.y), frame)
         pass

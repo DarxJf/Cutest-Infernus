@@ -1,11 +1,15 @@
 from typing import Any, Dict, Callable, Set, Tuple
 
+import settings
 from src.Models.Entity import Entity
 from src.Utils.MovementCalculator import MovementCalculator
 
 class BattleEntity(Entity):
     def __init__(self, definition: Dict[str, Any], x: int = 0, y: int = 0) -> None:
         super().__init__(definition, x, y)
+
+        self.mapX = x * settings.TILE_SIZE
+        self.mapY = y * settings.TILE_SIZE
 
         # Flags
         self.dead = False

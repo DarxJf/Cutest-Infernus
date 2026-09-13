@@ -50,7 +50,8 @@ TEXTURES = {
         for p in ROOM_PALETTES
     },
     "rock": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Objects" / "rock.png"),
-    "floor_torch": pygame.image.load(BASE_DIR / "assets" /"Sprites" / "Objects" / "floor_torch.png"),
+    "floor_torch": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Objects" / "floor_torch.png"),
+    "cloud_walk": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Entities" / "Characters" / "cloud_walk.png"),
 }
 
 FRAMES = {
@@ -60,7 +61,8 @@ FRAMES = {
         for p in ROOM_PALETTES
     },
     "rock": frames.generate_frames(TEXTURES["rock"], 15, 15),
-    "floor_torch": frames.generate_frames(TEXTURES["floor_torch"], 16, 32)
+    "floor_torch": frames.generate_frames(TEXTURES["floor_torch"], 16, 32),
+    "cloud_walk": frames.generate_frames(TEXTURES["cloud_walk"], 25, 24),
 }
 
 TILE_IDS = {

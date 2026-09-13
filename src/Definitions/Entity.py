@@ -11,10 +11,10 @@ from typing import Any, Dict
 PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
     "Cloud": {
         "class_name": "Warrior",
-        "texture": "character_sprites",
+        "texture": "cloud_walk",
         "width": 16, # Can change
         "height": 16, # Can change
-        "frame_index": 0,
+        "frame_index": 13,
         "animations": {
             # idle: [0]
             # walk: [0, 1, 2, 3]
