@@ -57,11 +57,19 @@ class Menu:
 
         if self.cursor is not None and self.listView.items:
             rowRect = self.listView.row_rect(self.listView.selected_index) 
-            cursorX = self.listView.x - 20 
-            self.cursor.render(surface, (cursorX, rowRect.centery))
+            cursorX = self.listView.x - 10
+            cursorY = rowRect.centery - 10
+            self.cursor.render(surface, (cursorX, cursorY))
 
     
     def navigate(self, direction: Tuple[int, int]) -> None:
+        dy = direction
+        if dy != 0:
+            current = self.listView.selected_index
+            target = current + dy
+        if target < 0 or target >= len(self.listView.items):
+            return
+
         if self.listView.on_navigate(direction):
             settings.SOUNDS["select"].stop()
             settings.SOUNDS["select"].play()

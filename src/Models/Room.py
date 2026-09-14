@@ -2,8 +2,6 @@ import random
 import pygame
 import settings
 
-from gale.state import BaseState
-
 from src.Definitions.Scenery import SCENERY
 
 WALKABLE = 0
@@ -13,7 +11,7 @@ WALL_BOTTOM_ROWS = 2
 OBSTACLE = 2
 
 
-class Room(BaseState):
+class Room():
     def __init__(self, cols: int = 16, rows: int = 10) -> None:
         self.cols = cols
         self.rows = rows
