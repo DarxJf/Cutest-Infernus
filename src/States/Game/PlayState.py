@@ -36,16 +36,19 @@ class PlayState(BaseState):
         characterName = charNames.get(self.charKey, "Cloud")
         self.definition = PLAYER_CHARACTERS.get(characterName)
 
-        spawnX, spawnY = 3,3
+        spawnX, spawnY = 3, 3
 
         self.playerChar = BattleEntity(x = spawnX, y = spawnY, definition = self.definition)
-        self.reachableTiles = self.playerChar.get_reachable_tiles(self.room.is_walkable)
-        print(f"DEBUG LOGIC - Total de casillas encontradas: {len(self.reachableTiles)}")
 
         self.entities: list[BattleEntity] = [self.playerChar]
 
     def update(self, dt: float) -> None:
          self.room.update(dt) 
+
+    def exit(self) -> None:
+        # for char in self.party.characters.Values():
+        #     char.clear_status()
+        pass
 
     def on_input(self, inputId: str, inputData: Any) -> None:
         if not inputData.pressed:
