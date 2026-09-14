@@ -223,3 +223,10 @@ CLASS_MODIFIERS: Dict[str, Dict[str, Any]] = {
         "bonus_object_slots": 1,
     },
 }
+
+LEVEL_GROWTH: Dict[str, Dict[str, int]] = {
+    "Warrior": {"hp": 5, "attack": 2, "magic": 0, "agility": 0, "defense": 2, "magic_defense": 1},
+    "Rogue":   {"hp": 3, "attack": 2, "magic": 0, "agility": 3, "defense": 1, "magic_defense": 1},
+    "Fairy":   {"hp": 2, "attack": 0, "magic": 4, "agility": 1, "defense": 0, "magic_defense": 2},
+    "Mage":    {"hp": 2, "attack": 0, "magic": 5, "agility": 1, "defense": 0, "magic_defense": 2},
+}

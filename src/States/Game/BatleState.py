@@ -5,8 +5,8 @@ from gale.state import BaseState
 import settings
 from src.Utils.TurnQueue import TurnQueue
 from src.Models.BattleEntity import BattleEntity
-from src.Models.Room import Room
 from src.Gui.BatleUI import BattleUI
+from src.Gui.BatleResultUI import BattleResultUI
 
 
 class BattleState(BaseState):
@@ -27,6 +27,8 @@ class BattleState(BaseState):
         self.upcomingTurns = []
 
         self.earnedSouls = 0
+        self.battleOver = False      
+        self.resultUI = None 
         
         self.start_next_turn()
 
@@ -41,10 +43,6 @@ class BattleState(BaseState):
             return
 
         self.upcomingTurns = self.turnQueue.get_queue_preview(count=5)
-
-
-    def _end_battle(self) -> None:
-        self.state_machine.pop()
 
     def execute_action(self, action_cost_multiplier: float = 1.0) -> None:
         if self.currentActor is None:
@@ -69,15 +67,37 @@ class BattleState(BaseState):
             self.turnQueue.remove_entity(enemy)
             
         if not self.enemies:
-            self._end_battle()
+            self._victory()
+            return True
+        
+        if all(ally.dead for ally in self.party):
+            self._defeat()
             return True
 
         return False
+    
+    def _victory(self) -> None:
+        self.battleOver = True
+        self.resultUI = BattleResultUI(
+            party=self.party,
+            earnedSouls=self.earnedSouls,
+            victory=True,
+        )
 
+    def _defeat(self) -> None:
+        self.battleOver = True
+        self.resultUI = BattleResultUI(
+            party=self.party,
+            earnedSouls=0,
+            victory=False,
+        )
+    def _end_battle(self) -> None:
+        self.state_machine.pop()
+        
     def on_input(self, inputId: str, inputData: Any) -> None:
         if not inputData.pressed:
             return
-        
+    
         maxCards = 4  
         if inputId == "moveLeft":
             self.ui.selectedCardIndex = (self.ui.selectedCardIndex - 1) % maxCards
@@ -89,12 +109,10 @@ class BattleState(BaseState):
             settings.SOUNDS["select"].play()
             self.execute_action(action_cost_multiplier=1.0)
 
-    def update(self, dt: float) -> None:
-        self.room.update(dt)
-
+    
     def render(self, surface: pygame.Surface) -> None:
         pass
-
+     
        
 
    

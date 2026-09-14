@@ -6,6 +6,7 @@ from src.Models.Entity import Entity
 from src.Models.ActionCards import Action
 from src.Utils.MovementCalculator import MovementCalculator
 from src.Utils.AoeCalculator import AoECalculator
+from src.Definitions.Entity import LEVEL_GROWTH
 
 
 class BattleEntity(Entity):
@@ -50,6 +51,12 @@ class BattleEntity(Entity):
         self.equippedObjects = []
         self.currentHp       = self.hp
         self.currentRest     = 0.0
+
+        self.level           = definition.get("level", 1)
+        self.experience      = definition.get("experience", 0)
+        self.soulValue       = definition.get("soul_value", 10)
+        self.expValue        = definition.get("exp_value", 15)
+        self.experienceToNextLevel = self._calculate_xp_requirement()
 
     def hurt(self, amount: int) -> None:
         self.currentHp -= amount
@@ -145,3 +152,35 @@ class BattleEntity(Entity):
             if not enemy.dead and (enemy.mapX, enemy.mapY) in affectedTiles:
                 dmg = self.compute_damage(action, enemy)
                 enemy.damage(dmg)
+
+
+    def _calculate_xp_requirement(self) -> int:
+        return self.level * self.level * 10
+
+    def gain_experience(self, amount: int) -> bool:
+        if self.dead:
+            return False
+            
+        self.experience += amount
+        leveledUp = False
+       
+        while self.experience >= self.experienceToNextLevel:
+            self.experience -= self.experienceToNextLevel
+            self._level_up()
+            leveledUp = True
+
+        return leveledUp
+
+    def _level_up(self) -> None:
+        self.level += 1
+        growth = LEVEL_GROWTH.get(self.classType, LEVEL_GROWTH["Warrior"])
+
+        self.hp            += growth["hp"]
+        self.attack        += growth["attack"]
+        self.magic         += growth["magic"]
+        self.agility       += growth["agility"]
+        self.defense       += growth["defense"]
+        self.magic_defense += growth["magic_defense"]
+
+        self.currentHp = self.hp
+        self.experienceToNextLevel = self._calculate_xp_requirement()

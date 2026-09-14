@@ -63,7 +63,7 @@ class Menu:
 
     
     def navigate(self, direction: Tuple[int, int]) -> None:
-        dy = direction
+        dx, dy = direction
         if dy != 0:
             current = self.listView.selected_index
             target = current + dy

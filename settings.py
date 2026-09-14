@@ -17,6 +17,7 @@ input_handler.InputHandler.set_keyboard_action(input_handler.KEY_DOWN, "moveDown
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_KP_ENTER, "enter")
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_RETURN, "enter")
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_p, "pause")
+input_handler.InputHandler.set_keyboard_action(input_handler.KEY_SPACE, "space")
 
 TITLE = "Cutest Inferno"
 
@@ -55,6 +56,7 @@ TEXTURES = {
     "pelusa_walk": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Entities" / "Characters" / "pelusa_walk.png"),
     "chloe_walk": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Entities" / "Characters" / "chloe_walk.png"),
     "balthazar_walk": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Entities" / "Characters" / "balthazar_walk.png"),
+    "menu_bg": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "menu_bg.png"),
 }
 
 FRAMES = {
