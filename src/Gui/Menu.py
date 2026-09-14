@@ -63,17 +63,18 @@ class Menu:
 
     
     def navigate(self, direction: Tuple[int, int]) -> None:
-        dx, dy = direction
-        if dy != 0:
-            current = self.listView.selected_index
-            target = current + dy
+        _, dy = direction
+        if dy == 0:
+            return
+
+        current = self.listView.selected_index
+        target = current + dy
         if target < 0 or target >= len(self.listView.items):
             return
 
         if self.listView.on_navigate(direction):
             settings.SOUNDS["select"].stop()
             settings.SOUNDS["select"].play()
-
 
     def confirm(self) -> None:
         if self.listView.on_confirm():

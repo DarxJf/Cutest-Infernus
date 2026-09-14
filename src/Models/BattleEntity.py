@@ -52,7 +52,6 @@ class BattleEntity(Entity):
         self.currentHp       = self.hp
         self.currentRest     = 0.0
 
-        self.level           = definition.get("level", 1)
         self.experience      = definition.get("experience", 0)
         self.soulValue       = definition.get("soul_value", 10)
         self.expValue        = definition.get("exp_value", 15)
