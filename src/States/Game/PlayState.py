@@ -10,6 +10,7 @@ from src.Definitions.Entity import PLAYER_CHARACTERS
 from src.Models.Room import Room
 from src.Models.BattleEntity import BattleEntity
 
+
 class PlayState(BaseState):
     def enter(self, **kwargs: dict) -> None:
         # glow
@@ -35,9 +36,11 @@ class PlayState(BaseState):
         characterName = charNames.get(self.charKey, "Cloud")
         self.definition = PLAYER_CHARACTERS.get(characterName)
 
-        spawnX, spawnY = 5, 5
+        spawnX, spawnY = 3,3
 
         self.playerChar = BattleEntity(x = spawnX, y = spawnY, definition = self.definition)
+        self.reachableTiles = self.playerChar.get_reachable_tiles(self.room.is_walkable)
+        print(f"DEBUG LOGIC - Total de casillas encontradas: {len(self.reachableTiles)}")
 
         self.entities: list[BattleEntity] = [self.playerChar]
 
@@ -56,17 +59,21 @@ class PlayState(BaseState):
     def render(self, surface: pygame.Surface) -> None:
         self.room.render(surface)
 
+        offsetX = self.room.offsetX
+        offsetY = self.room.offsetY
+        
+        # render Glow
         if hasattr(self, 'reachableTiles') and self.reachableTiles:
             for gridX, gridY in self.reachableTiles:
-                self._glow_tile(surface, gridX, gridY)
+                self._glow_tile(surface, gridX, gridY, offsetX, offsetY)
 
         # Entities
         for entity in self.entities:
-            entity.render(surface)
+            entity.render(surface, offsetX, offsetY)
 
-    def _glow_tile(self, surface: pygame.Surface, gridX: int, gridY: int) -> None:
-        pixelX = gridX * settings.TILE_SIZE
-        pixelY = gridY * settings.TILE_SIZE
+    def _glow_tile(self, surface: pygame.Surface, gridX: int, gridY: int, offsetX, offsetY) -> None:
+        pixelX = gridX * settings.TILE_SIZE + offsetX
+        pixelY = gridY * settings.TILE_SIZE + offsetY
 
         surface.blit(self.glowSurface, (pixelX, pixelY))
         

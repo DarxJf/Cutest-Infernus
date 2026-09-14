@@ -213,12 +213,9 @@ class Room(BaseState):
          
             surface.blit(texture, (px, py - (frameRect.height - settings.TILE_SIZE)), frameRect)
 
-        def is_walkable(self, x: int, y: int) -> bool:
-            if 0 > x or x >= self.cols or 0 > y or y >= self.rows:
-                return False
-
-            if self.logicalGrid[y][x] == WALKABLE:
-                return True
-            else:
-                return False
+    def is_walkable(self, x: int, y: int) -> bool:
+        if 0 > x or x >= self.cols or 0 > y or y >= self.rows:
+            return False
+        else:
+            return self.logicalGrid[y][x] == WALKABLE
     

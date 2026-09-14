@@ -46,12 +46,11 @@ class Entity():
         if self.currentAnimation:
             self.currentAnimation.update(dt)
 
-    def render(self, surface: pygame.Surface) -> None:
+    def render(self, surface: pygame.Surface, offsetX, offsetY) -> None:
         if self.textureId in settings.TEXTURES:
             if self.currentAnimation:
                 frame = self.currentAnimation.get_current_frame()
             else:
                 frame = settings.FRAMES[self.textureId][self.frameIndex]
           
-            surface.blit(settings.TEXTURES[self.textureId], (self.x, self.y), frame)
-        pass
+            surface.blit(settings.TEXTURES[self.textureId], (self.x + offsetX, self.y + offsetY), frame)

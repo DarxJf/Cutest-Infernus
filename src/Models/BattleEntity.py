@@ -8,8 +8,9 @@ class BattleEntity(Entity):
     def __init__(self, definition: Dict[str, Any], x: int = 0, y: int = 0) -> None:
         super().__init__(definition, x, y)
 
-        self.mapX = x * settings.TILE_SIZE
-        self.mapY = y * settings.TILE_SIZE
+        # position logical grid, no pixel
+        self.mapX = x
+        self.mapY = y
 
         # Flags
         self.dead = False
@@ -57,6 +58,11 @@ class BattleEntity(Entity):
 
     def get_reachable_tiles(self, isWalkable: Callable[[int, int], bool]) -> Set[Tuple[int, int]]:
         """Requests reachable grid coordinates based on fixed base_movement."""
+        print("\n--- DEBUG ALGORITMO ---")
+        print(f"1. Coordenadas lógicas de inicio: ({self.mapX}, {self.mapY})")
+        print(f"2. Rango de movimiento (baseMovement): {self.baseMovement}")
+        print(f"3. Casilla derecha ({self.mapX + 1}, {self.mapY}) es caminable?: {isWalkable(self.mapX + 1, self.mapY)}")
+        print("-----------------------\n")
         return MovementCalculator.get_available_moves(
             self.mapX, 
             self.mapY, 
