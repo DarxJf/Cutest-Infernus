@@ -34,7 +34,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
     },
     "Pelusa": {
         "class_name": "Rogue",
-        "texture": "character_sprites",
+        "texture": "pelusa_walk",
         "width": 16,
         "height": 16,
         "frame_index": 0,
@@ -54,7 +54,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
     },
     "Chloe": {
         "class_name": "Fairy",
-        "texture": "character_sprites",
+        "texture": "chloe_walk",
         "width": 16,
         "height": 16,
         "frame_index": 0,
@@ -74,7 +74,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
     },
     "Balthazar": {
         "class_name": "Mage",
-        "texture": "character_sprites",
+        "texture": "balthazar_walk",
         "width": 16,
         "height": 16,
         "frame_index": 0,
