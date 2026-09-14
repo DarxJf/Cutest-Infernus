@@ -100,7 +100,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
 ENEMIES: Dict[str, Dict[str, Any]] = {
 	"slime": {
         "class_name": "Slime",
-        "texture": "enemy_sprites",
+        "texture": "cloud_walk",
         "width": 16,
         "height": 16,
         "frame_index": 0,

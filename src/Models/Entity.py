@@ -52,5 +52,13 @@ class Entity():
                 frame = self.currentAnimation.get_current_frame()
             else:
                 frame = settings.FRAMES[self.textureId][self.frameIndex]
-          
-            surface.blit(settings.TEXTURES[self.textureId], (self.x + offsetX, self.y + offsetY), frame)
+
+        draw_x = self.x + (settings.TILE_SIZE - frame.width) // 2
+        draw_y = self.y + (settings.TILE_SIZE - frame.height)
+        
+        # 3. Dibujamos sumando el desfase de la cámara (Room)
+        surface.blit(
+            settings.TEXTURES[self.textureId], 
+            (draw_x + offsetX, draw_y + offsetY), 
+            frame
+        )
