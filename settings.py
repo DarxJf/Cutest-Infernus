@@ -17,6 +17,7 @@ input_handler.InputHandler.set_keyboard_action(input_handler.KEY_DOWN, "moveDown
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_KP_ENTER, "enter")
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_RETURN, "enter")
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_p, "pause")
+input_handler.InputHandler.set_keyboard_action(input_handler.KEY_SPACE, "space")
 
 TITLE = "Cutest Inferno"
 
@@ -50,7 +51,12 @@ TEXTURES = {
         for p in ROOM_PALETTES
     },
     "rock": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Objects" / "rock.png"),
-    "floor_torch": pygame.image.load(BASE_DIR / "assets" /"Sprites" / "Objects" / "floor_torch.png"),
+    "floor_torch": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Objects" / "floor_torch.png"),
+    "cloud_walk": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Entities" / "Characters" / "cloud_walk.png"),
+    "pelusa_walk": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Entities" / "Characters" / "pelusa_walk.png"),
+    "chloe_walk": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Entities" / "Characters" / "chloe_walk.png"),
+    "balthazar_walk": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Entities" / "Characters" / "balthazar_walk.png"),
+    "menu_bg": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "menu_bg.png"),
 }
 
 FRAMES = {
@@ -60,7 +66,11 @@ FRAMES = {
         for p in ROOM_PALETTES
     },
     "rock": frames.generate_frames(TEXTURES["rock"], 15, 15),
-    "floor_torch": frames.generate_frames(TEXTURES["floor_torch"], 16, 32)
+    "floor_torch": frames.generate_frames(TEXTURES["floor_torch"], 16, 32),
+    "cloud_walk": frames.generate_frames(TEXTURES["cloud_walk"], 25, 24),
+    "pelusa_walk": frames.generate_frames(TEXTURES["pelusa_walk"], 25, 24),
+    "chloe_walk": frames.generate_frames(TEXTURES["chloe_walk"], 25, 24),
+    "balthazar_walk": frames.generate_frames(TEXTURES["balthazar_walk"], 25, 24),
 }
 
 TILE_IDS = {

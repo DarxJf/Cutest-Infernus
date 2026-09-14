@@ -12,6 +12,7 @@ from src.States.Game.SlotSelectState import SlotSelectState
 
 class StartState(BaseState):
     def enter(self) -> None:
+        self.background = float = 0.0
         self.menu = Menu(
             settings.VIRTUAL_WIDTH / 2  - 70,
             settings.VIRTUAL_HEIGHT /2 + 20,
@@ -24,8 +25,14 @@ class StartState(BaseState):
             font = settings.FONTS["medium"],
         )
 
+        self.bgTexture = settings.TEXTURES["menu_bg"]
+        self.bgWidth = self.bgTexture.get_width()  
+        self.bgScrollSpeed = 20.0                   
+        self.bgOffset = 0.0
+
     def update(self, dt):
         self.menu.update(dt)
+        self.bgOffset = (self.bgOffset + self.bgScrollSpeed * dt) % self.bgWidth
 
     def on_input(self, input_id: str, input_data: Any) ->None:
         if not input_data.pressed:
@@ -62,7 +69,11 @@ class StartState(BaseState):
         self.state_machine.push(SlotSelectState(self.state_machine), mode="load")
 
     def render(self, surface: pygame.Surface) -> None:
-      
+
+        x0 = -int(self.bgOffset)
+        surface.blit(self.bgTexture, (x0, 0))
+        surface.blit(self.bgTexture, (x0 + self.bgWidth, 0))
+        
         titleFont = settings.FONTS["large"]
     
         shadowSurf = titleFont.render("CUTEST INFERNO", True, (200, 50, 100))
@@ -75,8 +86,7 @@ class StartState(BaseState):
 
         self.menu.render(surface)
 
-    
-
+  
 
 
     

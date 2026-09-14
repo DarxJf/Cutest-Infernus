@@ -17,7 +17,7 @@ class SelectCharacterState(BaseState):
     def on_input(self, inputId: str, inputData: Any) -> None:
         if not inputData.pressed:
             return
-
+        
         charactersList = ["character1", "character2", "character2"]
 
         if inputId == "moveLeft":
@@ -52,8 +52,8 @@ class SelectCharacterState(BaseState):
 
         arrowRight = settings.FRAMES["cursors"][settings.TILE_IDS["arrowRight"]]
         arrowLeft = settings.FRAMES["cursors"][settings.TILE_IDS["arrowLeft"]]
-        surface.blit(settings.TEXTURES["cursors"], (centerX - 70, centerY - 10), arrowRight)
-        surface.blit(settings.TEXTURES["cursors"], (centerX + 58, centerY - 10), arrowLeft)
+        surface.blit(settings.TEXTURES["cursors"], (centerX - 70, centerY - 10), arrowLeft)
+        surface.blit(settings.TEXTURES["cursors"], (centerX + 58, centerY - 10), arrowRight)
 
         startText = small.render("PRESS ENTER TO START GAME", True, (100, 100, 100))
         startRect = startText.get_rect(centerx=centerX, y=settings.VIRTUAL_HEIGHT - 45)

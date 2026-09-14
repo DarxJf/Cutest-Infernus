@@ -2,8 +2,6 @@ import random
 import pygame
 import settings
 
-from gale.state import BaseState
-
 from src.Definitions.Scenery import SCENERY
 
 WALKABLE = 0
@@ -13,7 +11,7 @@ WALL_BOTTOM_ROWS = 2
 OBSTACLE = 2
 
 
-class Room(BaseState):
+class Room():
     def __init__(self, cols: int = 16, rows: int = 10) -> None:
         self.cols = cols
         self.rows = rows
@@ -212,3 +210,10 @@ class Room(BaseState):
             frameRect = frames[actualFrameIdx]
          
             surface.blit(texture, (px, py - (frameRect.height - settings.TILE_SIZE)), frameRect)
+
+    def is_walkable(self, x: int, y: int) -> bool:
+        if 0 > x or x >= self.cols or 0 > y or y >= self.rows:
+            return False
+        else:
+            return self.logicalGrid[y][x] == WALKABLE
+    

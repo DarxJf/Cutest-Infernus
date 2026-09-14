@@ -11,10 +11,10 @@ from typing import Any, Dict
 PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
     "Cloud": {
         "class_name": "Warrior",
-        "texture": "character_sprites",
+        "texture": "cloud_walk",
         "width": 16, # Can change
         "height": 16, # Can change
-        "frame_index": 0,
+        "frame_index": 13,
         "animations": {
             # idle: [0]
             # walk: [0, 1, 2, 3]
@@ -34,7 +34,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
     },
     "Pelusa": {
         "class_name": "Rogue",
-        "texture": "character_sprites",
+        "texture": "pelusa_walk",
         "width": 16,
         "height": 16,
         "frame_index": 0,
@@ -54,7 +54,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
     },
     "Chloe": {
         "class_name": "Fairy",
-        "texture": "character_sprites",
+        "texture": "chloe_walk",
         "width": 16,
         "height": 16,
         "frame_index": 0,
@@ -74,7 +74,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
     },
     "Balthazar": {
         "class_name": "Mage",
-        "texture": "character_sprites",
+        "texture": "balthazar_walk",
         "width": 16,
         "height": 16,
         "frame_index": 0,
@@ -222,4 +222,11 @@ CLASS_MODIFIERS: Dict[str, Dict[str, Any]] = {
         "bonus_action_slots": 1,
         "bonus_object_slots": 1,
     },
+}
+
+LEVEL_GROWTH: Dict[str, Dict[str, int]] = {
+    "Warrior": {"hp": 5, "attack": 2, "magic": 0, "agility": 0, "defense": 2, "magic_defense": 1},
+    "Rogue":   {"hp": 3, "attack": 2, "magic": 0, "agility": 3, "defense": 1, "magic_defense": 1},
+    "Fairy":   {"hp": 2, "attack": 0, "magic": 4, "agility": 1, "defense": 0, "magic_defense": 2},
+    "Mage":    {"hp": 2, "attack": 0, "magic": 5, "agility": 1, "defense": 0, "magic_defense": 2},
 }
