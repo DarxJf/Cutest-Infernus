@@ -18,7 +18,7 @@ class SelectCharacterState(BaseState):
         if not inputData.pressed:
             return
 
-        charactersList = ["character1", "character2", "character2"]
+        charactersList = ["Cloud", "Chloe", "Balthazar", "Pelusa"]
 
         if inputId == "moveLeft":
             self.characterIndex = (self.characterIndex - 1) % len(charactersList)
@@ -32,7 +32,8 @@ class SelectCharacterState(BaseState):
     def _confirm(self) -> None:
         settings.SOUNDS["select"].play()
         self.state_machine.pop()
-        self.state_machine.push(PlayState(self.state_machine))
+        self.state_machine.push(PlayState(self.state_machine), 
+                                character_selected = self.characterIndex)
 
     def render(self, surface: pygame.Surface) -> None:
         medium = settings.FONTS["medium"]

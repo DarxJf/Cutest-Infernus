@@ -1,14 +1,24 @@
 from typing import Any, Dict, Callable, Set, Tuple
+import random
+import math
 
 from src.Models.Entity import Entity
+from src.Models.ActionCards import Action
 from src.Utils.MovementCalculator import MovementCalculator
+from src.Utils.AoeCalculator import AoECalculator
+
 
 class BattleEntity(Entity):
     def __init__(self, definition: Dict[str, Any], x: int = 0, y: int = 0) -> None:
         super().__init__(definition, x, y)
 
+        # position logical grid, no pixel
+        self.mapX = x
+        self.mapY = y
+
         # Flags
         self.dead = False
+        self.activeStatus: dict[str, int] = {}  # {"stun": 2, "poison": 3} where the value is the remaining turns
         
         # Battle-specific attributes
         self.level            = definition.get("level", 1)
@@ -51,11 +61,87 @@ class BattleEntity(Entity):
         if self.currentHp > self.hp:
             self.currentHp = self.hp
 
+    def compute_damage(self, action: "Action", target: "BattleEntity") -> int:
+        variance = random.uniform(0.85, 1.15)
+
+        if action.scalingStat == "attack":
+            raw_damage = (self.attack * action.multiplier) * variance
+            final_damage = math.floor(raw_damage - target.defense)
+
+        elif action.scalingStat == "magic":
+            raw_damage = (self.magic * action.multiplier) * variance
+            final_damage = math.floor(raw_damage - target.magic_defense)
+
+        elif action.scalingStat == "agility":
+            raw_damage = (self.agility * action.multiplier) * variance
+            final_damage = math.floor(raw_damage - target.agility)
+
+        else:
+            final_damage = 1
+            
+        return max(1, final_damage)
+
+    # --------------
+    # Status effects
+
+    def apply_status(self, statusName: str, duration: int) -> None:
+        self.activeStatus[statusName] = duration
+
+    def process_status(self,) -> None:
+        isStunned = False
+        
+        if "poison" in self.activeStatus:
+            # Reutilizamos el método damage base de la clase para aplicar el veneno[cite: 1]
+            self.damage(5) 
+            
+        if "stun" in self.activeStatus:
+            isStunned = True
+
+        # Reducir duraciones y limpiar los estados que llegaron a cero
+        expired = []
+        for status in self.activeStatus:
+            self.activeStatus[status] -= 1
+            if self.activeStatus[status] <= 0:
+                expired.append(status)
+                
+        for status in expired:
+            del self.activeStatus[status]
+            
+        return isStunned
+
+    def clear_status(self) -> None:
+        self.activeStatus.clear()
+
+    # Aoe, possible moves
     def get_reachable_tiles(self, isWalkable: Callable[[int, int], bool]) -> Set[Tuple[int, int]]:
-        """Requests reachable grid coordinates based on fixed base_movement."""
         return MovementCalculator.get_available_moves(
             self.mapX, 
             self.mapY, 
             self.baseMovement, 
             isWalkable,
         )
+
+    def apply_aoe_damage(self, action: "Action", boardCols: int, boardRows: int, enemyList: list["BattleEntity"]) -> None:
+        affectedTiles = set()
+
+        if action.areaType == "cross":
+            affectedTiles = AoECalculator.get_linear_cross(
+                self.mapX, 
+                self.mapY, 
+                action.gridRange, 
+                boardCols, 
+                boardRows
+            )
+        elif action.areaType == "square":
+            affectedTiles = AoECalculator.get_square_area(
+                self.mapX, 
+                self.mapY, 
+                action.areaRadius, 
+                boardCols, 
+                boardRows
+            )
+
+        for enemy in enemyList:
+            if not enemy.dead and (enemy.mapX, enemy.mapY) in affectedTiles:
+                dmg = self.compute_damage(action, enemy)
+                enemy.damage(dmg)
