@@ -26,8 +26,8 @@ BASE_DIR = pathlib.Path(__file__).parent
 SAVE_DIR = BASE_DIR / "saves"
 SAVE_SLOTS = ["slot1", "slot2", "slot3"]
 
-VIRTUAL_WIDTH = 384
-VIRTUAL_HEIGHT = 224
+VIRTUAL_WIDTH = 540
+VIRTUAL_HEIGHT = 260
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -43,6 +43,8 @@ FONTS = {
 ROOM_PALETTES = ["blue", "red", "green", "brown", "gray"]
 
 TEXTURES = {
+    "menu_bg": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "menu_bg.png"),
+   
     "cursors": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "cursors.png"),
     **{
         f"room_{p}": pygame.image.load(
@@ -50,13 +52,17 @@ TEXTURES = {
         )
         for p in ROOM_PALETTES
     },
+
     "rock": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Objects" / "rock.png"),
     "floor_torch": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Objects" / "floor_torch.png"),
+    "object_icons": pygame.image.load(BASE_DIR/ "assets"/"Sprites"/"Objects"/"objects.png"),
+    "action_icons":pygame.image.load(BASE_DIR/ "assets"/"Sprites"/"Objects"/"action_icons.png"),
+
     "cloud_walk": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Entities" / "Characters" / "cloud_walk.png"),
     "pelusa_walk": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Entities" / "Characters" / "pelusa_walk.png"),
     "chloe_walk": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Entities" / "Characters" / "chloe_walk.png"),
     "balthazar_walk": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "Entities" / "Characters" / "balthazar_walk.png"),
-    "menu_bg": pygame.image.load(BASE_DIR / "assets" / "Sprites" / "menu_bg.png"),
+   
     "slime-down": pygame.image.load(BASE_DIR/ "assets"/ "Sprites" /"Entities"/"Enemies"/"Slime"/"Slime_pink_down.png"),
     "slime-up": pygame.image.load(BASE_DIR/ "assets" /"Sprites" /"Entities" /"Enemies"/ "Slime" /"Slime_pink_up.png"),
     "skel-idle-down": pygame.image.load(BASE_DIR /"assets"/"Sprites"/"Entities"/"Enemies"/"Skeleton"/"Idle"/"Skel_idle_down.png"),
@@ -83,8 +89,12 @@ FRAMES = {
         f"room_{p}": frames.generate_frames(TEXTURES[f"room_{p}"], 16, 16)
         for p in ROOM_PALETTES
     },
+
     "rock": frames.generate_frames(TEXTURES["rock"], 15, 15),
     "floor_torch": frames.generate_frames(TEXTURES["floor_torch"], 16, 32),
+    "object_icons": frames.generate_frames(TEXTURES["object_icons"], 16, 16),
+    "action_icons": frames.generate_frames(TEXTURES["action_icons"], 16, 16),
+
     "cloud_walk": frames.generate_frames(TEXTURES["cloud_walk"], 25, 24),
     "pelusa_walk": frames.generate_frames(TEXTURES["pelusa_walk"], 25, 24),
     "chloe_walk": frames.generate_frames(TEXTURES["chloe_walk"], 25, 24),
