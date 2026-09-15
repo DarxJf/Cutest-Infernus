@@ -81,7 +81,12 @@ class BattleState(BaseState):
             self._take_enemy_turn()
 
     def resolve_action(self, actor: BattleEntity, action: Any, targetX: int, targetY: int, is_enemy: bool) -> None:
-        targets = self.party if is_enemy else self.enemies
+        if action.targetType == "self":
+            targets = [actor]
+        elif action.targetType == "ally":
+            targets = self.enemies if is_enemy else self.party
+        else: # "enemy"
+            targets = self.party if is_enemy else self.enemies
 
         boardCols, boardRows = self.room.cols, self.room.rows 
 
@@ -92,12 +97,16 @@ class BattleState(BaseState):
                 if target.mapX == targetX and target.mapY == targetY and not getattr(target, 'dead', False):
                     distance = abs(target.mapX - actor.mapX) + abs(target.mapY - actor.mapY)
 
-                    if distance <= action.gridRange:
+                    if distance <= action.gridRange or action.targetType == "self":
                         dmg = actor.compute_damage(action, target)
-                        target.hurt(dmg)
-                        
-                        if action.effect:
-                            target.apply_status(action.effect, 1)
+
+                        if action.effect == "heal":
+                            target.heal(amount=dmg)
+                        else:
+                            target.hurt(dmg)
+                            if action.effect:
+                                target.apply_status(action.effect, 1)
+
                     else:
                         print(f"Fallo: ¡El objetivo está a {distance} casillas, el arma solo alcanza {action.gridRange}!")
                     break
@@ -146,11 +155,13 @@ class BattleState(BaseState):
                 is_enemy=False
             )
 
+        targetGroup = self.party if selected_action.targetType in ["ally", "self"] else self.enemies
+
         self.state_machine.push(
             SelectTargetState(self.state_machine),
             actor=self.currentActor,
             action=selected_action,
-            enemies=self.enemies,
+            enemies=targetGroup,
             callback=on_target_selected,
             boardCols=20,
             boardRows=12,
@@ -204,7 +215,7 @@ class BattleState(BaseState):
             self.earnedSouls += enemy.soulValue 
             xpReward = enemy.expValue
             for ally in self.party:
-                ally.gain_experience(xpReward)
+                ally.gain_experience(xpReward, ally.classType)
                 
             self.enemies.remove(enemy)
             self.turnQueue.remove_entity(enemy)
@@ -245,8 +256,14 @@ class BattleState(BaseState):
     def on_input(self, inputId: str, inputData: Any) -> None:
         if not inputData.pressed:
             return
+
+        if self.battleOver:
+            if inputId == "enter":
+                settings.SOUNDS["select"].play()
+                self._end_battle() 
+            return
     
-        maxCards = 2 + len(self.currentActor.actionSlots)
+        maxCards = 3 + len(self.currentActor.actionSlots)
         if inputId == "moveLeft":
             self.ui.selectedCardIndex = (self.ui.selectedCardIndex - 1) % maxCards
             settings.SOUNDS["select"].play()
@@ -258,6 +275,9 @@ class BattleState(BaseState):
 
             if self.ui.selectedCardIndex == 0:
                 self.execute_move()
+            elif self.ui.selectedCardIndex == maxCards - 1:
+                self.turnQueue.end_turn(self.currentActor, action_cost_multiplier=1.0)
+                self.start_next_turn()
             else:
                 self.execute_action(action_cost_multiplier=1.0)
 
@@ -268,6 +288,9 @@ class BattleState(BaseState):
             for gridX, gridY in self.reachableTiles:
                 self._glow_tile(surface, gridX, gridY, self.room.offsetX, self.room.offsetY)
 
-        has_moved = getattr(self, 'hasMoved', False)
-        self.ui.render(surface, self.currentActor, self.upcomingTurns, self.hasMoved)
+        hasMoved = getattr(self, 'hasMoved', False)
+        self.ui.render(surface, self.currentActor, self.upcomingTurns, hasMoved)
+
+        if self.battleOver and self.resultUI:
+            self.resultUI.render(surface)
      

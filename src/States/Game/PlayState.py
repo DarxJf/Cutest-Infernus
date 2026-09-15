@@ -28,7 +28,7 @@ class PlayState(BaseState):
             3: "Pelusa",
         }
         characterName = charNames.get(self.charKey, "Cloud")
-        self.definition = PLAYER_CHARACTERS.get("Pelusa")
+        self.definition = PLAYER_CHARACTERS.get(characterName)
 
         spawnX, spawnY = 3, 3
 

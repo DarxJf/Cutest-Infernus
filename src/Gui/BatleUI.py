@@ -71,6 +71,9 @@ class BattleUI:
 
         for action in actor.actionSlots:
             cards.append((action.name, action))
+
+        # end turn
+        cards.append(("Pass", None))
             
         cardsCount = len(cards)
         cardW, cardH = 42, 48 
@@ -87,7 +90,12 @@ class BattleUI:
             isSelected = (self.selectedCardIndex == i)
 
             # bg and border
-            bg_color = (30, 40, 60) if i == 0 else (40, 30, 40)
+            if labelText == "Pass":
+                bg_color = (255, 140, 0) if not isSelected else (255, 180, 50)
+            elif i == 0:
+                bg_color = (30, 40, 60)
+            else:
+                bg_color = (40, 30, 40)
             pygame.draw.rect(surface, bg_color, cardRect, border_radius=4)
             bCol = (240, 220, 50) if isSelected else (120, 100, 120)
             pygame.draw.rect(surface, bCol, cardRect, width=2 if isSelected else 1, border_radius=4)

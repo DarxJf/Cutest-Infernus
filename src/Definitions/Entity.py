@@ -68,7 +68,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "basic_attack": "strike",
         "base_rest": 2.5,
         "base_movement": 3,
-        "default_actions": ["slash", "sparkle_heal", "group_sanctuary"],
+        "default_actions": ["slash", "sparkle_heal", "group_sanctuary", "sparkle_heal_self"],
         "slot_actions": 4,
         "slot_objects": 1,
     },

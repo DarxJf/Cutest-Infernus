@@ -34,7 +34,7 @@ class BattleEntity(Entity):
         
         # Battle-specific attributes
         self.level            = definition.get("level", 1)
-        self.classType        = definition.get("class_name", "Unknown")
+        self.classType        = definition.get("class_name", "Warrior")
         self.baseHp           = definition.get("base_hp", 10)
         self.baseAttack       = definition.get("base_attack", 5)
         self.baseMagic        = definition.get("base_magic", 5)
@@ -153,7 +153,7 @@ class BattleEntity(Entity):
             isWalkable,
         )
 
-    def apply_aoe_damage(self, action: "Action", boardCols: int, boardRows: int, enemyList: list["BattleEntity"]) -> None:
+    def apply_aoe_damage(self, action: "Action", boardCols: int, boardRows: int, targetList: list["BattleEntity"]) -> None:
         affectedTiles = set()
 
         if action.areaType == "cross":
@@ -173,16 +173,20 @@ class BattleEntity(Entity):
                 boardRows
             )
 
-        for enemy in enemyList:
-            if not enemy.dead and (enemy.mapX, enemy.mapY) in affectedTiles:
-                dmg = self.compute_damage(action, enemy)
-                enemy.hurt(dmg)
+        for target in targetList:
+            if not target.dead and (target.mapX, target.mapY) in affectedTiles:
+                dmg = self.compute_damage(action, target)
+
+                if action.effect == "heal":
+                    target.heal(dmg)
+                else:
+                    target.hurt(dmg)
 
 
     def _calculate_xp_requirement(self) -> int:
         return self.level * self.level * 10
 
-    def gain_experience(self, amount: int) -> bool:
+    def gain_experience(self, amount: int, classType: str) -> bool:
         if self.dead:
             return False
             
@@ -191,14 +195,14 @@ class BattleEntity(Entity):
        
         while self.experience >= self.experienceToNextLevel:
             self.experience -= self.experienceToNextLevel
-            self._level_up()
+            self._level_up(classType)
             leveledUp = True
 
         return leveledUp
 
-    def _level_up(self) -> None:
+    def _level_up(self, classType: str) -> None:
         self.level += 1
-        growth = LEVEL_GROWTH.get(self.classType, LEVEL_GROWTH["Warrior"])
+        growth = LEVEL_GROWTH.get(self.classType, LEVEL_GROWTH[classType])
 
         self.hp            += growth["hp"]
         self.attack        += growth["attack"]
