@@ -4,6 +4,7 @@ import pygame
 from gale.state import BaseState
 
 import settings
+from src.Utils.AoeCalculator import AoECalculator
 
 
 class SelectTargetState(BaseState):
@@ -18,6 +19,7 @@ class SelectTargetState(BaseState):
         validTiles: set = None,
         offsetX: int = 0,
         offsetY: int = 0,
+        glowSurface: pygame.Surface = None,
     ) -> None:
         self.actor = actor
         self.action = action
@@ -26,6 +28,7 @@ class SelectTargetState(BaseState):
         self.boardRows = boardRows
 
         self.validTiles = validTiles
+        self.glowSurface = glowSurface
 
         self.offsetX = offsetX
         self.offsetY = offsetY
@@ -33,11 +36,15 @@ class SelectTargetState(BaseState):
         self.cursorX = actor.mapX
         self.cursorY = actor.mapY
 
-        if action and action.areaType == "single" and enemies:
-            alive_enemies = [e for e in enemies if not getattr(e, 'dead', False)]
-            if alive_enemies:
+        if action and action.areaType == "single" and enemies and self.validTiles:
+            valid_enemies = [
+                e for e in enemies 
+                if not getattr(e, 'dead', False) and (e.mapX, e.mapY) in self.validTiles
+            ]
+            
+            if valid_enemies:
                 nearest = min(
-                    alive_enemies,
+                    valid_enemies,
                     key=lambda e: abs(e.mapX - actor.mapX) + abs(e.mapY - actor.mapY)
                 )
                 self.cursorX = nearest.mapX
@@ -57,26 +64,41 @@ class SelectTargetState(BaseState):
             self.cursorY += 1
             
         elif inputId == "enter":
-            if self.action is None:
-                if (self.cursorX, self.cursorY) in self.validTiles:
-                    self.state_machine.pop()
-                    self.callback(self.cursorX, self.cursorY)
-                else:
-                    print("Invalid Tile")
-            else:
-                self.state_machine.pop()
-                self.callback(self.cursorX, self.cursorY)
+
+            if self.validTiles and (self.cursorX, self.cursorY) not in self.validTiles:
+                print("¡Movimiento o ataque fuera de rango!")
+                return
+
+            self.state_machine.pop()
+            self.callback(self.cursorX, self.cursorY)
             
         elif inputId == "escape":
             self.state_machine.pop()
 
     def render(self, surface: pygame.Surface) -> None:
+        if self.action and self.action.areaType in ["cross", "square"] and self.glowSurface:
+            affected = set()
+
+            if self.action.areaType == "cross":
+                affected = AoECalculator.get_linear_cross(
+                    self.actor.mapX, self.actor.mapY, self.action.gridRange, self.boardCols, self.boardRows
+                )
+            elif self.action.areaType == "square":
+                affected = AoECalculator.get_square_area(
+                    self.actor.mapX, self.actor.mapY, self.action.areaRadius, self.boardCols, self.boardRows
+                )
+
+            for gx, gy in affected:
+                px = gx * settings.TILE_SIZE + self.offsetX
+                py = gy * settings.TILE_SIZE + self.offsetY
+                surface.blit(self.glowSurface, (px, py))
+
         pixelX = self.cursorX * settings.TILE_SIZE + self.offsetX
         pixelY = self.cursorY * settings.TILE_SIZE + self.offsetY
 
         pygame.draw.rect(
             surface, 
-            (255, 255, 0), # Color amarillo
+            (255, 255, 0),
             (pixelX, pixelY, settings.TILE_SIZE, settings.TILE_SIZE), 
-            2 # Grosor de la línea
+            2
         )

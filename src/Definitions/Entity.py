@@ -88,7 +88,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "basic_attack": "strike",
         "base_rest": 3.0,
         "base_movement": 3,
-        "default_actions": ["slash", "fireball"],
+        "default_actions": ["slash", "fireball", "frost_nova"],
         "slot_actions": 5,
         "slot_objects": 1,
     },
@@ -120,7 +120,7 @@ ENEMIES: Dict[str, Dict[str, Any]] = {
     },
     "skeleton": {
         "class_name": "Skeleton",
-        "texture": "enemy_sprites",
+        "texture": "pelusa_walk",
         "width": 16,
         "height": 16,
         "frame_index": 0,

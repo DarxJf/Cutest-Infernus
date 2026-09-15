@@ -1,6 +1,7 @@
 from typing import List, Optional, Any
 import random
 import pygame
+import time
 
 from gale.state import BaseState
 
@@ -34,6 +35,19 @@ class BattleState(BaseState):
         self.earnedSouls = 0
         self.battleOver = False      
         self.resultUI = None 
+
+        # glow
+        self.glowSurface = pygame.Surface((settings.TILE_SIZE, settings.TILE_SIZE), pygame.SRCALPHA)
+        pygame.draw.rect(
+            self.glowSurface, 
+            (0, 150, 255, 128), 
+            (0, 0, settings.TILE_SIZE, settings.TILE_SIZE)
+        )
+
+        # self.rangeSurface = pygame.Surface((settings.TILE_SIZE, settings.TILE_SIZE), pygame.SRCALPHA)
+        # pygame.draw.rect(self.rangeSurface, (255, 50, 50, 100), (0, 0, settings.TILE_SIZE, settings.TILE_SIZE))
+
+        self.currentGlow = self.glowSurface
         
         self.start_next_turn()
 
@@ -42,6 +56,8 @@ class BattleState(BaseState):
             return
 
         self.currentActor = self.turnQueue.get_next_turn()
+
+        self.hasMoved = False
         
         if self.currentActor is None:
             self._end_battle()
@@ -49,6 +65,7 @@ class BattleState(BaseState):
 
         # Status
         isStunned = self.currentActor.process_status()
+        self.currentActor.process_cooldowns()
 
         if self._check_casualties():
             return
@@ -63,35 +80,30 @@ class BattleState(BaseState):
         if self.currentActor in self.enemies:
             self._take_enemy_turn()
 
-    def execute_action(self, action_cost_multiplier: float = 1.0) -> None:
-        if self.currentActor is None:
-            return
-
-        if self._check_casualties():
-            return
-
-        self.turnQueue.end_turn(self.currentActor, action_cost_multiplier)
-        self.start_next_turn()
-
     def resolve_action(self, actor: BattleEntity, action: Any, targetX: int, targetY: int, is_enemy: bool) -> None:
-        # Definimos quién recibe el golpe
         targets = self.party if is_enemy else self.enemies
-        
-        # Dimensiones del mapa (Asegúrate de pasarlas desde donde instancies Room)
-        boardCols, boardRows = 20, 12 
+
+        boardCols, boardRows = self.room.cols, self.room.rows 
 
         if action.areaType in ["cross", "square"]:
-            actor.apply_aoe_damage(action, boardCols, boardRows, targets, targetX, targetY)
+            actor.apply_aoe_damage(action, boardCols, boardRows, self.enemies)
         else:
             for target in targets:
                 if target.mapX == targetX and target.mapY == targetY and not getattr(target, 'dead', False):
-                    dmg = actor.compute_damage(action, target)
-                    target.damage(dmg)
-                    
-                    # Aplicar estados extra (veneno, stun) si la carta los tiene
-                    if action.effect:
-                        target.apply_status(action.effect)
+                    distance = abs(target.mapX - actor.mapX) + abs(target.mapY - actor.mapY)
+
+                    if distance <= action.gridRange:
+                        dmg = actor.compute_damage(action, target)
+                        target.hurt(dmg)
+                        
+                        if action.effect:
+                            target.apply_status(action.effect, 1)
+                    else:
+                        print(f"Fallo: ¡El objetivo está a {distance} casillas, el arma solo alcanza {action.gridRange}!")
                     break
+
+        if action.cooldown > 0:
+            actor.skillCooldowns[action.name] = action.cooldown
 
         if not self._check_casualties():
             self.turnQueue.end_turn(actor, action_cost_multiplier=1.0)
@@ -103,8 +115,11 @@ class BattleState(BaseState):
             return
             
         target = random.choice(alive_party)
-        # Asumiendo que el enemigo tiene slotActions igual que el héroe
-        action = random.choice(self.currentActor.slotActions)
+
+        if self.currentActor.actionSlots:
+            action = random.choice(self.currentActor.actionSlots)
+        else:
+            action = self.currentActor.basicAttack
         
         self.resolve_action(self.currentActor, action, target.mapX, target.mapY, is_enemy=True)
 
@@ -112,11 +127,17 @@ class BattleState(BaseState):
         if self.currentActor is None or self.currentActor in self.enemies:
             return
 
-        # 1. Tomamos la acción que el jugador seleccionó en el menú
-        selected_action = self.currentActor.slotActions[self.ui.selectedCardIndex]
+        if self.ui.selectedCardIndex == 1:
+            selected_action = self.currentActor.basicAttack
+        else:
+            list_index = self.ui.selectedCardIndex - 2
+            selected_action = self.currentActor.actionSlots[list_index]
+
+        if selected_action.name in self.currentActor.skillCooldowns:
+            print(f"¡{selected_action.name} está en enfriamiento!")
+            return
         
         def on_target_selected(targetX: int, targetY: int) -> None:
-            # Aquí aplicamos los daños correctos y terminamos el turno
             self.resolve_action(
                 self.currentActor, 
                 selected_action, 
@@ -124,42 +145,56 @@ class BattleState(BaseState):
                 targetY, 
                 is_enemy=False
             )
-        
-        # Congelamos el combate y empujamos el cursor a la pantalla[cite: 8]
+
         self.state_machine.push(
             SelectTargetState(self.state_machine),
             actor=self.currentActor,
             action=selected_action,
             enemies=self.enemies,
             callback=on_target_selected,
-            boardCols=20, # O los valores que uses en tu Room
-            boardRows=12
+            boardCols=20,
+            boardRows=12,
+            offsetX=self.room.offsetX,
+            offsetY=self.room.offsetY,
+            glowSurface=self.glowSurface
         )
 
     def execute_move(self) -> None:
         if self.currentActor is None or self.currentActor in self.enemies:
             return
 
-        def on_move_selected(targetX: int, targetY: int) -> None:
-            self.currentActor.mapX = targetX
-            self.currentActor.logicalY = targetY
-            
-            # Sincronizamos los píxeles visuales para que se dibuje en el nuevo lugar
-            self.currentActor.mapX = targetX * settings.TILE_SIZE
-            self.currentActor.mapY = targetY * settings.TILE_SIZE
-            
-            # Nota: NO llamamos a self.turnQueue.end_turn() aquí, 
-            # para que el menú vuelva a aparecer y le permita atacar.
+        if getattr(self, 'hasMoved', False):
+            print("¡Ya te has movido en este turno!")
+            return
 
-        # 2. Empujamos el estado de selección a la pila (StateStack)
+        reachable = self.currentActor.get_reachable_tiles(self.room.is_walkable)
+    
+        self.reachableTiles = reachable
+    
+        def on_test_target_selected(targetX: int, targetY: int) -> None:
+            self.currentActor.mapX = targetX
+            self.currentActor.mapY = targetY
+    
+            print(f"Posiciones logicas nuevas: {self.currentActor.mapX} , {self.currentActor.mapY}")
+    
+            self.currentActor.x = targetX * settings.TILE_SIZE
+            self.currentActor.y = targetY * settings.TILE_SIZE
+    
+            self.reachableTiles = set()
+
+            self.hasMoved = True
+    
         self.state_machine.push(
             SelectTargetState(self.state_machine),
             actor=self.currentActor,
-            action=None,  # action=None le indica al cursor que esto es un movimiento
+            action=None,
             enemies=self.enemies,
-            callback=on_move_selected,
-            boardCols=20,
-            boardRows=12
+            callback=on_test_target_selected,
+            boardCols=self.room.cols,
+            boardRows=self.room.rows,
+            validTiles=reachable,
+            offsetX=self.room.offsetX,
+            offsetY=self.room.offsetY
         )
 
     def _check_casualties(self) -> bool:
@@ -183,6 +218,11 @@ class BattleState(BaseState):
             return True
 
         return False
+
+    def _glow_tile(self, surface: pygame.Surface, gridX: int, gridY: int, offsetX, offsetY) -> None:
+        pixelX = gridX * settings.TILE_SIZE + offsetX
+        pixelY = gridY * settings.TILE_SIZE + offsetY
+        surface.blit(self.currentGlow, (pixelX, pixelY))
     
     def _victory(self) -> None:
         self.battleOver = True
@@ -206,7 +246,7 @@ class BattleState(BaseState):
         if not inputData.pressed:
             return
     
-        maxCards = 4  
+        maxCards = 2 + len(self.currentActor.actionSlots)
         if inputId == "moveLeft":
             self.ui.selectedCardIndex = (self.ui.selectedCardIndex - 1) % maxCards
             settings.SOUNDS["select"].play()
@@ -215,9 +255,19 @@ class BattleState(BaseState):
             settings.SOUNDS["select"].play()
         elif inputId == "enter":
             settings.SOUNDS["select"].play()
-            self.execute_action(action_cost_multiplier=1.0)
+
+            if self.ui.selectedCardIndex == 0:
+                self.execute_move()
+            else:
+                self.execute_action(action_cost_multiplier=1.0)
 
     
     def render(self, surface: pygame.Surface) -> None:
-        pass
+        # render Glow
+        if hasattr(self, 'reachableTiles') and self.reachableTiles:
+            for gridX, gridY in self.reachableTiles:
+                self._glow_tile(surface, gridX, gridY, self.room.offsetX, self.room.offsetY)
+
+        has_moved = getattr(self, 'hasMoved', False)
+        self.ui.render(surface, self.currentActor, self.upcomingTurns, self.hasMoved)
      

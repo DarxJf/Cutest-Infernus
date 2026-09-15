@@ -2,12 +2,22 @@ from typing import Any, Dict, Callable, Set, Tuple
 import random
 import math
 
+from src.Definitions.ActionCards import BASIC_ATTACK_DEF, UNIVERSAL_ACTIONS,  WARRIOR_ACTIONS,  ROGUE_ACTIONS,  FAIRY_ACTIONS,  MAGE_ACTIONS,  ENEMY_ACTIONS
 from src.Models.Entity import Entity
 from src.Models.ActionCards import Action
 from src.Utils.MovementCalculator import MovementCalculator
 from src.Utils.AoeCalculator import AoECalculator
 from src.Definitions.Entity import LEVEL_GROWTH
 
+ALL_ACTIONS = {
+    **BASIC_ATTACK_DEF,
+    **UNIVERSAL_ACTIONS, 
+    **WARRIOR_ACTIONS, 
+    **ROGUE_ACTIONS, 
+    **FAIRY_ACTIONS, 
+    **MAGE_ACTIONS, 
+    **ENEMY_ACTIONS,
+}
 
 class BattleEntity(Entity):
     def __init__(self, definition: Dict[str, Any], x: int = 0, y: int = 0) -> None:
@@ -20,6 +30,7 @@ class BattleEntity(Entity):
         # Flags
         self.dead = False
         self.activeStatus: dict[str, int] = {}  # {"stun": 2, "poison": 3} where the value is the remaining turns
+        self.skillCooldowns: dict[str, int] = {}
         
         # Battle-specific attributes
         self.level            = definition.get("level", 1)
@@ -47,7 +58,12 @@ class BattleEntity(Entity):
         self.defense         = self.baseDefense
         self.magic_defense   = self.baseMagicDefense
         self.rest            = self.baseRest
-        self.actionSlots     = [] 
+        self.basicAttack = Action("basic_strike", BASIC_ATTACK_DEF)
+        self.actionSlots     = []
+        for key in self.defaultActions:
+            if key in ALL_ACTIONS:
+                newAction = Action(key, ALL_ACTIONS[key])
+                self.actionSlots.append(newAction) 
         self.equippedObjects = []
         self.currentHp       = self.hp
         self.currentRest     = 0.0
@@ -98,13 +114,11 @@ class BattleEntity(Entity):
         isStunned = False
         
         if "poison" in self.activeStatus:
-            # Reutilizamos el método damage base de la clase para aplicar el veneno[cite: 1]
-            self.damage(5) 
+            self.hurt(5) 
             
         if "stun" in self.activeStatus:
             isStunned = True
 
-        # Reducir duraciones y limpiar los estados que llegaron a cero
         expired = []
         for status in self.activeStatus:
             self.activeStatus[status] -= 1
@@ -118,6 +132,17 @@ class BattleEntity(Entity):
 
     def clear_status(self) -> None:
         self.activeStatus.clear()
+
+    # cooldowns
+    def process_cooldowns(self) -> None:
+        expired = []
+        for skillName in self.skillCooldowns:
+            self.skillCooldowns[skillName] -= 1
+            if self.skillCooldowns[skillName] <= 0:
+                expired.append(skillName)
+
+        for skillName in expired:
+            del self.skillCooldowns[skillName]
 
     # Aoe, possible moves
     def get_reachable_tiles(self, isWalkable: Callable[[int, int], bool]) -> Set[Tuple[int, int]]:
@@ -151,7 +176,7 @@ class BattleEntity(Entity):
         for enemy in enemyList:
             if not enemy.dead and (enemy.mapX, enemy.mapY) in affectedTiles:
                 dmg = self.compute_damage(action, enemy)
-                enemy.damage(dmg)
+                enemy.hurt(dmg)
 
 
     def _calculate_xp_requirement(self) -> int:
