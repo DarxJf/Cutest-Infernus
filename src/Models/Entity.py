@@ -98,17 +98,6 @@ class Entity():
     def update(self, dt: float)-> None:
         if self.currentAnimation is not None:
             self.currentAnimation.update(dt)
-            
-    # def change_state(self, state_name: str, *args: Any) -> None:
-    #     # self.state_machine.change(state_name, *args)
-    #     pass
-
-    # def _create_animations(self, animDefs: dict) -> dict:
-    #     animations = {}
-
-    # def change_animation(self, animation_name: str) -> None:
-    #     if animation_name in self.animations:
-    #          self.current_animation = self.animations[animation_name]
 
 
     def render(self, surface: pygame.Surface, offsetX, offsetY) -> None:
@@ -126,4 +115,7 @@ class Entity():
         if texture is None:
             return
 
-        surface.blit(texture, (self.x + offsetX, self.y + offsetY), frame)
+        draw_x = self.x + (settings.TILE_SIZE - frame.width) // 2
+        draw_y = self.y + (settings.TILE_SIZE - frame.height)
+
+        surface.blit(texture, (draw_x + offsetX, draw_y + offsetY), frame)
