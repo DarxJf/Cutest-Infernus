@@ -100,11 +100,31 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
 ENEMIES: Dict[str, Dict[str, Any]] = {
 	"slime": {
         "class_name": "Slime",
-        "texture": "enemy_sprites",
         "width": 16,
-        "height": 16,
+        "height": 17,
         "frame_index": 0,
-        "animations": {},
+        "animations": {
+            "idle-down": {
+                "texture": "slime-down",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "idle-up": {
+                "texture": "slime-up",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "walk-down": {
+                "texture": "slime-down",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            },
+            "walk-up":{
+                "texture": "slime-up",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            }
+        },
         "base_hp": 20,
         "base_attack": 8,
         "base_magic": 2,
@@ -120,11 +140,51 @@ ENEMIES: Dict[str, Dict[str, Any]] = {
     },
     "skeleton": {
         "class_name": "Skeleton",
-        "texture": "enemy_sprites",
         "width": 16,
-        "height": 16,
+        "height": 17,
         "frame_index": 0,
-        "animations": {},
+       "animations": {
+            "idle-down": {
+                "texture":"skel-idle-down" ,
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "idle-left": {
+                "texture":"skel-idle-left" ,
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "idle-right": {
+                "texture":"skel-idle-right" ,
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "idle-up": {
+            "texture": "skel-idle-up",
+            "frames": [0, 1, 2, 3, 4, 5],
+            "interval": 0.2
+            },
+            "walk-down": {
+                "texture": "skel-walk-down",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            },
+            "walk-left": {
+                "texture": "skel-walk-left",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            },
+            "walk-right": {
+                "texture": "skel-walk-right",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            },
+            "walk-up":{
+                "texture": "skel-walk-up",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            }
+        },
         "base_hp": 26,
         "base_attack": 10,
         "base_magic": 1,
@@ -140,11 +200,51 @@ ENEMIES: Dict[str, Dict[str, Any]] = {
     },
     "demon": {
         "class_name": "Demon",
-        "texture": "enemy_sprites",
         "width": 16,
-        "height": 16,
+        "height": 17,
         "frame_index": 0,
-        "animations": {},
+        "animations": {
+            "idle-down": {
+                "texture":"demon-idle-down" ,
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "idle-left": {
+                "texture":"demon-idle-left" ,
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "idle-right": {
+                "texture":"demon-idle-right" ,
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "idle-up": {
+                "texture": "demon-idle-up",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "walk-down": {
+                "texture": "demon-walk-down",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            },
+            "walk-left": {
+                "texture": "demon-walk-left",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            },
+            "walk-right": {
+                "texture": "demon-walk-right",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            },
+            "walk-up":{
+                "texture": "demon-walk-up",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            }
+        },
         "base_hp": 60,
         "base_attack": 15,
         "base_magic": 12,
