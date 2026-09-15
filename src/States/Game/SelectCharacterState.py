@@ -55,7 +55,7 @@ class SelectCharacterState(BaseState):
         self.state_machine.pop()
         self.state_machine.push(
             PlayState(self.state_machine),
-            leader_key = chosenKey,
+            character_selected = chosenKey,
             )
 
     def render(self, surface: pygame.Surface) -> None:

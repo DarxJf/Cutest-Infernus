@@ -12,6 +12,7 @@ class Action:
         self.frameIndex  = definition["frame_index"]
         self.scalingStat = definition["scaling_stat"]
         self.multiplier  = definition["multiplier"]
+        self.cooldown    = definition["cooldown"]
         self.gridRange   = definition["grid_range"]
         self.targetType  = definition["target_type"]  # "enemy", "ally", "self"
         self.areaType    = definition["area_type"]      # "single", "cross", "square"

@@ -2,12 +2,22 @@ from typing import Any, Dict, Callable, Set, Tuple
 import random
 import math
 
+from src.Definitions.ActionCards import BASIC_ATTACK_DEF, UNIVERSAL_ACTIONS,  WARRIOR_ACTIONS,  ROGUE_ACTIONS,  FAIRY_ACTIONS,  MAGE_ACTIONS,  ENEMY_ACTIONS
 from src.Models.Entity import Entity
 from src.Models.ActionCards import Action
 from src.Utils.MovementCalculator import MovementCalculator
 from src.Utils.AoeCalculator import AoECalculator
 from src.Definitions.Entity import LEVEL_GROWTH
 
+ALL_ACTIONS = {
+    **BASIC_ATTACK_DEF,
+    **UNIVERSAL_ACTIONS, 
+    **WARRIOR_ACTIONS, 
+    **ROGUE_ACTIONS, 
+    **FAIRY_ACTIONS, 
+    **MAGE_ACTIONS, 
+    **ENEMY_ACTIONS,
+}
 
 class BattleEntity(Entity):
     def __init__(self, definition: Dict[str, Any], x: int = 0, y: int = 0) -> None:
@@ -20,10 +30,11 @@ class BattleEntity(Entity):
         # Flags
         self.dead = False
         self.activeStatus: dict[str, int] = {}  # {"stun": 2, "poison": 3} where the value is the remaining turns
+        self.skillCooldowns: dict[str, int] = {}
         
         # Battle-specific attributes
         self.level            = definition.get("level", 1)
-        self.classType        = definition.get("class_name", "Unknown")
+        self.classType        = definition.get("class_name", "Warrior")
         self.baseHp           = definition.get("base_hp", 10)
         self.baseAttack       = definition.get("base_attack", 5)
         self.baseMagic        = definition.get("base_magic", 5)
@@ -47,7 +58,12 @@ class BattleEntity(Entity):
         self.defense         = self.baseDefense
         self.magic_defense   = self.baseMagicDefense
         self.rest            = self.baseRest
-        self.actionSlots     = [] 
+        self.basicAttack = Action("basic_strike", BASIC_ATTACK_DEF)
+        self.actionSlots     = []
+        for key in self.defaultActions:
+            if key in ALL_ACTIONS:
+                newAction = Action(key, ALL_ACTIONS[key])
+                self.actionSlots.append(newAction) 
         self.equippedObjects = []
         self.currentHp       = self.hp
         self.currentRest     = 0.0
@@ -98,13 +114,11 @@ class BattleEntity(Entity):
         isStunned = False
         
         if "poison" in self.activeStatus:
-            # Reutilizamos el método damage base de la clase para aplicar el veneno[cite: 1]
-            self.damage(5) 
+            self.hurt(5) 
             
         if "stun" in self.activeStatus:
             isStunned = True
 
-        # Reducir duraciones y limpiar los estados que llegaron a cero
         expired = []
         for status in self.activeStatus:
             self.activeStatus[status] -= 1
@@ -119,6 +133,17 @@ class BattleEntity(Entity):
     def clear_status(self) -> None:
         self.activeStatus.clear()
 
+    # cooldowns
+    def process_cooldowns(self) -> None:
+        expired = []
+        for skillName in self.skillCooldowns:
+            self.skillCooldowns[skillName] -= 1
+            if self.skillCooldowns[skillName] <= 0:
+                expired.append(skillName)
+
+        for skillName in expired:
+            del self.skillCooldowns[skillName]
+
     # Aoe, possible moves
     def get_reachable_tiles(self, isWalkable: Callable[[int, int], bool]) -> Set[Tuple[int, int]]:
         return MovementCalculator.get_available_moves(
@@ -128,7 +153,7 @@ class BattleEntity(Entity):
             isWalkable,
         )
 
-    def apply_aoe_damage(self, action: "Action", boardCols: int, boardRows: int, enemyList: list["BattleEntity"]) -> None:
+    def apply_aoe_damage(self, action: "Action", boardCols: int, boardRows: int, targetList: list["BattleEntity"]) -> None:
         affectedTiles = set()
 
         if action.areaType == "cross":
@@ -148,16 +173,20 @@ class BattleEntity(Entity):
                 boardRows
             )
 
-        for enemy in enemyList:
-            if not enemy.dead and (enemy.mapX, enemy.mapY) in affectedTiles:
-                dmg = self.compute_damage(action, enemy)
-                enemy.damage(dmg)
+        for target in targetList:
+            if not target.dead and (target.mapX, target.mapY) in affectedTiles:
+                dmg = self.compute_damage(action, target)
+
+                if action.effect == "heal":
+                    target.heal(dmg)
+                else:
+                    target.hurt(dmg)
 
 
     def _calculate_xp_requirement(self) -> int:
         return self.level * self.level * 10
 
-    def gain_experience(self, amount: int) -> bool:
+    def gain_experience(self, amount: int, classType: str) -> bool:
         if self.dead:
             return False
             
@@ -166,14 +195,14 @@ class BattleEntity(Entity):
        
         while self.experience >= self.experienceToNextLevel:
             self.experience -= self.experienceToNextLevel
-            self._level_up()
+            self._level_up(classType)
             leveledUp = True
 
         return leveledUp
 
-    def _level_up(self) -> None:
+    def _level_up(self, classType: str) -> None:
         self.level += 1
-        growth = LEVEL_GROWTH.get(self.classType, LEVEL_GROWTH["Warrior"])
+        growth = LEVEL_GROWTH.get(self.classType, LEVEL_GROWTH[classType])
 
         self.hp            += growth["hp"]
         self.attack        += growth["attack"]

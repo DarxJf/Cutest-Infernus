@@ -21,3 +21,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `FadeInState` and `FadeOutState` have been added for full-screen color transitions. Both run a `Timer` tween over the requested duration and call an `onComplete` callback once the tween finishes, so callers can swap scenes at the blind spot of the transition.
 - The `MovementCalculator` for player and ai is complete.
 - Glow effect for avaivable movement.
+- The `Room` model has been added. It procedurally generates a battle arena on a grid.
+- Rocks have been added as solid obstacles in the `Room`.
+- Torches have been added as decorative objects.
+- Compute damage to `hurt` or `heal`, it improves with affinity stats of the action.
+- AoE Logic for actions. Also, for single target.
+- AoE Logic implemented well in `BattleState`, therefore rules of the battle, movement with bfs, etc.
+- Menu for select action, movement, strike or end turn workly in `BattleState` render by `batleUI`.
+- Cooldowns for actions and effects status, like stunned or poisoned in `BatttleState`.
