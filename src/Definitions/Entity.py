@@ -31,6 +31,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "default_actions": ["slash", "slam"],
         "slot_actions": 4,
         "slot_objects": 1,
+        "role": "main",
     },
     "Pelusa": {
         "class_name": "Rogue",
@@ -51,6 +52,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "default_actions": ["slash", "toxic_stab"],
         "slot_actions": 4,
         "slot_objects": 1,
+        "role": "main",
     },
     "Chloe": {
         "class_name": "Fairy",
@@ -71,6 +73,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "default_actions": ["slash", "sparkle_heal", "group_sanctuary"],
         "slot_actions": 4,
         "slot_objects": 1,
+        "role": "main",
     },
     "Balthazar": {
         "class_name": "Mage",
@@ -91,7 +94,101 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "default_actions": ["slash", "fireball"],
         "slot_actions": 5,
         "slot_objects": 1,
+        "role": "main", 
     },
+
+
+    # ---------------------
+    # SECONDARY CHARACTERS
+    # ---------------------
+
+    # --- Warriors ---
+    "Siegfried": {
+        "class_name": "Warrior",
+        "texture": "cloud_walk",        
+        "width": 16,
+        "height": 16,
+        "frame_index": 45,
+        "animations": {},
+        "base_hp": 55,
+        "base_attack": 10,
+        "base_magic": 1,
+        "base_agility": 2,
+        "base_defense": 16,
+        "base_magic_defense": 6,
+        "basic_attack": "strike",
+        "base_rest": 3.5,
+        "base_movement": 3,
+        "default_actions": ["slash", "slam"],
+        "slot_actions": 4,
+        "slot_objects": 1,
+        "role": "secondary",
+    },
+     # --- Rogues ---
+    "Raven": {
+        "class_name": "Rogue",
+        "texture": "pelusa_walk",
+        "width": 16,
+        "height": 16,
+        "frame_index": 45,
+        "animations": {},
+        "base_hp": 22,
+        "base_attack": 16,
+        "base_magic": 3,
+        "base_agility": 14,
+        "base_defense": 3,
+        "base_magic_defense": 3,
+        "basic_attack": "strike",
+        "base_rest": 1.8,
+        "base_movement": 4,
+        "default_actions": ["slash", "toxic_stab"],
+        "slot_actions": 4,
+        "slot_objects": 1,
+        "role": "secondary",
+    },
+    "Lumina": {
+        "class_name": "Fairy",
+        "texture": "chloe_walk",
+        "width": 16,
+        "height": 16,
+        "frame_index": 45,
+        "animations": {},
+        "base_hp": 22,
+        "base_attack": 3,
+        "base_magic": 18,
+        "base_agility": 6,
+        "base_defense": 3,
+        "base_magic_defense": 12,
+        "basic_attack": "strike",
+        "base_rest": 2.5,
+        "base_movement": 3,
+        "default_actions": ["sparkle_heal", "group_sanctuary"],
+        "slot_actions": 4,
+        "slot_objects": 1,
+        "role": "secondary",
+    },
+    "Alistair": {
+        "class_name": "Mage",
+        "texture": "balthazar_walk",
+        "width": 16,
+        "height": 16,
+        "frame_index": 45,
+        "animations": {},
+        "base_hp": 26,
+        "base_attack": 5,
+        "base_magic": 14,
+        "base_agility": 6,
+        "base_defense": 6,
+        "base_magic_defense": 12,
+        "basic_attack": "strike",
+        "base_rest": 2.8,
+        "base_movement": 3,
+        "default_actions": ["fireball", "sparkle_heal"],
+        "slot_actions": 5,
+        "slot_objects": 2,
+        "role": "secondary",
+    },
+
 }
 
 # ---------------------
@@ -100,11 +197,31 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
 ENEMIES: Dict[str, Dict[str, Any]] = {
 	"slime": {
         "class_name": "Slime",
-        "texture": "enemy_sprites",
         "width": 16,
-        "height": 16,
+        "height": 17,
         "frame_index": 0,
-        "animations": {},
+        "animations": {
+            "idle-down": {
+                "texture": "slime-down",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "idle-up": {
+                "texture": "slime-up",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "walk-down": {
+                "texture": "slime-down",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            },
+            "walk-up":{
+                "texture": "slime-up",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            }
+        },
         "base_hp": 20,
         "base_attack": 8,
         "base_magic": 2,
@@ -120,11 +237,51 @@ ENEMIES: Dict[str, Dict[str, Any]] = {
     },
     "skeleton": {
         "class_name": "Skeleton",
-        "texture": "enemy_sprites",
         "width": 16,
-        "height": 16,
+        "height": 17,
         "frame_index": 0,
-        "animations": {},
+       "animations": {
+            "idle-down": {
+                "texture":"skel-idle-down" ,
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "idle-left": {
+                "texture":"skel-idle-left" ,
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "idle-right": {
+                "texture":"skel-idle-right" ,
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "idle-up": {
+            "texture": "skel-idle-up",
+            "frames": [0, 1, 2, 3, 4, 5],
+            "interval": 0.2
+            },
+            "walk-down": {
+                "texture": "skel-walk-down",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            },
+            "walk-left": {
+                "texture": "skel-walk-left",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            },
+            "walk-right": {
+                "texture": "skel-walk-right",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            },
+            "walk-up":{
+                "texture": "skel-walk-up",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            }
+        },
         "base_hp": 26,
         "base_attack": 10,
         "base_magic": 1,
@@ -140,11 +297,51 @@ ENEMIES: Dict[str, Dict[str, Any]] = {
     },
     "demon": {
         "class_name": "Demon",
-        "texture": "enemy_sprites",
         "width": 16,
-        "height": 16,
+        "height": 17,
         "frame_index": 0,
-        "animations": {},
+        "animations": {
+            "idle-down": {
+                "texture":"demon-idle-down" ,
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "idle-left": {
+                "texture":"demon-idle-left" ,
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "idle-right": {
+                "texture":"demon-idle-right" ,
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "idle-up": {
+                "texture": "demon-idle-up",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.2
+            },
+            "walk-down": {
+                "texture": "demon-walk-down",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            },
+            "walk-left": {
+                "texture": "demon-walk-left",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            },
+            "walk-right": {
+                "texture": "demon-walk-right",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            },
+            "walk-up":{
+                "texture": "demon-walk-up",
+                "frames": [0, 1, 2, 3, 4, 5],
+                "interval": 0.15
+            }
+        },
         "base_hp": 60,
         "base_attack": 15,
         "base_magic": 12,
@@ -230,3 +427,17 @@ LEVEL_GROWTH: Dict[str, Dict[str, int]] = {
     "Fairy":   {"hp": 2, "attack": 0, "magic": 4, "agility": 1, "defense": 0, "magic_defense": 2},
     "Mage":    {"hp": 2, "attack": 0, "magic": 5, "agility": 1, "defense": 0, "magic_defense": 2},
 }
+
+def get_main_characters() -> Dict[str, Dict[str, Any]]:
+    """Characters the player picks from at the start of a run."""
+    return {k: v for k, v in PLAYER_CHARACTERS.items() if v.get("role") == "main"}
+
+
+def get_secondary_characters() -> Dict[str, Dict[str, Any]]:
+    """Recruitable NPCs that appear in the rest area."""
+    return {k: v for k, v in PLAYER_CHARACTERS.items() if v.get("role") == "secondary"}
+
+def get_character_by_key(key: str) -> Dict[str, Any]:
+    if key not in PLAYER_CHARACTERS:
+        raise KeyError(f"Unknown character key: {key!r}")
+    return PLAYER_CHARACTERS[key]
