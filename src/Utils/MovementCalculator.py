@@ -1,4 +1,5 @@
 from typing import Set, Tuple, Callable
+
 from gale.ai.graph import StateGraph
 from gale.ai.search import breadth_first_search
 

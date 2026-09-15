@@ -11,6 +11,7 @@ from src.Utils.TurnQueue import TurnQueue
 from src.Models.BattleEntity import BattleEntity
 from src.Gui.BatleUI import BattleUI
 from src.Gui.BatleResultUI import BattleResultUI
+from src.ai.BehaviorEnemy import build_enemy_brain
 
 
 class BattleState(BaseState):
@@ -23,6 +24,7 @@ class BattleState(BaseState):
         self.party = partyUnits
         self.enemies = enemyUnits
         self.room = room
+        self.enemy_brain = build_enemy_brain()
 
         allUnits = self.party + self.enemies
         self.turnQueue = TurnQueue(allUnits)
@@ -122,15 +124,11 @@ class BattleState(BaseState):
         alive_party = [ally for ally in self.party if not getattr(ally, 'dead', False)]
         if not alive_party:
             return
-            
-        target = random.choice(alive_party)
 
-        if self.currentActor.actionSlots:
-            action = random.choice(self.currentActor.actionSlots)
-        else:
-            action = self.currentActor.basicAttack
-        
-        self.resolve_action(self.currentActor, action, target.mapX, target.mapY, is_enemy=True)
+        self.enemy_brain.tick(self, 0)
+
+        if getattr(self, 'hasMoved', False) and self.currentActor in self.enemies:
+            self.enemy_brain.tick(self, 0)
 
     def execute_action(self, action_cost_multiplier: float = 1.0) -> None:
         if self.currentActor is None or self.currentActor in self.enemies:
@@ -283,6 +281,9 @@ class BattleState(BaseState):
 
     def update(self, dt):
         self.room.update(dt)
+
+        for enemy in self.enemies:
+            enemy.update(dt)
         
     def render(self, surface: pygame.Surface) -> None:
         # render Glow

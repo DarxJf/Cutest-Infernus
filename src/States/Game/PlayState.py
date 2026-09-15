@@ -8,6 +8,7 @@ from src.States.Game.PauseMenuState import PauseMenuState
 
 from src.States.Game.BatleState import BattleState
 from src.States.Game.RestState import RestState
+from src.States.Game.RunState import RunState
 from src.Definitions.Entity import PLAYER_CHARACTERS, ENEMIES
 from src.Models.Room import Room
 from src.Models.BattleEntity import BattleEntity
@@ -26,13 +27,19 @@ class PlayState(BaseState):
         spawnX, spawnY = 3, 3
 
         self.playerChar = BattleEntity(x = spawnX, y = spawnY, definition = self.definition)
-        self.testEnemy = BattleEntity(x = 5, y = 5, definition=ENEMIES.get("slime"))
+        self.testEnemy = BattleEntity(x = 15, y = 4, definition=ENEMIES.get("slime"))
 
         self.entities: list[BattleEntity] = [self.playerChar]
         self.enemies = [self.testEnemy]
 
+        self.testEnemy.change_animation("idle-down")
+        
+
     def update(self, dt: float) -> None:
         self.room.update(dt)
+
+        for enemy in self.enemies:
+            enemy.update(dt)
 
     def exit(self) -> None:
         # for char in self.party.characters.Values():
