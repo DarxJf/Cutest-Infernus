@@ -281,7 +281,9 @@ class BattleState(BaseState):
             else:
                 self.execute_action(action_cost_multiplier=1.0)
 
-    
+    def update(self, dt):
+        self.room.update(dt)
+        
     def render(self, surface: pygame.Surface) -> None:
         # render Glow
         if hasattr(self, 'reachableTiles') and self.reachableTiles:
