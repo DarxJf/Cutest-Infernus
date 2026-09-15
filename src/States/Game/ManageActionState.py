@@ -21,7 +21,6 @@ from src.Definitions.ActionCards import (
     WARRIOR_ACTIONS, ROGUE_ACTIONS, FAIRY_ACTIONS, MAGE_ACTIONS,
 )
 
-
 CLASS_ACTIONS = {
     "Warrior": WARRIOR_ACTIONS,
     "Rogue":   ROGUE_ACTIONS,
@@ -29,19 +28,17 @@ CLASS_ACTIONS = {
     "Mage":    MAGE_ACTIONS,
 }
 
-
 class ManageActionsState(BaseState):
     def enter(self, runState, onClose=None) -> None:
         self.party = runState.party
         self.onClose = onClose or (lambda: None)
 
-        self.stage = "member"          # "member" | "slot" | "action"
+        self.stage = "member"          
         self.selectedMemberIdx: int = None
         self.selectedSlotIdx: int = None
 
         self._build_member_menu()
 
-    # ------------------------------------------------------------------ #
 
     def _build_member_menu(self) -> None:
         items = []
