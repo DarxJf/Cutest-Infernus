@@ -20,28 +20,11 @@ class PlayState(BaseState):
         self.room = Room(cols=20, rows=12)
 
         # character and entities
-        self.charKey = kwargs.get("character_selected", "Cloud")
-
-        self.definition = PLAYER_CHARACTERS.get(self.charKey)
-
-        spawnX, spawnY = 3, 3
-
-        self.playerChar = BattleEntity(x = spawnX, y = spawnY, definition = self.definition)
-        self.testEnemy = BattleEntity(x = 15, y = 4, definition=ENEMIES.get("slime"))
-        self.testEnemy2 = BattleEntity(x = 10, y = 4, definition=ENEMIES.get("skeleton"))
-
-        self.entities: list[BattleEntity] = [self.playerChar]
-        self.enemies = [self.testEnemy, self.testEnemy2,]
-
-        self.testEnemy.change_animation("idle-down")
-        self.testEnemy2.change_animation("idle-up")
-        
+        self.charKey = kwargs.get("character_selected", "Cloud")      
 
     def update(self, dt: float) -> None:
         self.room.update(dt)
 
-        for enemy in self.enemies:
-            enemy.update(dt)
 
     def exit(self) -> None:
         # for char in self.party.characters.Values():
