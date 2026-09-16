@@ -1,4 +1,5 @@
-from typing import Set, Tuple, Callable
+from typing import Set, Tuple, Callable, Any
+
 from gale.ai.graph import StateGraph
 from gale.ai.search import breadth_first_search
 
@@ -59,3 +60,26 @@ class MovementCalculator:
             return []  # No path found
 
         return list(solution)  # Convert the generator to a list of coordinates
+
+    @staticmethod
+    def create_walkable_func( # To check if an entity occuped a tile
+        room_is_walkable: Callable[[int, int], bool],
+        entities: list,
+        ignore_entities: Any = None
+    ) -> Callable[[int, int], bool]:
+        if ignore_entities is None:
+            ignore_entities = []
+        elif not isinstance(ignore_entities, (list, tuple, set)):
+            ignore_entities = [ignore_entities]
+
+        def checker(x: int, y: int) -> bool:
+            if not room_is_walkable(x, y):
+                return False
+                
+            for entity in entities:
+                if entity not in ignore_entities and not getattr(entity, 'dead', False):
+                    if entity.mapX == x and entity.mapY == y:
+                        return False # Casilla ocupada
+            return True
+            
+        return checker

@@ -66,7 +66,6 @@ class SelectTargetState(BaseState):
         elif inputId == "enter":
 
             if self.validTiles and (self.cursorX, self.cursorY) not in self.validTiles:
-                print("¡Movimiento o ataque fuera de rango!")
                 return
 
             self.state_machine.pop()

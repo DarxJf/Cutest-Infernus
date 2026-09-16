@@ -11,6 +11,8 @@ from src.Utils.TurnQueue import TurnQueue
 from src.Models.BattleEntity import BattleEntity
 from src.Gui.BatleUI import BattleUI
 from src.Gui.BatleResultUI import BattleResultUI
+from src.Utils.MovementCalculator import MovementCalculator
+from src.ai.BehaviorEnemy import build_enemy_brain
 from src.States.Game.RunState import RunState
 from src.States.Game.GameOverState import GameOverState
 from src.States.Game.RestState import RestState
@@ -26,9 +28,10 @@ class BattleState(BaseState):
         self.party = runState.party.members
         self.enemies = enemies
         self.room = room
+        self.enemy_brain = {enemy: build_enemy_brain() for enemy in self.enemies}
 
-        allUnits = self.party + self.enemies
-        self.turnQueue = TurnQueue(allUnits)
+        self.allUnits = self.party + self.enemies
+        self.turnQueue = TurnQueue(self.allUnits)
 
         self.ui = BattleUI()
         
@@ -130,15 +133,13 @@ class BattleState(BaseState):
         alive_party = [ally for ally in self.party if not getattr(ally, 'dead', False)]
         if not alive_party:
             return
-            
-        target = random.choice(alive_party)
 
-        if self.currentActor.actionSlots:
-            action = random.choice(self.currentActor.actionSlots)
-        else:
-            action = self.currentActor.basicAttack
-        
-        self.resolve_action(self.currentActor, action, target.mapX, target.mapY, is_enemy=True)
+        brain = self.enemy_brain[self.currentActor]
+
+        brain.tick(self, 0)
+
+        if getattr(self, 'hasMoved', False) and self.currentActor in self.enemies:
+            brain.tick(self, 0)
 
     def execute_action(self, action_cost_multiplier: float = 1.0) -> None:
         if self.currentActor is None or self.currentActor in self.enemies:
@@ -183,10 +184,15 @@ class BattleState(BaseState):
             return
 
         if getattr(self, 'hasMoved', False):
-            print("¡Ya te has movido en este turno!")
             return
 
-        reachable = self.currentActor.get_reachable_tiles(self.room.is_walkable)
+        walkable_func = MovementCalculator.create_walkable_func(
+            self.room.is_walkable,
+            self.allUnits,
+            ignore_entities=self.currentActor,
+        )
+
+        reachable = self.currentActor.get_reachable_tiles(isWalkable=walkable_func)
     
         self.reachableTiles = reachable
     
@@ -320,7 +326,7 @@ class BattleState(BaseState):
 
     def update(self, dt):
         self.room.update(dt)
-        for entity in self.party + self.enemies:
+        for entity in self.allUnits:
             entity.update(dt)
         
     def render(self, surface: pygame.Surface) -> None:
@@ -339,6 +345,10 @@ class BattleState(BaseState):
 
         for entity in self.party:
             entity.render(surface, offsetX, offsetY)
+
+        for enemy in self.enemies:
+            enemy.render(surface, offsetX, offsetY)
+            enemy.change_animation("idle-down")
      
         if self.battleOver and self.resultUI:
             self.resultUI.render(surface)

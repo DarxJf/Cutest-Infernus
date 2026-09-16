@@ -8,6 +8,7 @@ from src.States.Game.PauseMenuState import PauseMenuState
 
 from src.States.Game.BatleState import BattleState
 from src.States.Game.RestState import RestState
+from src.States.Game.RunState import RunState
 from src.Definitions.Entity import PLAYER_CHARACTERS, ENEMIES
 from src.Models.Room import Room
 from src.Models.BattleEntity import BattleEntity
@@ -45,7 +46,6 @@ class PlayState(BaseState):
         self.playerChar.mapY = 3
         self.playerChar.x = 3 * settings.TILE_SIZE
         self.playerChar.y = 3 * settings.TILE_SIZE
-
 
         self.testEnemy = BattleEntity(x = 5, y = 5, definition=ENEMIES.get("slime"))
 
@@ -107,6 +107,3 @@ class PlayState(BaseState):
 
         for member in self.runState.party.members:
             member.render(surface, offsetX, offsetY)
-
-  
-
