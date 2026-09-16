@@ -28,11 +28,13 @@ class PlayState(BaseState):
 
         self.playerChar = BattleEntity(x = spawnX, y = spawnY, definition = self.definition)
         self.testEnemy = BattleEntity(x = 15, y = 4, definition=ENEMIES.get("slime"))
+        self.testEnemy2 = BattleEntity(x = 10, y = 4, definition=ENEMIES.get("skeleton"))
 
         self.entities: list[BattleEntity] = [self.playerChar]
-        self.enemies = [self.testEnemy]
+        self.enemies = [self.testEnemy, self.testEnemy2,]
 
         self.testEnemy.change_animation("idle-down")
+        self.testEnemy2.change_animation("idle-up")
         
 
     def update(self, dt: float) -> None:

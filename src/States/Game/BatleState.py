@@ -11,6 +11,7 @@ from src.Utils.TurnQueue import TurnQueue
 from src.Models.BattleEntity import BattleEntity
 from src.Gui.BatleUI import BattleUI
 from src.Gui.BatleResultUI import BattleResultUI
+from src.Utils.MovementCalculator import MovementCalculator
 from src.ai.BehaviorEnemy import build_enemy_brain
 
 
@@ -24,10 +25,10 @@ class BattleState(BaseState):
         self.party = partyUnits
         self.enemies = enemyUnits
         self.room = room
-        self.enemy_brain = build_enemy_brain()
+        self.enemy_brain = {enemy: build_enemy_brain() for enemy in self.enemies}
 
-        allUnits = self.party + self.enemies
-        self.turnQueue = TurnQueue(allUnits)
+        self.allUnits = self.party + self.enemies
+        self.turnQueue = TurnQueue(self.allUnits)
 
         self.ui = BattleUI()
         
@@ -125,10 +126,12 @@ class BattleState(BaseState):
         if not alive_party:
             return
 
-        self.enemy_brain.tick(self, 0)
+        brain = self.enemy_brain[self.currentActor]
+
+        brain.tick(self, 0)
 
         if getattr(self, 'hasMoved', False) and self.currentActor in self.enemies:
-            self.enemy_brain.tick(self, 0)
+            brain.tick(self, 0)
 
     def execute_action(self, action_cost_multiplier: float = 1.0) -> None:
         if self.currentActor is None or self.currentActor in self.enemies:
@@ -173,10 +176,15 @@ class BattleState(BaseState):
             return
 
         if getattr(self, 'hasMoved', False):
-            print("¡Ya te has movido en este turno!")
             return
 
-        reachable = self.currentActor.get_reachable_tiles(self.room.is_walkable)
+        walkable_func = MovementCalculator.create_walkable_func(
+            self.room.is_walkable,
+            self.allUnits,
+            ignore_entities=self.currentActor,
+        )
+
+        reachable = self.currentActor.get_reachable_tiles(isWalkable=walkable_func)
     
         self.reachableTiles = reachable
     

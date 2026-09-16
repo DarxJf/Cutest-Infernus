@@ -61,14 +61,20 @@ def build_enemy_brain() -> BehaviorTree:
         if not target:
             return Status.FAILURE
 
-        available_tiles = MovementCalculator.get_available_moves(
-            actor.mapX, actor.mapY, actor.baseMovement, agent.room.is_walkable
+        walkable_func = MovementCalculator.create_walkable_func(
+            agent.room.is_walkable,
+            agent.allUnits,
+            ignore_entities=[actor, target],
         )
 
-        occupied = {(e.mapX, e.mapY) for e in agent.party + agent.enemies if not getattr(e, 'dead', False)}
+        available_tiles = MovementCalculator.get_available_moves(
+            actor.mapX, actor.mapY, actor.baseMovement, walkable_func,
+        )
+
+        occupied = {(e.mapX, e.mapY) for e in agent.allUnits if not getattr(e, 'dead', False)}
 
         path = MovementCalculator.get_path_to_target(
-            actor.mapX, actor.mapY, target.mapX, target.mapY, agent.room.is_walkable
+            actor.mapX, actor.mapY, target.mapX, target.mapY, walkable_func,
         )
         
         best_tile = None
