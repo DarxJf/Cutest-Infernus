@@ -20,6 +20,10 @@ class RestState(BaseState):
         runState,
     ) -> None:
         self.runState = runState
+
+        for member in self.runState.party.members:
+            if not member.dead:
+                member.currentHp = member.hp
     
         self.runState.offers.reroll(self.runState.party)
 
