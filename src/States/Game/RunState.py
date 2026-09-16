@@ -15,7 +15,7 @@ from src.Models.RestOffers import RestOffers
 from src.Models.RunWallet import RunWallet
 
 
-#BOSS_EVERY_N_BATTLES = 5
+BOSS_EVERY_N_BATTLES = 5
 
 
 class RunState:
@@ -26,32 +26,30 @@ class RunState:
         self.offers = RestOffers(offerSize=2)
 
      
-        #self.battlesFought = 0
-        #self.battlesSinceBoss = 0
-
-        # The offer starts empty; it's rolled the first time you enter
-        # the rest area (RestState.enter calls offers.reroll(party)).
-        # Nothing to do here yet.
+        self.battlesFought = 0
+        self.battlesSinceBoss = 0
 
 
+    def register_battle_won(self) -> bool:
+        """
+        Increments the battle counter. Returns True if the next battle
+        should be a boss fight (once every BOSS_EVERY_N_BATTLES).
+        """
+        self.battlesFought += 1
+        self.battlesSinceBoss += 1
 
-    # def register_battle_won(self) -> bool:
-    #     """
-    #     Increments the battle counter. Returns True if the next battle
-    #     should be a boss fight (once every BOSS_EVERY_N_BATTLES).
-    #     """
-    #     self.battlesFought += 1
-    #     self.battlesSinceBoss += 1
+        if self.battlesSinceBoss >= BOSS_EVERY_N_BATTLES:
+            self.battlesSinceBoss = 0
+            return True
+        return False
 
-    #     if self.battlesSinceBoss >= BOSS_EVERY_N_BATTLES:
-    #         self.battlesSinceBoss = 0
-    #         return True
-    #     return False
+    def shouldSpawnBoss(self) -> bool:
+        return self.battlesSinceBoss + 1 >= BOSS_EVERY_N_BATTLES
 
     def is_game_over(self) -> bool:
-        """A run ends when every party member is dead."""
-        return all(m.dead for m in self.party.members)
-
+        leader = self.party.lead()
+        return leader is None or leader.dead
+    
 
     def to_dict(self) -> Dict[str, Any]:
         return {

@@ -1,21 +1,50 @@
-from typing import Any
+from typing import Any, Optional, Callable, List
 import pygame
+
 from gale.state import BaseState
+from gale.save import SaveError, SaveManager
+
 import settings
 
 CARD_WIDTH = 200
-CARD_HEIGHT = 45
+CARD_HEIGHT = 55
 CARD_GAP = 12
 
 class SlotSelectState(BaseState):
-    def enter(self, mode: str = "load") -> None:
+    def enter(
+            self,
+            mode: str = "load",
+            onSelect: Optional[Callable[[str], None]] = None,
+            onClose: Optional[Callable[[], None]] = None,
+    ) -> None:
         self.mode = mode 
+        self.onSelect = onSelect or (lambda slot: None)
+        self.onClose = onClose or (lambda: None)
+
         self.selectedIndex = 0
-        self.slots = ["Slot 1", "Slot 2", "Slot 3"] 
+        self.slots = settings.SAVE_SLOTS
+
+        self.slotMeta: List[Any] = self._read_slot_metadata()
 
         totalHeight = (CARD_HEIGHT * len(self.slots)) + (CARD_GAP * (len(self.slots) - 1))
         self.x = (settings.VIRTUAL_WIDTH - CARD_WIDTH) / 2
         self.top = (settings.VIRTUAL_HEIGHT - totalHeight) / 2
+
+    def _read_slot_metadata(self) -> List[Any]:
+       
+        manager = SaveManager()
+        result: List[Any] = []
+
+        for slot in self.slots:
+            try:
+                result.append(manager.read_metadata(slot))
+            except SaveError:
+                result.append(None)
+            except Exception:
+                result.append(None)
+
+        return result
+
 
     def on_input(self, inputId: str, inputData: Any) -> None:
         if not inputData.pressed:
@@ -30,13 +59,24 @@ class SlotSelectState(BaseState):
         elif inputId == "enter":
             self._confirm()
         elif inputId == "pause":
-         
-            self.state_machine.pop()
+            self._close()
 
     def _confirm(self) -> None:
+        meta = self.slotMeta[self.selectedIndex]
+
+        if self.mode == "load" and meta is None:
+            settings.SOUNDS["select"].play()
+            return
+           
         settings.SOUNDS["select"].play()
+        chosenSlot = self.slots[self.selectedIndex]
        
+        self.state_machine.pop()      
+        self.onSelect(chosenSlot)
+
+    def _close(self) -> None:
         self.state_machine.pop()
+        self.onClose()
 
     def render(self, surface: pygame.Surface) -> None:
      
@@ -57,9 +97,12 @@ class SlotSelectState(BaseState):
         for i, slotName in enumerate(self.slots):
             slotY = self.top + i * (CARD_HEIGHT + CARD_GAP)
             slotRect = pygame.Rect(self.x, slotY, CARD_WIDTH, CARD_HEIGHT)
-            
 
-            if i == self.selectedIndex:
+            meta = self.slotMeta[i]
+            hasSave = meta is not None
+            isSelected = ( i == self.selectedIndex)
+
+            if isSelected:
                 pygame.draw.rect(surface, (50, 50, 80), slotRect, border_radius=4)
                 pygame.draw.rect(surface, (240, 220, 50), slotRect, width=2, border_radius=4)
                 
@@ -69,11 +112,42 @@ class SlotSelectState(BaseState):
                 pygame.draw.rect(surface, (30, 30, 30), slotRect, border_radius=4)
                 pygame.draw.rect(surface, (100, 100, 100), slotRect, width=2, border_radius=4)
 
-  
-            text = small.render(f"{slotName} - Empty", True, (255, 255, 255))
-            textRect = text.get_rect(centerx=settings.VIRTUAL_WIDTH / 2, centery=slotY + CARD_HEIGHT / 2)
-            surface.blit(text, textRect)
+            header = small.render(f"Slot {i + 1}", True,(255, 255, 255) if isSelected else (200, 200, 200),)
+            surface.blit(header, (slotRect.x + 8, slotRect.y + 6)) 
+
+            if hasSave:
+                self._render_saved_contents(surface, small, slotRect, meta)
+            else:
+                text = small.render(f"{slotName} - Empty", True, (255, 255, 255))
+                textRect = text.get_rect(centerx=settings.VIRTUAL_WIDTH / 2, centery=slotY + CARD_HEIGHT / 2)
+                surface.blit(text, textRect)
 
         hint = small.render("PAUSE: Cancel", True, (150, 150, 150))
         hintRect = hint.get_rect(center=(settings.VIRTUAL_WIDTH / 2, settings.VIRTUAL_HEIGHT - 20))
         surface.blit(hint, hintRect)
+
+    def _render_saved_contents(
+        self,
+        surface: pygame.Surface,
+        font: pygame.font.Font,
+        slotRect: pygame.Rect,
+        meta: Any,
+    ) -> None:
+        
+        extra = getattr(meta, "extra", {}) or {}
+
+        names = extra.get("party_names") or []
+        level = extra.get("party_level", "?")
+        souls = extra.get("souls", "?")
+
+        namesText = ", ".join(names) if names else "(unknown party)"
+        line1 = font.render(namesText, True, (255, 255, 255))
+        surface.blit(line1, (slotRect.x + 8, slotRect.y + 24))
+
+        parts = [f"Lv {level}"]
+        if souls != "?":
+            parts.append(f"{souls} souls")
+        infoLine = "  ".join(parts)
+
+        line2 = font.render(infoLine, True, (180, 220, 180))
+        surface.blit(line2, (slotRect.x + 8, slotRect.y + 40))

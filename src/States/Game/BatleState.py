@@ -11,17 +11,20 @@ from src.Utils.TurnQueue import TurnQueue
 from src.Models.BattleEntity import BattleEntity
 from src.Gui.BatleUI import BattleUI
 from src.Gui.BatleResultUI import BattleResultUI
-
+from src.States.Game.RunState import RunState
+from src.States.Game.GameOverState import GameOverState
+from src.States.Game.RestState import RestState
 
 class BattleState(BaseState):
     def enter(
         self,
-        partyUnits: List[BattleEntity],
-        enemyUnits: List[BattleEntity],
+        runState: RunState,
+        enemies: List[BattleEntity],
         room,
     ) -> None:
-        self.party = partyUnits
-        self.enemies = enemyUnits
+        self.runState = runState
+        self.party = runState.party.members
+        self.enemies = enemies
         self.room = room
 
         allUnits = self.party + self.enemies
@@ -52,6 +55,11 @@ class BattleState(BaseState):
         self.start_next_turn()
 
     def start_next_turn(self) -> None:
+       
+        if self.runState.is_game_over():
+            self._defeat()
+            return
+        
         if not self.enemies:
             return
 
@@ -224,7 +232,7 @@ class BattleState(BaseState):
             self._victory()
             return True
         
-        if all(ally.dead for ally in self.party):
+        if self.runState.is_game_over():
             self._defeat()
             return True
 
@@ -237,6 +245,9 @@ class BattleState(BaseState):
     
     def _victory(self) -> None:
         self.battleOver = True
+
+        self.runState.wallet.earn(self.earnedSouls)
+        
         self.resultUI = BattleResultUI(
             party=self.party,
             earnedSouls=self.earnedSouls,
@@ -251,11 +262,37 @@ class BattleState(BaseState):
             victory=False,
         )
     def _end_battle(self) -> None:
+        if self.resultUI is None:
+            self.state_machine.pop()
+            return
+        
+        victory = self.resultUI.victory
+
         self.state_machine.pop()
+
+        if self.runState.is_game_over():
+            self.state_machine.push(GameOverState(self.state_machine))
+            return
+
+        elif victory:
+            self.state_machine.push(
+                RestState(self.state_machine),
+                runState=self.runState,
+            )
         
     def on_input(self, inputId: str, inputData: Any) -> None:
         if not inputData.pressed:
             return
+
+        if inputId == "pause":
+            from src.States.Game.PauseMenuState import PauseMenuState
+            self.state_machine.push(
+            PauseMenuState(self.state_machine),
+            runState=self.runState,
+            inBattle=True,
+            )
+            return
+
 
         if self.battleOver:
             if inputId == "enter":
@@ -283,8 +320,15 @@ class BattleState(BaseState):
 
     def update(self, dt):
         self.room.update(dt)
+        for entity in self.party + self.enemies:
+            entity.update(dt)
         
     def render(self, surface: pygame.Surface) -> None:
+        self.room.render(surface)
+
+        offsetX = self.room.offsetX
+        offsetY = self.room.offsetY
+
         # render Glow
         if hasattr(self, 'reachableTiles') and self.reachableTiles:
             for gridX, gridY in self.reachableTiles:
@@ -293,6 +337,9 @@ class BattleState(BaseState):
         hasMoved = getattr(self, 'hasMoved', False)
         self.ui.render(surface, self.currentActor, self.upcomingTurns, hasMoved)
 
+        for entity in self.party:
+            entity.render(surface, offsetX, offsetY)
+     
         if self.battleOver and self.resultUI:
             self.resultUI.render(surface)
      
