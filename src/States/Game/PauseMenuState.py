@@ -1,12 +1,24 @@
 from typing import Any
 import pygame
+
 from gale.state import BaseState
+from gale.save import SaveManager, SaveError
+
 import settings
 from src.Gui.Menu import Menu
 from src.States.Game.SlotSelectState import SlotSelectState
 
+
 class PauseMenuState(BaseState):
-    def enter(self) -> None:
+    def enter(self, runState=None, inBattle: bool = False) -> None:
+        self.runState = runState
+        self.inBattle = inBattle
+
+        items = [("Continue", self.close)]
+        if not inBattle:
+            items.append(("Save game", self._save))
+        items.append(("Load game" , self._load))
+        items.append(("Quit game", self._quit))
 
         menuWidth = 160
         menuHeight = 100
@@ -16,12 +28,7 @@ class PauseMenuState(BaseState):
             self.menuY,
             menuWidth,
             menuHeight,
-            items=[
-                ("Continue", self.close),
-                ("Save game", self._save),
-                ("Load game", self._load),
-                ("Quit game", self._quit),
-            ],
+            items=items,
             font=settings.FONTS["medium"],
         )
 
@@ -31,13 +38,57 @@ class PauseMenuState(BaseState):
     def _save(self) -> None:
         self.state_machine.push(
             SlotSelectState(self.state_machine),
-            mode="save"
+            mode="save",
+            onSelect=self._do_save,
         )
+
+    def _do_save(self, slot: str) -> None:
+        if self.runState is None:
+            return
+
+        try: 
+            data = self.runState.to_dict()
+            party = self.runState.party
+            names = [getattr(m, "key", "?") for m in party.members if not m.dead]
+            levels = [m.level for m in party.members if not m.dead]
+            avgLevel = round(sum(levels) / len(levels), 1) if levels else 1
+        except Exception as e:
+            return
+
+        try:
+            SaveManager().save(
+                slot,
+                data,
+                party_names = names,
+                party_level = avgLevel,
+                souls = self.runState.wallet.souls,
+                battles = self.runState.battlesFought,
+                )
+        except Exception as e:
+            return
+        
+        settings.SOUNDS["select"].play()
 
     def _load(self) -> None:
         self.state_machine.push(
             SlotSelectState(self.state_machine),
-            mode="load"
+            mode="load",
+            onSelect=self._do_load,
+        )
+
+    def _do_load(self, slot: str) -> None:
+        try:
+            raw = SaveManager().load(slot)
+        except SaveError:
+            return
+
+        save_data = raw.get("data", raw)
+
+        self.state_machine.clear()
+        from src.States.Game.PlayState import PlayState
+        self.state_machine.push(
+            PlayState(self.state_machine),
+            run_state_dict=save_data,
         )
 
     def _quit(self) -> None:

@@ -29,3 +29,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AoE Logic implemented well in `BattleState`, therefore rules of the battle, movement with bfs, etc.
 - Menu for select action, movement, strike or end turn workly in `BattleState` render by `batleUI`.
 - Cooldowns for actions and effects status, like stunned or poisoned in `BatttleState`.
+-  The rest area is now playable as a hub between battles. `RestState` shows a menu for `Hire companion`, `Shop`, `Inventory`, `Manage actions`, and `Leave`. `HireState` offers a random rotating pool of secondary characters each visit; `ShopState` sells passive objects; `InventoryState` handles equipping into each member's slots.
+- `RunState` bundles everything that lives for the duration of a run the `Party`, the shared `Inventory`, the `RunWallet` (mutable soul count), the current `RestOffers`, and the boss progression counters so states can receive a single `runState` argument and mutations propagate by reference.

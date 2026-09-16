@@ -2,7 +2,7 @@
 Party: the 4-member team led by a main character. 
 """
 
-from typing import List, Optional
+from typing import List, Optional, Any, Dict
 
 from src.Models.BattleEntity import BattleEntity
 from src.Definitions.Entity import PLAYER_CHARACTERS, get_main_characters
@@ -29,8 +29,11 @@ class Party:
         return any(m.key == key for m in self.members)
 
     def lead(self) -> Optional[BattleEntity]:
-        return self.members[0] if self.members else None
-
+        if not self.members:
+            return None
+        leader = self.members[0]
+        return None if leader.dead else leader
+    
     def secondaryIndexes(self) -> List[int]:
         """Indexes of every member that is NOT the leader (i.e. index 0)."""
         return [i for i in range(1, len(self.members))]
@@ -79,3 +82,53 @@ class Party:
         member = BattleEntity(definition=PLAYER_CHARACTERS[key], x=0, y=0)
         member.key = key   
         return member
+
+    def to_dict(self) -> Dict[str, Any]:
+   
+        return {
+            "members": [
+                {
+                    "key": m.key,
+                    "level": m.level,
+                    "hp": m.hp,
+                    "attack": m.attack,
+                    "magic": m.magic,
+                    "agility": m.agility,
+                    "defense": m.defense,
+                    "magic_defense": m.magic_defense,
+                    "currentHp": m.currentHp,
+                    "experience": m.experience,
+                    "experienceToNextLevel": m.experienceToNextLevel,
+                    "dead": m.dead,
+                }
+                for m in self.members
+            ],
+        }
+
+    def load_dict(self, data: Dict[str, Any]) -> None:
+        self.members = []
+
+        for memberData in data.get("members", []):
+            key = memberData["key"]
+            if key not in PLAYER_CHARACTERS:
+                continue  
+
+            member = self._create(key)
+
+            member.level = memberData.get("level", member.level)
+            member.hp = memberData.get("hp", member.hp)
+            member.attack = memberData.get("attack", member.attack)
+            member.magic = memberData.get("magic", member.magic)
+            member.agility = memberData.get("agility", member.agility)
+            member.defense = memberData.get("defense", member.defense)
+            member.magic_defense = memberData.get(
+                "magic_defense", member.magic_defense,
+            )
+            member.currentHp = memberData.get("currentHp", member.hp)
+            member.experience = memberData.get("experience", 0)
+            member.experienceToNextLevel = memberData.get(
+                "experienceToNextLevel", member.experienceToNextLevel,
+            )
+            member.dead = memberData.get("dead", False)
+
+            self.members.append(member)
