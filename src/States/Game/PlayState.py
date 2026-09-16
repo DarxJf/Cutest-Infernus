@@ -21,8 +21,15 @@ class PlayState(BaseState):
 
         #RunState
         incomingRunState: Optional[RunState] = kwargs.get("run_state")
+        incomingDict: Optional[Dict[str, Any]] = kwargs.get("run_state_dict")
+
         if incomingRunState is not None:
             self.runState = incomingRunState
+
+        elif incomingDict is not None:
+            leaderKey = incomingDict["party"]["members"][0]["key"]
+            self.runState = RunState(leaderKey=leaderKey, startingSouls=0)
+            self.runState.load_dict(incomingDict)
         else:
             leaderKey: str = kwargs.get("character_selected", "Cloud")
             self.runState = RunState(leaderKey=leaderKey, startingSouls=200)

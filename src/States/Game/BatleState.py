@@ -284,6 +284,16 @@ class BattleState(BaseState):
         if not inputData.pressed:
             return
 
+        if inputId == "pause":
+            from src.States.Game.PauseMenuState import PauseMenuState
+            self.state_machine.push(
+            PauseMenuState(self.state_machine),
+            runState=self.runState,
+            inBattle=True,
+            )
+            return
+
+
         if self.battleOver:
             if inputId == "enter":
                 settings.SOUNDS["select"].play()

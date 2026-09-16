@@ -76,15 +76,17 @@ class StartState(BaseState):
 
     def _do_load(self, slot: str) -> None:     
         try:
-            data = SaveManager().load(slot)
+            raw = SaveManager().load(slot)
         except SaveError:
             return
+
+        save_data = raw.get("data", raw)
 
         self.state_machine.clear()
         from src.States.Game.PlayState import PlayState
         self.state_machine.push(
             PlayState(self.state_machine),
-            run_state_dict=data,
+            run_state_dict=save_data,
         )
 
     def render(self, surface: pygame.Surface) -> None:
