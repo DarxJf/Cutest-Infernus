@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional, Callable
 import pygame
 from gale.state import BaseState
 import settings
@@ -8,10 +8,18 @@ CARD_HEIGHT = 45
 CARD_GAP = 12
 
 class SlotSelectState(BaseState):
-    def enter(self, mode: str = "load") -> None:
+    def enter(
+            self,
+            mode: str = "load",
+            onSelect: Optional[Callable[[str], None]] = None,
+            onClose: Optional[Callable[[], None]] = None,
+    ) -> None:
         self.mode = mode 
+        self.onSelect = onSelect or (lambda slot: None)
+        self.onClose = onClose or (lambda slot: None)
+
         self.selectedIndex = 0
-        self.slots = ["Slot 1", "Slot 2", "Slot 3"] 
+        self.slots = settings.SAVE_SLOTS
 
         totalHeight = (CARD_HEIGHT * len(self.slots)) + (CARD_GAP * (len(self.slots) - 1))
         self.x = (settings.VIRTUAL_WIDTH - CARD_WIDTH) / 2
@@ -30,13 +38,16 @@ class SlotSelectState(BaseState):
         elif inputId == "enter":
             self._confirm()
         elif inputId == "pause":
-         
-            self.state_machine.pop()
+            self._close()
 
     def _confirm(self) -> None:
         settings.SOUNDS["select"].play()
-       
+        chosenSlot = self.slots[self.selectedIndex]
         self.state_machine.pop()
+        self.onSelect(chosenSlot)
+    def _close(self) -> None:
+        self.state_machine.pop()
+        self.onClose()
 
     def render(self, surface: pygame.Surface) -> None:
      

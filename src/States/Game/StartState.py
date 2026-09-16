@@ -2,6 +2,7 @@ import pygame
 from typing import Any 
 
 from gale.state import BaseState
+from gale.save import SaveError, SaveManager
 
 import settings
 from src.Gui.Menu import Menu
@@ -9,6 +10,7 @@ from src.States.Game.SelectCharacterState import SelectCharacterState
 from src.States.Game.FadeInState import FadeInState
 from src.States.Game.FadeOutState import FadeOutState
 from src.States.Game.SlotSelectState import SlotSelectState
+
 
 class StartState(BaseState):
     def enter(self) -> None:
@@ -66,7 +68,24 @@ class StartState(BaseState):
 
 
     def _load_game(self) -> None:
-        self.state_machine.push(SlotSelectState(self.state_machine), mode="load")
+        self.state_machine.push(
+            SlotSelectState(self.state_machine),
+            mode="load",
+            onSelect=self._do_load,
+        )
+
+    def _do_load(self, slot: str) -> None:     
+        try:
+            data = SaveManager().load(slot)
+        except SaveError:
+            return
+
+        self.state_machine.clear()
+        from src.States.Game.PlayState import PlayState
+        self.state_machine.push(
+            PlayState(self.state_machine),
+            run_state_dict=data,
+        )
 
     def render(self, surface: pygame.Surface) -> None:
 

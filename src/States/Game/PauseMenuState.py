@@ -1,12 +1,17 @@
 from typing import Any
 import pygame
+
 from gale.state import BaseState
+from gale.save import SaveManager, SaveError
+
 import settings
 from src.Gui.Menu import Menu
 from src.States.Game.SlotSelectState import SlotSelectState
 
+
 class PauseMenuState(BaseState):
-    def enter(self) -> None:
+    def enter(self, runState=None) -> None:
+        self.runState = runState
 
         menuWidth = 160
         menuHeight = 100
@@ -31,13 +36,36 @@ class PauseMenuState(BaseState):
     def _save(self) -> None:
         self.state_machine.push(
             SlotSelectState(self.state_machine),
-            mode="save"
+            mode="save",
+            onSelect=self._do_save,
         )
+
+    def _do_save(self, slot: str) -> None:
+        if self.runState is None:
+            return
+    
+        SaveManager().save(slot, self.runState.to_dict())
+        settings.SOUNDS["select"].play()
 
     def _load(self) -> None:
         self.state_machine.push(
             SlotSelectState(self.state_machine),
-            mode="load"
+            mode="load",
+            onSelect=self._do_load,
+        )
+
+    
+    def _do_load(self, slot: str) -> None:
+        try:
+            data = SaveManager().load(slot)
+        except SaveError:
+            return
+
+        self.state_machine.clear()
+        from src.States.Game.PlayState import PlayState
+        self.state_machine.push(
+            PlayState(self.state_machine),
+            run_state_dict=data,
         )
 
     def _quit(self) -> None:

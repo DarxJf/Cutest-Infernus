@@ -11,6 +11,7 @@ from src.States.Game.RestState import RestState
 from src.Definitions.Entity import PLAYER_CHARACTERS, ENEMIES
 from src.Models.Room import Room
 from src.Models.BattleEntity import BattleEntity
+from src.States.Game.RunState import RunState
 
 
 class PlayState(BaseState):
@@ -18,46 +19,87 @@ class PlayState(BaseState):
         # Room
         self.room = Room(cols=20, rows=12)
 
-        # character and entities
-        self.charKey = kwargs.get("character_selected", "Cloud")
+        #RunState
+        incomingRunState: Optional[RunState] = kwargs.get("run_state")
+        if incomingRunState is not None:
+            self.runState = incomingRunState
+        else:
+            leaderKey: str = kwargs.get("character_selected", "Cloud")
+            self.runState = RunState(leaderKey=leaderKey, startingSouls=200)
 
-        self.definition = PLAYER_CHARACTERS.get(self.charKey)
+        self.playerChar = self.runState.party.lead()
+        if self.playerChar is None:
+            self.playerChar = BattleEntity(
+                x=3, y=3, definition=PLAYER_CHARACTERS["Cloud"],
+            )
+            self.playerChar.key = "Cloud"        
 
-        spawnX, spawnY = 3, 3
+        self.playerChar.mapX = 3
+        self.playerChar.mapY = 3
+        self.playerChar.x = 3 * settings.TILE_SIZE
+        self.playerChar.y = 3 * settings.TILE_SIZE
 
-        self.playerChar = BattleEntity(x = spawnX, y = spawnY, definition = self.definition)
+
         self.testEnemy = BattleEntity(x = 5, y = 5, definition=ENEMIES.get("slime"))
-
-        self.entities: list[BattleEntity] = [self.playerChar]
-        self.enemies = [self.testEnemy]
 
     def update(self, dt: float) -> None:
         self.room.update(dt)
+        self.playerChar.update(dt)
+        self.testEnemy.update(dt)
 
     def exit(self) -> None:
-        # for char in self.party.characters.Values():
-        #     char.clear_status()
-        pass
-
+        for char in self.party.characters.Values():
+            char.clear_status()
+   
     def on_input(self, inputId: str, inputData: Any) -> None:
         if not inputData.pressed:
             return
         elif inputId == "pause":
-            self.state_machine.push(PauseMenuState(self.state_machine))
+            self.state_machine.push(
+                PauseMenuState(self.state_machine),
+                runState = self.runState,
+                )
 
         elif inputId == "enter":
-            # self.room = Room(cols=20, rows=12)
-            self.state_machine.push(BattleState(self.state_machine), self.entities, self.enemies, room = self.room)
-            
+            self._start_battle()
+            return
+
+        elif inputId == "space":
+            self._open_rest_area()
+
+    def _start_battle(self) -> None:
+        """Push BattleState with the current RunState."""
+        from src.States.Game.BatleState import BattleState
+
+        # For now, always fight the same test enemy.
+        # Later: replace with a region-driven encounter.
+        enemies = [
+            BattleEntity(x=10, y=5, definition=ENEMIES["slime"]),
+            BattleEntity(x=12, y=7, definition=ENEMIES["slime"]),
+        ]
+
+        self.state_machine.push(
+            BattleState(self.state_machine),
+            runState=self.runState,
+            enemies=enemies,
+            room=self.room,
+        )
+
+    def _open_rest_area(self) -> None:
+    # for debug
+        self.state_machine.push(
+            RestState(self.state_machine),
+            runState=self.runState,
+        )
+        
     def render(self, surface: pygame.Surface) -> None:
         self.room.render(surface)
 
         offsetX = self.room.offsetX
         offsetY = self.room.offsetY
 
-        # Entities
-        for entity in self.entities:
-            entity.render(surface, offsetX, offsetY)
+        for member in self.runState.party.members:
+            member.render(surface, offsetX, offsetY)
 
-        for enemy in self.enemies:
-            enemy.render(surface, offsetX, offsetY)
+  
+

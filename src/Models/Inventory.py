@@ -75,3 +75,26 @@ class Inventory:
 
     def equipped_keys_for(self, memberIndex: int) -> List[str]:
         return list(self.equipped.get(memberIndex, []))
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Only keys are stored. When loading, PassiveObject instances are
+        rebuilt from PASSIVE_OBJECTS, so the definition stays the single
+        source of truth."""
+        return {
+            "items": list(self.items.keys()),
+            "equipped": {
+                str(memberIndex): list(keys)
+                for memberIndex, keys in self.equipped.items()
+            },
+        }
+
+    def load_dict(self, data: Dict[str, Any]) -> None:
+        self.items = {}
+        self.equipped = {}
+
+        for key in data.get("items", []):
+            self.add(key)
+
+        for memberIndexStr, keys in data.get("equipped", {}).items():
+            memberIndex = int(memberIndexStr)
+            self.equipped[memberIndex] = list(keys)
