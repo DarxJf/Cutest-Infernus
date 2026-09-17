@@ -7,7 +7,7 @@ from gale.state import BaseState
 
 import settings
 from src.ai.BehaviorEnemy import build_enemy_brain
-from src.Definitions.Texts import BATTLE_START_TEXT, TURN_TUTORIAL_TEXT
+from src.Definitions.Texts import BATTLE_START_TEXT, BOSS_START_TEXT
 from src.Gui.BatleUI import BattleUI
 from src.Gui.BatleResultUI import BattleResultUI
 from src.Models.BattleEntity import BattleEntity
@@ -33,11 +33,13 @@ class BattleState(BaseState):
         runState: RunState,
         enemies: List[BattleEntity],
         room,
+        isBoss: bool = False, 
     ) -> None:
         self.runState = runState
         self.party = runState.party.members
         self.enemies = enemies
         self.room = room
+        self.isBoss = isBoss
 
         self._place_party()
         self._place_enemies()
@@ -71,10 +73,15 @@ class BattleState(BaseState):
 
         self.currentGlow = self.glowSurface
 
+        if self.isBoss:
+            starText = BOSS_START_TEXT
+        else: 
+            starText = BATTLE_START_TEXT
+
                    
         self.state_machine.push(
             DialogueState(self.state_machine),
-            text=BATTLE_START_TEXT,
+            text=starText,
             position = "bottom",
         )
          
@@ -324,16 +331,22 @@ class BattleState(BaseState):
     
     def _victory(self) -> None:
         self.battleOver = True
-
         self.runState.register_battle_won() 
-
         self.runState.wallet.earn(self.earnedSouls)
-        
+
         self.resultUI = BattleResultUI(
             party=self.party,
             earnedSouls=self.earnedSouls,
             victory=True,
         )
+
+        if self.isBoss:
+            message = "BOSS DEFEATED!"
+            self.state_machine.push(
+                DialogueState(self.state_machine),
+                text=message,
+                position="bottom",
+            )
 
     def _defeat(self) -> None:
         self.battleOver = True

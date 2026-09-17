@@ -63,6 +63,8 @@ TURN_TUTORIAL_TEXT = (
 
 DEFEAT_TEXT = "Your leader has fallen. The run ends here."
 
+BOSS_START_TEXT = "The floor guardian approaches!"
+
 
 # ── Party member events ─────────────────────────────────────────────
 

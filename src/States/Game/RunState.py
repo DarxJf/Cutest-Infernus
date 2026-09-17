@@ -28,6 +28,7 @@ class RunState:
      
         self.battlesFought = 0
         self.battlesSinceBoss = 0
+        self.bossesDefeated = 0
 
         self.seenIntro = False
         self.seenPlayTutorial = False
@@ -45,6 +46,7 @@ class RunState:
 
         if self.battlesSinceBoss >= BOSS_EVERY_N_BATTLES:
             self.battlesSinceBoss = 0
+            self.bossesDefeated += 1
             return True
         return False
 
@@ -67,6 +69,7 @@ class RunState:
             "seenPlayTutorial": self.seenPlayTutorial,
             "seenRestTutorial": self.seenRestTutorial,
             "seenBattleTutorial": self.seenBattleTutorial,
+            "bossesDefeated": self.bossesDefeated,
         }
 
     def load_dict(self, data: Dict[str, Any]) -> None:
@@ -79,3 +82,4 @@ class RunState:
         self.seenPlayTutorial = data.get("seenPlayTutorial", False)
         self.seenRestTutorial = data.get("seenRestTutorial", False)
         self.seenBattleTutorial = data.get("seenBattleTutorial", False)
+        self.bossesDefeated = data.get("bossesDefeated", 0)
