@@ -174,6 +174,7 @@ class BattleState(BaseState):
         boardCols, boardRows = self.room.cols, self.room.rows 
 
         if action.areaType in ["cross", "square"]:
+            self.currentActor.state_machine.change("attack", actor, targetX, targetY)
             actor.apply_aoe_damage(action, boardCols, boardRows, self.enemies)
         else:
             for target in targets:
@@ -272,13 +273,15 @@ class BattleState(BaseState):
         self.reachableTiles = reachable
     
         def on_test_target_selected(targetX: int, targetY: int) -> None:
-            self.currentActor.mapX = targetX
-            self.currentActor.mapY = targetY
+            # self.currentActor.mapX = targetX
+            # self.currentActor.mapY = targetY
 
-            self.currentActor.x = targetX * settings.TILE_SIZE
-            self.currentActor.y = targetY * settings.TILE_SIZE
+            # self.currentActor.x = targetX * settings.TILE_SIZE
+            # self.currentActor.y = targetY * settings.TILE_SIZE
     
             self.reachableTiles = set()
+
+            self.currentActor.state_machine.change("walk", self.currentActor, targetX, targetY)
 
             self.hasMoved = True
     
@@ -432,7 +435,6 @@ class BattleState(BaseState):
 
         for enemy in self.enemies:
             enemy.render(surface, offsetX, offsetY)
-            enemy.change_animation("idle-down")
      
         if self.battleOver and self.resultUI:
             self.resultUI.render(surface)

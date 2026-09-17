@@ -47,8 +47,14 @@ def build_enemy_brain() -> BehaviorTree:
 
     # --- Actions ---
     def do_attack(agent, dt) -> Status:
+        actor = agent.currentActor
         target = get_target(agent)
         attack = get_valid_attack(agent, target)
+
+        if target is None or attack is None:
+            return Status.FAILURE
+
+        actor.state_machine.change("attack", actor, target.mapX, target.mapY)
 
         agent.resolve_action(agent.currentActor, attack, target.mapX, target.mapY, is_enemy=True)
 
@@ -93,9 +99,11 @@ def build_enemy_brain() -> BehaviorTree:
         if not best_tile:
             return Status.FAILURE
 
-        actor.mapX, actor.mapY = best_tile
-        actor.x = best_tile[0] * settings.TILE_SIZE
-        actor.y = best_tile[1] * settings.TILE_SIZE
+        # actor.mapX, actor.mapY = best_tile
+        # actor.x = best_tile[0] * settings.TILE_SIZE
+        # actor.y = best_tile[1] * settings.TILE_SIZE
+
+        actor.state_machine.change("walk", actor, best_tile[0], best_tile[1])
 
         agent.hasMoved = True
 

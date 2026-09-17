@@ -9,6 +9,11 @@ from src.Utils.MovementCalculator import MovementCalculator
 from src.Utils.AoeCalculator import AoECalculator
 from src.Definitions.Entity import LEVEL_GROWTH
 
+from src.States.Entity.IdleState import EntityIdleState
+from src.States.Entity.WalkState import EntityWalkState
+from src.States.Entity.AttackState import EntityAttackState
+
+
 ALL_ACTIONS = {
     **BASIC_ATTACK_DEF,
     **UNIVERSAL_ACTIONS, 
@@ -27,10 +32,11 @@ class BattleEntity(Entity):
         self.mapX = x
         self.mapY = y
 
-        # Flags
+        # Flags, structs, etc.
         self.dead = False
         self.activeStatus: dict[str, int] = {}  # {"stun": 2, "poison": 3} where the value is the remaining turns
         self.skillCooldowns: dict[str, int] = {}
+        self.facing: str = "down"
         
         # Battle-specific attributes
         self.name             = definition.get("name", "Snow")
@@ -59,7 +65,7 @@ class BattleEntity(Entity):
         self.defense         = self.baseDefense
         self.magic_defense   = self.baseMagicDefense
         self.rest            = self.baseRest
-        self.basicAttack = Action("basic_strike", BASIC_ATTACK_DEF)
+        self.basicAttack     = Action("basic_strike", BASIC_ATTACK_DEF)
         self.actionSlots     = []
         for key in self.defaultActions:
             if key in ALL_ACTIONS:
@@ -73,7 +79,17 @@ class BattleEntity(Entity):
         self.experience      = definition.get("experience", 0)
         self.soulValue       = definition.get("soul_value", 10)
         self.expValue        = definition.get("exp_value", 15)
+
         self.experienceToNextLevel = self._calculate_xp_requirement()
+
+        # State machine
+        self.state_machine.states = {
+            "idle"  : EntityIdleState,
+            "walk"  : EntityWalkState,
+            "attack": EntityAttackState,
+        }
+
+        self.state_machine.change("idle", self)
 
     def hurt(self, amount: int) -> None:
         self.currentHp -= amount

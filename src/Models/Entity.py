@@ -5,7 +5,7 @@ Module to define base physical of entities on the grid (board)
 from typing import Any, Dict, Optional
 import pygame
 
-# from gale.state import StateMachine
+from gale.state import StateMachine
 from gale.animation import Animation
 
 import settings
@@ -34,7 +34,7 @@ class Entity():
 
         self.currentAnimation: Optional[Animation] = None
         self.currentTextureId: Optional[str] = self.textureId
-        # self.state_machine = StateMachine()
+        self.state_machine = StateMachine()
         
         # Collision property
         self.isSolid = definition.get("is_solid", False)
@@ -96,6 +96,8 @@ class Entity():
         return None
 
     def update(self, dt: float)-> None:
+        self.state_machine.update(dt)
+
         if self.currentAnimation is not None:
             self.currentAnimation.update(dt)
 

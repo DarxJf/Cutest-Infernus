@@ -17,8 +17,66 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "height": 16, # Can change
         "frame_index": 0,
         "animations": {
-            # idle: [0]
-            # walk: [0, 1, 2, 3]
+            "idle-down": {
+                "texture":"cloud_walk",
+                "frames": [0, 1, 2,],
+                "interval": 0.2
+            },
+            "idle-left": {
+                "texture":"cloud_walk",
+                "frames": [11, 12, 13,],
+                "interval": 0.2
+            },
+            "idle-right": {
+                "texture":"cloud_walk",
+                "frames": [24, 25, 26,],
+                "interval": 0.2
+            },
+            "idle-up": {
+                "texture": "cloud_walk",
+                "frames": [36, 37, 38],
+                "interval": 0.2
+            },
+            "walk-down": {
+                "texture": "cloud_walk",
+                "frames": [0, 1, 2,],
+                "interval": 0.15
+            },
+            "walk-left": {
+                "texture": "cloud_walk",
+                "frames": [11, 12, 13,],
+                "interval": 0.15
+            },
+            "walk-right": {
+                "texture": "cloud_walk",
+                "frames": [24, 25, 26,],
+                "interval": 0.15
+            },
+            "walk-up":{
+                "texture": "cloud_walk",
+                "frames": [36, 37, 38,],
+                "interval": 0.15
+            },
+            "attack-down": {
+                "texture": "cloud_walk",
+                "frames": [0, 1, 2,],
+                "interval": 0.15
+            },
+            "attack-left": {
+                "texture": "cloud_walk",
+                "frames": [11, 12, 13,],
+                "interval": 0.15
+            },
+            "attack-right": {
+                "texture": "cloud_walk",
+                "frames": [24, 25, 26,],
+                "interval": 0.15
+            },
+            "attack-up":{
+                "texture": "cloud_walk",
+                "frames": [36, 37, 38,],
+                "interval": 0.15
+            },
         },
         "base_hp": 40,
         "base_attack": 14,
