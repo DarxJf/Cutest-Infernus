@@ -71,7 +71,7 @@ class SelectTargetState(BaseState):
             self.state_machine.pop()
             self.callback(self.cursorX, self.cursorY)
             
-        elif inputId == "escape":
+        elif inputId == "undo":
             self.state_machine.pop()
 
     def render(self, surface: pygame.Surface) -> None:

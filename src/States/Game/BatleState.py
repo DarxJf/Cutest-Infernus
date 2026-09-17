@@ -176,11 +176,18 @@ class BattleState(BaseState):
         actor.state_machine.change("attack", actor, targetX, targetY)
 
         if action.areaType in ["cross", "square"]:
-            actor.apply_aoe_damage(action, boardCols, boardRows, self.enemies)
+            actor.apply_aoe_damage(action, boardCols, boardRows, targets)
         else:
             for target in targets:
                 if target.mapX == targetX and target.mapY == targetY and not getattr(target, 'dead', False):
-                    distance = abs(target.mapX - actor.mapX) + abs(target.mapY - actor.mapY)
+                    # NUEVO: Lógica condicional para ataques "single" vs otros
+                    dx = abs(target.mapX - actor.mapX)
+                    dy = abs(target.mapY - actor.mapY)
+                    
+                    if action.areaType == "single":
+                        distance = max(dx, dy)
+                    else:
+                        distance = dx + dy
 
                     if distance <= action.gridRange or action.targetType == "self":
                         dmg = actor.compute_damage(action, target)
@@ -191,7 +198,6 @@ class BattleState(BaseState):
                             target.hurt(dmg)
                             if action.effect:
                                 target.apply_status(action.effect, EFFECTS[action.effect])
-
                     else:
                         print(f"Fallo: ¡El objetivo está a {distance} casillas, el arma solo alcanza {action.gridRange}!")
                     break

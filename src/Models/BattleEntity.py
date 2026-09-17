@@ -37,6 +37,7 @@ class BattleEntity(Entity):
         self.activeStatus: dict[str, int] = {}  # {"stun": 2, "poison": 3} where the value is the remaining turns
         self.skillCooldowns: dict[str, int] = {}
         self.facing: str = "down"
+        self.role: str = definition.get("role", "enemy") # just in case
         
         # Battle-specific attributes
         self.name             = definition.get("name", "Snow")
