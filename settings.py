@@ -96,7 +96,7 @@ FRAMES = {
     "object_icons": frames.generate_frames(TEXTURES["object_icons"], 16, 16),
     "action_icons": frames.generate_frames(TEXTURES["action_icons"], 16, 16),
 
-    "cloud_walk": frames.generate_frames(TEXTURES["cloud_walk"], 25, 24),
+    "cloud_walk": frames.generate_frames(TEXTURES["cloud_walk"], 24, 24),
     "pelusa_walk": frames.generate_frames(TEXTURES["pelusa_walk"], 25, 24),
     "chloe_walk": frames.generate_frames(TEXTURES["chloe_walk"], 25, 24),
     "balthazar_walk": frames.generate_frames(TEXTURES["balthazar_walk"], 25, 24),

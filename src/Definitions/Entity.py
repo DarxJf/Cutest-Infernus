@@ -24,7 +24,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
             },
             "idle-left": {
                 "texture":"cloud_walk",
-                "frames": [11, 12, 13,],
+                "frames": [12, 13, 14,],
                 "interval": 0.2
             },
             "idle-right": {
@@ -44,7 +44,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
             },
             "walk-left": {
                 "texture": "cloud_walk",
-                "frames": [11, 12, 13,],
+                "frames": [12, 13, 14,],
                 "interval": 0.15
             },
             "walk-right": {
@@ -64,7 +64,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
             },
             "attack-left": {
                 "texture": "cloud_walk",
-                "frames": [11, 12, 13,],
+                "frames": [12, 13, 14,],
                 "interval": 0.15
             },
             "attack-right": {

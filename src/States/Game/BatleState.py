@@ -173,8 +173,9 @@ class BattleState(BaseState):
 
         boardCols, boardRows = self.room.cols, self.room.rows 
 
+        actor.state_machine.change("attack", actor, targetX, targetY)
+
         if action.areaType in ["cross", "square"]:
-            self.currentActor.state_machine.change("attack", actor, targetX, targetY)
             actor.apply_aoe_damage(action, boardCols, boardRows, self.enemies)
         else:
             for target in targets:
