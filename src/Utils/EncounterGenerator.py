@@ -10,7 +10,6 @@ from src.Definitions.Entity import ENEMIES
 MAX_HORDE_SIZE = 5
 
 def _enemy_pool_for(battlesFought: int) -> List[str]:
-   
     if battlesFought <= 1:
         return ["slime"]
 
@@ -24,7 +23,6 @@ def _enemy_pool_for(battlesFought: int) -> List[str]:
 
 
 def _horde_size_for(battlesFought: int) -> int:
-  
     base = 2 + battlesFought // 2
     return min(base, MAX_HORDE_SIZE)
 
