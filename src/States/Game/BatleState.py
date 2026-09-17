@@ -146,11 +146,15 @@ class BattleState(BaseState):
         isStunned = self.currentActor.process_status()
         self.currentActor.process_cooldowns()
 
+        if getattr(self.currentActor, "dead", False):
+            self.start_next_turn()
+            return
+
         if self._check_casualties():
             return
 
         if isStunned:
-            self.start_next_turn
+            self.start_next_turn()
             return
 
         self.upcomingTurns = self.turnQueue.get_queue_preview(count=10)
@@ -338,7 +342,11 @@ class BattleState(BaseState):
             earnedSouls=0,
             victory=False,
         )
+
     def _end_battle(self) -> None:
+        for e in self.party:
+            e.process_cooldowns()
+
         if self.resultUI is None:
             self.state_machine.pop()
             return
