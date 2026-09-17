@@ -5,15 +5,16 @@ from gale.state import BaseState
 
 import settings
 from src.States.Game.PauseMenuState import PauseMenuState
-
-from src.States.Game.BatleState import BattleState
-from src.States.Game.RestState import RestState
 from src.States.Game.RunState import RunState
-from src.Definitions.Entity import PLAYER_CHARACTERS, ENEMIES
+from src.States.Game.DialogueState import DialogueState
+from src.Definitions.Entity import PLAYER_CHARACTERS
 from src.Models.Room import Room
 from src.Models.BattleEntity import BattleEntity
 from src.States.Game.RunState import RunState
-
+from src.Utils.SpawnHelper import find_free_tile
+from src.Utils.EncounterGenerator import generate_horde
+from src.States.Game.DialogueState import DialogueState
+from src.Definitions.Texts import INTRO_TEXT, PLAY_TUTORIAL_TEXT
 
 class PlayState(BaseState):
     def enter(self, **kwargs: dict) -> None:
@@ -35,24 +36,52 @@ class PlayState(BaseState):
             leaderKey: str = kwargs.get("character_selected", "Cloud")
             self.runState = RunState(leaderKey=leaderKey, startingSouls=200)
 
-        self.playerChar = self.runState.party.lead()
-        if self.playerChar is None:
-            self.playerChar = BattleEntity(
-                x=3, y=3, definition=PLAYER_CHARACTERS["Cloud"],
+        self.partySpawnAnchor = (3, self.room.rows - 3)
+        occupied = set()
+
+        leader = self.runState.party.lead()
+        if leader is None:
+            leader = BattleEntity(x=0, y= 0, definition=PLAYER_CHARACTERS["Cloud"]),
+            leader.key = "Cloud"
+
+        tile = find_free_tile(
+            self.room,
+            self.partySpawnAnchor[0],
+            self.partySpawnAnchor[1],
+            occupied,
+        )
+        if tile is None:
+            tile(3, 3)
+
+        leader.mapX, leader.mapY = tile
+        leader.x = tile [0] * settings.TILE_SIZE
+        leader.y = tile [1] * settings.TILE_SIZE
+        occupied.add(tile)
+
+        self.playerChar = leader
+
+        def show_play_tutorial():
+            if not self.runState.seenPlayTutorial:
+                self.runState.seenPlayTutorial = True
+                self.state_machine.push(
+                    DialogueState(self.state_machine),
+                    text=PLAY_TUTORIAL_TEXT,
+                    position="top",
+                )
+
+        if not self.runState.seenIntro:
+            self.runState.seenIntro = True
+            self.state_machine.push(
+                DialogueState(self.state_machine),
+                text=INTRO_TEXT,
+                position="bottom",
+                onClose=show_play_tutorial,    
             )
-            self.playerChar.key = "Cloud"        
-
-        self.playerChar.mapX = 3
-        self.playerChar.mapY = 3
-        self.playerChar.x = 3 * settings.TILE_SIZE
-        self.playerChar.y = 3 * settings.TILE_SIZE
-
-        self.testEnemy = BattleEntity(x = 5, y = 5, definition=ENEMIES.get("slime"))
 
     def update(self, dt: float) -> None:
         self.room.update(dt)
         self.playerChar.update(dt)
-        self.testEnemy.update(dt)
+   
 
     def exit(self) -> None:
         for char in self.party.characters.Values():
@@ -71,18 +100,14 @@ class PlayState(BaseState):
             self._start_battle()
             return
 
-        elif inputId == "space":
-            self._open_rest_area()
-
     def _start_battle(self) -> None:
-        """Push BattleState with the current RunState."""
         from src.States.Game.BatleState import BattleState
 
-        # For now, always fight the same test enemy.
-        # Later: replace with a region-driven encounter.
+        horde = generate_horde(self.runState.battlesFought)
+
         enemies = [
-            BattleEntity(x=10, y=5, definition=ENEMIES["slime"]),
-            BattleEntity(x=12, y=7, definition=ENEMIES["slime"]),
+            BattleEntity(x = 0, y = 0, definition=defn)
+            for defn in horde
         ]
 
         self.state_machine.push(
@@ -92,18 +117,11 @@ class PlayState(BaseState):
             room=self.room,
         )
 
-    def _open_rest_area(self) -> None:
-    # for debug
-        self.state_machine.push(
-            RestState(self.state_machine),
-            runState=self.runState,
-        )
-        
     def render(self, surface: pygame.Surface) -> None:
         self.room.render(surface)
 
         offsetX = self.room.offsetX
         offsetY = self.room.offsetY
 
-        for member in self.runState.party.members:
-            member.render(surface, offsetX, offsetY)
+        self.playerChar.render(surface, offsetX, offsetY)
+        

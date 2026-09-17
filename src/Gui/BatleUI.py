@@ -89,13 +89,42 @@ class BattleUI:
         surface.blit(hpTxt, (50, 42))
 
     def _render_turn_queue(self, surface: pygame.Surface, upcoming: List[BattleEntity]) -> None:
+        if not upcoming:
+            return
+        
         startX = settings.VIRTUAL_WIDTH - 25
         startY = 10
-        cardSize = 24
+      
         smallFont = settings.FONTS["small"]
 
-        for i, entity in enumerate(upcoming):
-            x = startX - (i * (cardSize + 4))
+        currentSize = 28
+        cardSize = 24
+        
+        actor = upcoming[0]
+     
+        actorRect = pygame.Rect(
+            startX - currentSize, startY, currentSize, currentSize,
+        )
+        pygame.draw.rect(surface, (20, 20, 30), actorRect, border_radius=4)
+        pygame.draw.rect(surface, (240, 220, 50), actorRect,
+                        width=2, border_radius=4)              
+         
+        portrait = self._portrait_surface(actor, size=currentSize - 8)
+        if portrait is not None:
+            px = actorRect.centerx - portrait.get_width() // 2
+            py = actorRect.centery - portrait.get_height() // 2
+            surface.blit(portrait, (px, py))
+        else:
+            initial = smallFont.render(
+                actor.classType[0].upper(), True, (255, 255, 255),
+            )
+            surface.blit(initial, initial.get_rect(center=actorRect.center))
+
+        queueStartX = actorRect.left - 6
+        
+        for i, entity in enumerate(upcoming[1:]): 
+        
+            x = queueStartX - (i * (cardSize + 4)) - cardSize 
             rect = pygame.Rect(x, startY, cardSize, cardSize)
 
             color = (50, 150, 250) if hasattr(entity, "is_party") and entity.is_party else (200, 50, 100)
@@ -123,6 +152,8 @@ class BattleUI:
         if not actor:
             return
 
+        isEnemyTurn = not getattr(actor, "is_party", True)
+        
         cards = [("Move", None, None, 0)]
 
         if hasattr(actor, "basicAttack") and actor.basicAttack:
@@ -170,6 +201,21 @@ class BattleUI:
                 surface, bCol, cardRect,
                 width=2 if isSelected else 1, border_radius=4,
             )
+
+            if isEnemyTurn:
+                veil = pygame.Surface ((cardW, cardH), pygame.SRCALPHA)
+                veil.fill((10, 10, 15, 220))
+                surface.blit(veil, cardRect.topleft)
+
+                question = settings.FONTS["medium"].render(
+                "?", True, (100, 100, 120),
+                 )
+                surface.blit(
+                    question,
+                    question.get_rect(center=cardRect.center),
+                )
+                continue
+
 
             iconSize = 20
             iconX = cardRect.centerx - iconSize // 2
