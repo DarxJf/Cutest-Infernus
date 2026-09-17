@@ -346,6 +346,10 @@ class BattleState(BaseState):
 
         for entity in self.party:
             entity.render(surface, offsetX, offsetY)
+
+        for enemy in self.enemies:
+            enemy.render(surface, offsetX, offsetY)
+            enemy.change_animation("idle-down")
      
         if self.battleOver and self.resultUI:
             self.resultUI.render(surface)

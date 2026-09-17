@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
     "Cloud": {
+        "name": "Cloud",
         "class_name": "Warrior",
         "texture": "cloud_walk",
         "width": 16, # Can change
@@ -34,6 +35,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "role": "main",
     },
     "Pelusa": {
+        "name": "Pelusa",
         "class_name": "Rogue",
         "texture": "pelusa_walk",
         "width": 16,
@@ -55,6 +57,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "role": "main",
     },
     "Chloe": {
+        "name": "Chloe",
         "class_name": "Fairy",
         "texture": "chloe_walk",
         "width": 16,
@@ -76,6 +79,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "role": "main",
     },
     "Balthazar": {
+        "name": "Balthazar",
         "class_name": "Mage",
         "texture": "balthazar_walk",
         "width": 16,
@@ -104,6 +108,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
 
     # --- Warriors ---
     "Siegfried": {
+        "name": "Siegfried",
         "class_name": "Warrior",
         "texture": "cloud_walk",        
         "width": 16,
@@ -126,6 +131,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
     },
      # --- Rogues ---
     "Raven": {
+        "name": "Raven",
         "class_name": "Rogue",
         "texture": "pelusa_walk",
         "width": 16,
@@ -147,6 +153,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "role": "secondary",
     },
     "Lumina": {
+        "name": "Lumina",
         "class_name": "Fairy",
         "texture": "chloe_walk",
         "width": 16,
@@ -168,6 +175,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "role": "secondary",
     },
     "Alistair": {
+        "name": "Alistair",
         "class_name": "Mage",
         "texture": "balthazar_walk",
         "width": 16,

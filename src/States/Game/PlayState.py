@@ -47,14 +47,12 @@ class PlayState(BaseState):
         self.playerChar.x = 3 * settings.TILE_SIZE
         self.playerChar.y = 3 * settings.TILE_SIZE
 
-
         self.testEnemy = BattleEntity(x = 5, y = 5, definition=ENEMIES.get("slime"))
 
     def update(self, dt: float) -> None:
         self.room.update(dt)
         self.playerChar.update(dt)
         self.testEnemy.update(dt)
-
 
     def exit(self) -> None:
         for char in self.party.characters.Values():
@@ -109,6 +107,3 @@ class PlayState(BaseState):
 
         for member in self.runState.party.members:
             member.render(surface, offsetX, offsetY)
-
-  
-

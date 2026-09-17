@@ -33,6 +33,7 @@ class BattleEntity(Entity):
         self.skillCooldowns: dict[str, int] = {}
         
         # Battle-specific attributes
+        self.name             = definition.get("name", "Snow")
         self.level            = definition.get("level", 1)
         self.classType        = definition.get("class_name", "Warrior")
         self.baseHp           = definition.get("base_hp", 10)
