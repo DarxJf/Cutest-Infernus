@@ -29,6 +29,11 @@ class RunState:
         self.battlesFought = 0
         self.battlesSinceBoss = 0
 
+        self.seenIntro = False
+        self.seenPlayTutorial = False
+        self.seenRestTutorial = False
+        self.seenBattleTutorial = False
+
 
     def register_battle_won(self) -> bool:
         """
@@ -58,6 +63,10 @@ class RunState:
             "inventory": self.inventory.to_dict(),
             "battlesFought": self.battlesFought,
             "battlesSinceBoss": self.battlesSinceBoss,
+            "seenIntro": self.seenIntro,
+            "seenPlayTutorial": self.seenPlayTutorial,
+            "seenRestTutorial": self.seenRestTutorial,
+            "seenBattleTutorial": self.seenBattleTutorial,
         }
 
     def load_dict(self, data: Dict[str, Any]) -> None:
@@ -66,3 +75,7 @@ class RunState:
         self.inventory.load_dict(data["inventory"])
         self.battlesFought = data.get("battlesFought", 0)
         self.battlesSinceBoss = data.get("battlesSinceBoss", 0)
+        self.seenIntro = data.get("seenIntro", False)
+        self.seenPlayTutorial = data.get("seenPlayTutorial", False)
+        self.seenRestTutorial = data.get("seenRestTutorial", False)
+        self.seenBattleTutorial = data.get("seenBattleTutorial", False)

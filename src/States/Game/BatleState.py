@@ -5,17 +5,21 @@ import time
 
 from gale.state import BaseState
 
-from src.States.Game.SelectTargetState import SelectTargetState
 import settings
-from src.Utils.TurnQueue import TurnQueue
-from src.Models.BattleEntity import BattleEntity
+from src.ai.BehaviorEnemy import build_enemy_brain
+from src.Definitions.Texts import BATTLE_START_TEXT, TURN_TUTORIAL_TEXT
 from src.Gui.BatleUI import BattleUI
 from src.Gui.BatleResultUI import BattleResultUI
+from src.Models.BattleEntity import BattleEntity
+from src.Utils.TurnQueue import TurnQueue
 from src.Utils.MovementCalculator import MovementCalculator
-from src.ai.BehaviorEnemy import build_enemy_brain
+from src.Utils.SpawnHelper import find_free_tiles, find_free_tile
 from src.States.Game.RunState import RunState
 from src.States.Game.GameOverState import GameOverState
 from src.States.Game.RestState import RestState
+from src.States.Game.DialogueState import DialogueState
+from src.States.Game.SelectTargetState import SelectTargetState
+
 
 EFFECTS = {
     "poison": 3,
@@ -34,10 +38,19 @@ class BattleState(BaseState):
         self.party = runState.party.members
         self.enemies = enemies
         self.room = room
+
+        self._place_party()
+        self._place_enemies()
+        self._mark_party_flags()
+
         self.enemy_brain = {enemy: build_enemy_brain() for enemy in self.enemies}
 
         self.allUnits = self.party + self.enemies
         self.turnQueue = TurnQueue(self.allUnits)
+        self.turnQueue.rebuild_round()
+
+        self.pendingEnemyTurn = False
+        self.enemyTurnDelay = 0.0
 
         self.ui = BattleUI()
         
@@ -57,8 +70,57 @@ class BattleState(BaseState):
         )
 
         self.currentGlow = self.glowSurface
-        
+
+                   
+        self.state_machine.push(
+            DialogueState(self.state_machine),
+            text=BATTLE_START_TEXT,
+            position = "bottom",
+        )
+         
         self.start_next_turn()
+
+    def _place_party(self) -> None:
+        anchor = (3, self.room.rows - 3)
+
+        offsets = [
+            (0, 0), (-1, 0), (0, -1), (-1, -1), (0, -2), (-1, -2),
+        ]
+
+        occupied = set()
+        tiles = find_free_tiles(
+            self.room, anchor, len(self.party), occupied, offsets,
+        )
+
+        for member, tile in zip(self.party, tiles):
+            member.mapX, member.mapY = tile
+            member.x = tile[0] * settings.TILE_SIZE
+            member.y = tile[1] * settings.TILE_SIZE
+
+    def _place_enemies(self) -> None:
+        anchor = (self.room.cols - 4, 3)
+
+        offsets = [
+            (0, 0), (-1, 0), (-2, 0),
+            (0, 1), (-1, 1), (-2, 1),
+            (0, 2), (-1, 2), (-2, 2),
+        ]
+
+        occupied = set()
+        tiles = find_free_tiles(
+            self.room, anchor, len(self.enemies), occupied, offsets,
+        )
+
+        for enemy, tile in zip(self.enemies, tiles):
+            enemy.mapX, enemy.mapY = tile
+            enemy.x = tile[0] * settings.TILE_SIZE
+            enemy.y = tile[1] * settings.TILE_SIZE
+
+    def _mark_party_flags(self) -> None:
+        for member in self.party:
+            member.is_party = True
+        for enemy in self.enemies:
+            enemy.is_party = False
 
     def start_next_turn(self) -> None:
         self.ui.selectedCardIndex = 0
@@ -78,6 +140,8 @@ class BattleState(BaseState):
             self._end_battle()
             return
 
+        self.ui.selectedCardIndex = 0
+
         # Status
         isStunned = self.currentActor.process_status()
         self.currentActor.process_cooldowns()
@@ -86,14 +150,14 @@ class BattleState(BaseState):
             return
 
         if isStunned:
-            self.turnQueue.end_turn(self.currentActor, action_cost_multiplier=1.0)
-            self.start_next_turn()
+            self.start_next_turn
             return
 
-        self.upcomingTurns = self.turnQueue.get_queue_preview(count=5)
+        self.upcomingTurns = self.turnQueue.get_queue_preview(count=10)
 
         if self.currentActor in self.enemies:
-            self._take_enemy_turn()
+            self.pendingEnemyTurn = True
+            self.enemyTurnDelay = 2
 
     def resolve_action(self, actor: BattleEntity, action: Any, targetX: int, targetY: int, is_enemy: bool) -> None:
         if action.targetType == "self":
@@ -130,10 +194,14 @@ class BattleState(BaseState):
             actor.skillCooldowns[action.name] = action.cooldown
 
         if not self._check_casualties():
-            self.turnQueue.end_turn(actor, action_cost_multiplier=1.0)
             self.start_next_turn()
 
     def _take_enemy_turn(self) -> None:
+        if self.battleOver:
+            return
+        if self.currentActor not in self.enemies:
+            return
+        
         alive_party = [ally for ally in self.party if not getattr(ally, 'dead', False)]
         if not alive_party:
             return
@@ -253,6 +321,8 @@ class BattleState(BaseState):
     def _victory(self) -> None:
         self.battleOver = True
 
+        self.runState.register_battle_won() 
+
         self.runState.wallet.earn(self.earnedSouls)
         
         self.resultUI = BattleResultUI(
@@ -320,7 +390,6 @@ class BattleState(BaseState):
             if self.ui.selectedCardIndex == 0:
                 self.execute_move()
             elif self.ui.selectedCardIndex == maxCards - 1:
-                self.turnQueue.end_turn(self.currentActor, action_cost_multiplier=1.0)
                 self.start_next_turn()
             else:
                 self.execute_action(action_cost_multiplier=1.0)
@@ -329,6 +398,12 @@ class BattleState(BaseState):
         self.room.update(dt)
         for entity in self.allUnits:
             entity.update(dt)
+
+        if getattr(self, "pendingEnemyTurn", False):
+            self.enemyTurnDelay -= dt
+            if self.enemyTurnDelay <= 0:
+                self.pendingEnemyTurn = False
+                self._take_enemy_turn()
         
     def render(self, surface: pygame.Surface) -> None:
         self.room.render(surface)
