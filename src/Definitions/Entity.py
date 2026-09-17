@@ -97,7 +97,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "base_movement": 3,
         "default_actions": ["slash", "fireball", "frost_nova"],
         "slot_actions": 5,
-        "slot_objects": 1,
+        "slot_objects": 2,
         "role": "main", 
     },
 
@@ -191,7 +191,7 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "basic_attack": "strike",
         "base_rest": 2.8,
         "base_movement": 3,
-        "default_actions": ["fireball", "sparkle_heal"],
+        "default_actions": ["fireball",],
         "slot_actions": 5,
         "slot_objects": 2,
         "role": "secondary",

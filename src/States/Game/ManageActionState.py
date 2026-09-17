@@ -183,16 +183,16 @@ class ManageActionsState(BaseState):
         add_color = (240, 220, 50) if self.stage == "mode" and self.modeIdx == 0 else (150, 150, 150)
         rem_color = (240, 220, 50) if self.stage == "mode" and self.modeIdx == 1 else (150, 150, 150)
         
-        surface.blit(font.render("[ ADD ]", True, add_color), (settings.VIRTUAL_WIDTH // 2 - 80, 50))
-        surface.blit(font.render("[ REMOVE ]", True, rem_color), (settings.VIRTUAL_WIDTH // 2 + 10, 50))
+        surface.blit(font.render("[ ADD ]", True, add_color), (settings.VIRTUAL_WIDTH // 2 - 80, 30))
+        surface.blit(font.render("[ REMOVE ]", True, rem_color), (settings.VIRTUAL_WIDTH // 2 + 10, 30))
 
         member = self.party.members[self.memberIdx]
 
         # Slots
-        surface.blit(font.render("Equipped Slots:", True, (200, 200, 200)), (20, 80))
+        surface.blit(font.render("Equipped Slots:", True, (200, 200, 200)), (20, 50))
         for i, action_obj in enumerate(member.actionSlots):
             x_pos = 20 + (i * 60)
-            rect = pygame.Rect(x_pos, 100, 55, 70)
+            rect = pygame.Rect(x_pos, 80, 55, 70)
             b_color = (255, 100, 100) if self.stage == "remove" and i == self.slotIdx else (100, 100, 100)
             
             pygame.draw.rect(surface, (40, 30, 40), rect, border_radius=4)
@@ -201,20 +201,20 @@ class ManageActionsState(BaseState):
             act_key = getattr(action_obj, 'key', action_obj.name) 
             adef = self._get_action_def(member, act_key)
             
-            self._draw_icon(surface, adef, x_pos + 20, 105)
+            self._draw_icon(surface, adef, x_pos + 20, 85)
             
             name = adef["name"][:7] if adef else action_obj.name[:7]
             txt = font.render(name, True, (255, 255, 255))
-            surface.blit(txt, (x_pos + 10, 140))
+            surface.blit(txt, (x_pos + 10, 120))
 
-        surface.blit(font.render("Actions Pool:", True, (200, 200, 200)), (20, 190))
+        surface.blit(font.render("Actions Pool:", True, (200, 200, 200)), (20, 160))
         pool = self._get_available_pool()
         
         visible_pool = pool[self.scrollOffset : self.scrollOffset + 5]
         for i, act_key in enumerate(visible_pool):
             actual_idx = i + self.scrollOffset
             x_pos = 20 + (i * 60)
-            rect = pygame.Rect(x_pos, 210, 55, 70)
+            rect = pygame.Rect(x_pos, 190, 55, 70)
             b_color = (100, 255, 100) if self.stage == "add" and actual_idx == self.poolIdx else (100, 100, 100)
             
             pygame.draw.rect(surface, (30, 40, 60), rect, border_radius=4)
@@ -222,11 +222,11 @@ class ManageActionsState(BaseState):
             
             adef = self._get_action_def(member, act_key)
 
-            self._draw_icon(surface, adef, x_pos + 20, 215)
+            self._draw_icon(surface, adef, x_pos + 20, 195)
             
             name = adef["name"][:7] if adef else act_key[:7]
             txt = font.render(name, True, (255, 255, 255))
-            surface.blit(txt, (x_pos + 10, 250))
+            surface.blit(txt, (x_pos + 10, 230))
 
         if self.errorTimer > 0:
             err_txt = settings.FONTS["medium"].render(self.errorMessage, True, (255, 50, 50))

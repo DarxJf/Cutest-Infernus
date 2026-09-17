@@ -17,6 +17,11 @@ from src.States.Game.RunState import RunState
 from src.States.Game.GameOverState import GameOverState
 from src.States.Game.RestState import RestState
 
+EFFECTS = {
+    "poison": 3,
+    "stun": 1,
+}
+
 
 class BattleState(BaseState):
     def enter(
@@ -51,15 +56,13 @@ class BattleState(BaseState):
             (0, 0, settings.TILE_SIZE, settings.TILE_SIZE)
         )
 
-        # self.rangeSurface = pygame.Surface((settings.TILE_SIZE, settings.TILE_SIZE), pygame.SRCALPHA)
-        # pygame.draw.rect(self.rangeSurface, (255, 50, 50, 100), (0, 0, settings.TILE_SIZE, settings.TILE_SIZE))
-
         self.currentGlow = self.glowSurface
         
         self.start_next_turn()
 
     def start_next_turn(self) -> None:
-       
+        self.ui.selectedCardIndex = 0
+
         if self.runState.is_game_over():
             self._defeat()
             return
@@ -117,7 +120,7 @@ class BattleState(BaseState):
                         else:
                             target.hurt(dmg)
                             if action.effect:
-                                target.apply_status(action.effect, 1)
+                                target.apply_status(action.effect, EFFECTS[action.effect])
 
                     else:
                         print(f"Fallo: ¡El objetivo está a {distance} casillas, el arma solo alcanza {action.gridRange}!")
@@ -153,7 +156,6 @@ class BattleState(BaseState):
             selected_action = self.currentActor.actionSlots[list_index]
 
         if selected_action.name in self.currentActor.skillCooldowns:
-            print(f"¡{selected_action.name} está en enfriamiento!")
             return
         
         def on_target_selected(targetX: int, targetY: int) -> None:
@@ -200,9 +202,7 @@ class BattleState(BaseState):
         def on_test_target_selected(targetX: int, targetY: int) -> None:
             self.currentActor.mapX = targetX
             self.currentActor.mapY = targetY
-    
-            print(f"Posiciones logicas nuevas: {self.currentActor.mapX} , {self.currentActor.mapY}")
-    
+
             self.currentActor.x = targetX * settings.TILE_SIZE
             self.currentActor.y = targetY * settings.TILE_SIZE
     
