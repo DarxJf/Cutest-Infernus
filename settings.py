@@ -99,9 +99,9 @@ FRAMES = {
     "action_icons": frames.generate_frames(TEXTURES["action_icons"], 16, 16),
 
     "cloud_walk": frames.generate_frames(TEXTURES["cloud_walk"], 24, 24),
-    "pelusa_walk": frames.generate_frames(TEXTURES["pelusa_walk"], 25, 24),
-    "chloe_walk": frames.generate_frames(TEXTURES["chloe_walk"], 25, 24),
-    "balthazar_walk": frames.generate_frames(TEXTURES["balthazar_walk"], 25, 24),
+    "pelusa_walk": frames.generate_frames(TEXTURES["pelusa_walk"], 24, 24),
+    "chloe_walk": frames.generate_frames(TEXTURES["chloe_walk"], 24, 24),
+    "balthazar_walk": frames.generate_frames(TEXTURES["balthazar_walk"], 24, 24),
     "slime-down":frames.generate_frames(TEXTURES["slime-down"], 13, 14),
     "slime-up":frames.generate_frames(TEXTURES["slime-up"], 13, 14),
     "skel-idle-down": frames.generate_frames(TEXTURES["skel-idle-down"], 16, 16),

@@ -20,22 +20,22 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
             "idle-down": {
                 "texture":"cloud_walk",
                 "frames": [0, 1, 2,],
-                "interval": 0.2
+                "interval": 0.4
             },
             "idle-left": {
                 "texture":"cloud_walk",
                 "frames": [12, 13, 14,],
-                "interval": 0.2
+                "interval": 0.4
             },
             "idle-right": {
                 "texture":"cloud_walk",
                 "frames": [24, 25, 26,],
-                "interval": 0.2
+                "interval": 0.4
             },
             "idle-up": {
                 "texture": "cloud_walk",
-                "frames": [36, 37, 38],
-                "interval": 0.2
+                "frames": [36, 37, 38,],
+                "interval": 0.4
             },
             "walk-down": {
                 "texture": "cloud_walk",
@@ -99,7 +99,68 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "width": 16,
         "height": 16,
         "frame_index": 0,
-        "animations": {},
+        "animations": {
+            "idle-down": {
+                "texture": "pelusa_walk",
+                "frames": [0, 1, 2, 4,],
+                "interval": 0.4
+            },
+            "idle-left": {
+                "texture": "pelusa_walk",
+                "frames": [12, 13, 14, 4,],
+                "interval": 0.4
+            },
+            "idle-right": {
+                "texture": "pelusa_walk",
+                "frames": [24, 25, 26, 4,],
+                "interval": 0.4
+            },
+            "idle-up": {
+                "texture": "pelusa_walk",
+                "frames": [36, 37, 38, 4, 5],
+                "interval": 0.4
+            },
+            "walk-down": {
+                "texture": "pelusa_walk",
+                "frames": [0, 1, 2,],
+                "interval": 0.15
+            },
+            "walk-left": {
+                "texture": "pelusa_walk",
+                "frames": [12, 13, 14,],
+                "interval": 0.15
+            },
+            "walk-right": {
+                "texture": "pelusa_walk",
+                "frames": [24, 25, 26,],
+                "interval": 0.15
+            },
+            "walk-up": {
+                "texture": "pelusa_walk",
+                "frames": [36, 37, 38,],
+                "interval": 0.15
+            },
+            "attack-down": {
+                "texture": "pelusa_walk",
+                "frames": [0, 1, 2,],
+                "interval": 0.15
+            },
+            "attack-left": {
+                "texture": "pelusa_walk",
+                "frames": [12, 13, 14,],
+                "interval": 0.15
+            },
+            "attack-right": {
+                "texture": "pelusa_walk",
+                "frames": [24, 25, 26,],
+                "interval": 0.15
+            },
+            "attack-up": {
+                "texture": "pelusa_walk",
+                "frames": [36, 37, 38,],
+                "interval": 0.15
+            },
+        },
         "base_hp": 28,
         "base_attack": 11,
         "base_magic": 3,
@@ -121,7 +182,68 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "width": 16,
         "height": 16,
         "frame_index": 0,
-        "animations": {},
+        "animations": {
+            "idle-down": {
+                "texture": "chloe_walk",
+                "frames": [0, 1, 2,],
+                "interval": 0.4
+            },
+            "idle-left": {
+                "texture": "chloe_walk",
+                "frames": [12, 13, 14,],
+                "interval": 0.4
+            },
+            "idle-right": {
+                "texture": "chloe_walk",
+                "frames": [24, 25, 26,],
+                "interval": 0.4
+            },
+            "idle-up": {
+                "texture": "chloe_walk",
+                "frames": [36, 37, 38,],
+                "interval": 0.4
+            },
+            "walk-down": {
+                "texture": "chloe_walk",
+                "frames": [0, 1, 2,],
+                "interval": 0.15
+            },
+            "walk-left": {
+                "texture": "chloe_walk",
+                "frames": [12, 13, 14,],
+                "interval": 0.15
+            },
+            "walk-right": {
+                "texture": "chloe_walk",
+                "frames": [24, 25, 26,],
+                "interval": 0.15
+            },
+            "walk-up": {
+                "texture": "chloe_walk",
+                "frames": [36, 37, 38,],
+                "interval": 0.15
+            },
+            "attack-down": {
+                "texture": "chloe_walk",
+                "frames": [0, 1, 2,],
+                "interval": 0.15
+            },
+            "attack-left": {
+                "texture": "chloe_walk",
+                "frames": [12, 13, 14,],
+                "interval": 0.15
+            },
+            "attack-right": {
+                "texture": "chloe_walk",
+                "frames": [24, 25, 26,],
+                "interval": 0.15
+            },
+            "attack-up": {
+                "texture": "chloe_walk",
+                "frames": [36, 37, 38,],
+                "interval": 0.15
+            },
+        },
         "base_hp": 24,
         "base_attack": 5,
         "base_magic": 14,
@@ -143,7 +265,68 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "width": 16,
         "height": 16,
         "frame_index": 0,
-        "animations": {},
+        "animations": {
+            "idle-down": {
+                "texture": "balthazar_walk",
+                "frames": [0, 1, 2, 3, 16, 17,],
+                "interval": 0.4
+            },
+            "idle-left": {
+                "texture": "balthazar_walk",
+                "frames": [12, 13, 14, 3, 16, 17,],
+                "interval": 0.4
+            },
+            "idle-right": {
+                "texture": "balthazar_walk",
+                "frames": [24, 25, 26, 3, 16, 17,],
+                "interval": 0.4
+            },
+            "idle-up": {
+                "texture": "balthazar_walk",
+                "frames": [36, 37, 38, 3, 16, 17,],
+                "interval": 0.4
+            },
+            "walk-down": {
+                "texture": "balthazar_walk",
+                "frames": [0, 1, 2,],
+                "interval": 0.15
+            },
+            "walk-left": {
+                "texture": "balthazar_walk",
+                "frames": [12, 13, 14,],
+                "interval": 0.15
+            },
+            "walk-right": {
+                "texture": "balthazar_walk",
+                "frames": [24, 25, 26,],
+                "interval": 0.15
+            },
+            "walk-up": {
+                "texture": "balthazar_walk",
+                "frames": [36, 37, 38,],
+                "interval": 0.15
+            },
+            "attack-down": {
+                "texture": "balthazar_walk",
+                "frames": [0, 1, 2, 15,],
+                "interval": 0.15
+            },
+            "attack-left": {
+                "texture": "balthazar_walk",
+                "frames": [12, 13, 14, 15,],
+                "interval": 0.15
+            },
+            "attack-right": {
+                "texture": "balthazar_walk",
+                "frames": [24, 25, 26, 15,],
+                "interval": 0.15
+            },
+            "attack-up": {
+                "texture": "balthazar_walk",
+                "frames": [36, 37, 38,],
+                "interval": 0.15
+            },
+        },
         "base_hp": 22,
         "base_attack": 4,
         "base_magic": 16,
@@ -171,8 +354,69 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "texture": "cloud_walk",        
         "width": 16,
         "height": 16,
-        "frame_index": 45,
-        "animations": {},
+        "frame_index": 48,
+        "animations": {
+            "idle-down": {
+                "texture":"cloud_walk",
+                "frames": [48, 49, 50,],
+                "interval": 0.2
+            },
+            "idle-left": {
+                "texture":"cloud_walk",
+                "frames": [60, 61, 62,],
+                "interval": 0.2
+            },
+            "idle-right": {
+                "texture":"cloud_walk",
+                "frames": [72, 73, 74,],
+                "interval": 0.2
+            },
+            "idle-up": {
+                "texture": "cloud_walk",
+                "frames": [84, 85, 86,],
+                "interval": 0.2
+            },
+            "walk-down": {
+                "texture": "cloud_walk",
+                "frames": [48, 49, 50,],
+                "interval": 0.15
+            },
+            "walk-left": {
+                "texture": "cloud_walk",
+                "frames": [60, 61, 62,],
+                "interval": 0.15
+            },
+            "walk-right": {
+                "texture": "cloud_walk",
+                "frames": [72, 73, 74,],
+                "interval": 0.15
+            },
+            "walk-up":{
+                "texture": "cloud_walk",
+                "frames": [84, 85, 86,],
+                "interval": 0.15
+            },
+            "attack-down": {
+                "texture": "cloud_walk",
+                "frames": [48, 49, 50,],
+                "interval": 0.15
+            },
+            "attack-left": {
+                "texture": "cloud_walk",
+                "frames": [60, 61, 62,],
+                "interval": 0.15
+            },
+            "attack-right": {
+                "texture": "cloud_walk",
+                "frames": [72, 73, 74,],
+                "interval": 0.15
+            },
+            "attack-up":{
+                "texture": "cloud_walk",
+                "frames": [84, 85, 86,],
+                "interval": 0.15
+            },
+        },
         "base_hp": 55,
         "base_attack": 10,
         "base_magic": 1,
@@ -194,8 +438,69 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "texture": "pelusa_walk",
         "width": 16,
         "height": 16,
-        "frame_index": 45,
-        "animations": {},
+        "frame_index": 48,
+        "animations": {
+            "idle-down": {
+                "texture": "pelusa_walk",
+                "frames": [48, 49, 50,],
+                "interval": 0.2
+            },
+            "idle-left": {
+                "texture": "pelusa_walk",
+                "frames": [60, 61, 62,],
+                "interval": 0.2
+            },
+            "idle-right": {
+                "texture": "pelusa_walk",
+                "frames": [72, 73, 74,],
+                "interval": 0.2
+            },
+            "idle-up": {
+                "texture": "pelusa_walk",
+                "frames": [84, 85, 86,],
+                "interval": 0.2
+            },
+            "walk-down": {
+                "texture": "pelusa_walk",
+                "frames": [48, 49, 50,],
+                "interval": 0.15
+            },
+            "walk-left": {
+                "texture": "pelusa_walk",
+                "frames": [60, 61, 62,],
+                "interval": 0.15
+            },
+            "walk-right": {
+                "texture": "pelusa_walk",
+                "frames": [72, 73, 74,],
+                "interval": 0.15
+            },
+            "walk-up": {
+                "texture": "pelusa_walk",
+                "frames": [84, 85, 86,],
+                "interval": 0.15
+            },
+            "attack-down": {
+                "texture": "pelusa_walk",
+                "frames": [48, 49, 50,],
+                "interval": 0.15
+            },
+            "attack-left": {
+                "texture": "pelusa_walk",
+                "frames": [60, 61, 62,],
+                "interval": 0.15
+            },
+            "attack-right": {
+                "texture": "pelusa_walk",
+                "frames": [72, 73, 74,],
+                "interval": 0.15
+            },
+            "attack-up": {
+                "texture": "pelusa_walk",
+                "frames": [84, 85, 86,],
+                "interval": 0.15
+            },
+        },
         "base_hp": 22,
         "base_attack": 16,
         "base_magic": 3,
@@ -216,8 +521,69 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "texture": "chloe_walk",
         "width": 16,
         "height": 16,
-        "frame_index": 45,
-        "animations": {},
+        "frame_index": 48,
+        "animations": {
+            "idle-down": {
+                "texture": "chloe_walk",
+                "frames": [48, 49, 50,],
+                "interval": 0.2
+            },
+            "idle-left": {
+                "texture": "chloe_walk",
+                "frames": [60, 61, 62,],
+                "interval": 0.2
+            },
+            "idle-right": {
+                "texture": "chloe_walk",
+                "frames": [72, 73, 74,],
+                "interval": 0.2
+            },
+            "idle-up": {
+                "texture": "chloe_walk",
+                "frames": [84, 85, 86,],
+                "interval": 0.2
+            },
+            "walk-down": {
+                "texture": "chloe_walk",
+                "frames": [48, 49, 50,],
+                "interval": 0.15
+            },
+            "walk-left": {
+                "texture": "chloe_walk",
+                "frames": [60, 61, 62,],
+                "interval": 0.15
+            },
+            "walk-right": {
+                "texture": "chloe_walk",
+                "frames": [72, 73, 74,],
+                "interval": 0.15
+            },
+            "walk-up": {
+                "texture": "chloe_walk",
+                "frames": [84, 85, 86,],
+                "interval": 0.15
+            },
+            "attack-down": {
+                "texture": "chloe_walk",
+                "frames": [48, 49, 50,],
+                "interval": 0.15
+            },
+            "attack-left": {
+                "texture": "chloe_walk",
+                "frames": [60, 61, 62,],
+                "interval": 0.15
+            },
+            "attack-right": {
+                "texture": "chloe_walk",
+                "frames": [72, 73, 74,],
+                "interval": 0.15
+            },
+            "attack-up": {
+                "texture": "chloe_walk",
+                "frames": [84, 85, 86,],
+                "interval": 0.15
+            },
+        },
         "base_hp": 22,
         "base_attack": 3,
         "base_magic": 18,
@@ -238,8 +604,69 @@ PLAYER_CHARACTERS: Dict[str, Dict[str, Any]] = {
         "texture": "balthazar_walk",
         "width": 16,
         "height": 16,
-        "frame_index": 45,
-        "animations": {},
+        "frame_index": 48,
+        "animations": {
+            "idle-down": {
+                "texture": "balthazar_walk",
+                "frames": [48, 49, 50,],
+                "interval": 0.2
+            },
+            "idle-left": {
+                "texture": "balthazar_walk",
+                "frames": [60, 61, 62,],
+                "interval": 0.2
+            },
+            "idle-right": {
+                "texture": "balthazar_walk",
+                "frames": [72, 73, 74,],
+                "interval": 0.2
+            },
+            "idle-up": {
+                "texture": "balthazar_walk",
+                "frames": [84, 85, 86,],
+                "interval": 0.2
+            },
+            "walk-down": {
+                "texture": "balthazar_walk",
+                "frames": [48, 49, 50,],
+                "interval": 0.15
+            },
+            "walk-left": {
+                "texture": "balthazar_walk",
+                "frames": [60, 61, 62,],
+                "interval": 0.15
+            },
+            "walk-right": {
+                "texture": "balthazar_walk",
+                "frames": [72, 73, 74,],
+                "interval": 0.15
+            },
+            "walk-up": {
+                "texture": "balthazar_walk",
+                "frames": [84, 85, 86,],
+                "interval": 0.15
+            },
+            "attack-down": {
+                "texture": "balthazar_walk",
+                "frames": [48, 49, 50,],
+                "interval": 0.15
+            },
+            "attack-left": {
+                "texture": "balthazar_walk",
+                "frames": [60, 61, 62,],
+                "interval": 0.15
+            },
+            "attack-right": {
+                "texture": "balthazar_walk",
+                "frames": [72, 73, 74,],
+                "interval": 0.15
+            },
+            "attack-up": {
+                "texture": "balthazar_walk",
+                "frames": [84, 85, 86,],
+                "interval": 0.15
+            },
+        },
         "base_hp": 26,
         "base_attack": 5,
         "base_magic": 14,
