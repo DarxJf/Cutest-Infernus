@@ -12,7 +12,7 @@ from src.Models.Room import Room
 from src.Models.BattleEntity import BattleEntity
 from src.States.Game.RunState import RunState
 from src.Utils.SpawnHelper import find_free_tile
-from src.Utils.EncounterGenerator import generate_horde
+from src.Utils.EncounterGenerator import generate_horde, generate_boss_encounter
 from src.States.Game.DialogueState import DialogueState
 from src.Definitions.Texts import INTRO_TEXT, PLAY_TUTORIAL_TEXT
 
@@ -103,7 +103,15 @@ class PlayState(BaseState):
     def _start_battle(self) -> None:
         from src.States.Game.BatleState import BattleState
 
-        horde = generate_horde(self.runState.battlesFought)
+        if self.runState.shouldSpawnBoss():
+            horde = generate_boss_encounter(
+                self.runState.battlesFought,
+                self.runState.bossesDefeated,
+                )
+            isBoss = True
+        else:
+            horde = generate_horde(self.runState.battlesFought)
+            isBoss = False
 
         enemies = [
             BattleEntity(x = 0, y = 0, definition=defn)
@@ -115,6 +123,7 @@ class PlayState(BaseState):
             runState=self.runState,
             enemies=enemies,
             room=self.room,
+            isBoss =isBoss
         )
 
     def render(self, surface: pygame.Surface) -> None:

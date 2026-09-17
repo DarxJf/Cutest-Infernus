@@ -421,6 +421,67 @@ ENEMIES: Dict[str, Dict[str, Any]] = {
         "soul_value": 40,
         "exp_value": 60,
     },
+    "boss": {
+        "class_name": "Boss",
+        "name": "Soul Devourer",
+        "width": 32,
+        "height": 32,
+        "frame_index": 0,
+        "animations": {
+            "idle-down": {
+                "texture":"boss-idle",
+                "frames": [0, 1, 2, 3],
+                "interval": 0.2
+            },
+            "idle-left": {
+                "texture":"boss-idle",
+                "frames": [12, 13, 14, 15],
+                "interval": 0.2
+            },
+            "idle-right": {
+                "texture":"boss-idle",
+                "frames": [4, 5, 6, 7],
+                "interval": 0.2
+            },
+            "idle-up": {
+                "texture": "boss-idle",
+                "frames": [8, 9, 10, 11],
+                "interval": 0.2
+            },
+            "walk-down": {
+                "texture": "boss-walk",
+                "frames": [0, 1, 2, 3],
+                "interval": 0.15
+            },
+            "walk-left": {
+                "texture": "boss-walk",
+                "frames": [12, 13, 14, 15],
+                "interval": 0.15
+            },
+            "walk-right": {
+                "texture": "boss-walk",
+                "frames": [4, 5, 6, 7],
+                "interval": 0.15
+            },
+            "walk-up":{
+                "texture": "boss-walk",
+                "frames": [8, 9, 10, 11],
+                "interval": 0.15
+            }
+        },
+        "base_hp": 60,
+        "base_attack": 30,
+        "base_magic": 15,
+        "base_agility": 15,
+        "base_defense": 15,
+        "base_magic_defense": 15,
+        "basic_attack": "strike",
+        "base_rest": 4.0,
+        "base_movement": 3,
+        "default_actions": ["dive", "hellfire_nova"],
+        "soul_value": 40,
+        "exp_value": 60,
+        },
 }
 
 # ---------------------

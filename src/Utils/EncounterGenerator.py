@@ -54,3 +54,36 @@ def generate_horde(battlesFought: int) -> List[Dict[str, Any]]:
         horde.append(scaled)
 
     return horde
+
+def generate_boss_encounter(battlesFought: int, bossesDefeated: int = 0) -> List[Dict[str, Any]]:
+    """
+    Boss encounter: one boss plus 2 minions. The boss scales with
+    BOTH the general battle count and the number of bosses already
+    killed, so each cycle is meaningfully harder.
+    """
+    bossDef = ENEMIES["boss"]
+
+    levelBonus = _level_bonus_for(battlesFought) + bossesDefeated * 2
+
+    boss = dict(bossDef)
+    boss["level"] = bossDef.get("level", 1) + levelBonus
+    boss["base_hp"] = bossDef["base_hp"] + levelBonus * 10
+    boss["base_attack"] = bossDef["base_attack"] + levelBonus * 2
+    boss["base_defense"] = bossDef["base_defense"] + levelBonus
+    boss["base_magic"] = bossDef.get("base_magic", 0) + levelBonus
+
+    pool = _enemy_pool_for(battlesFought)
+    minionKeys = [random.choice(pool) for _ in range(2)]
+
+    minions = []
+    for key in minionKeys:
+        baseDef = ENEMIES[key]
+        scaled = dict(baseDef)
+        scaled["level"] = baseDef.get("level", 1) + levelBonus
+        if levelBonus > 0:
+            scaled["base_hp"] = baseDef["base_hp"] + levelBonus * 5
+            scaled["base_attack"] = baseDef["base_attack"] + levelBonus * 2
+            scaled["base_defense"] = baseDef["base_defense"] + levelBonus
+        minions.append(scaled)
+
+    return [boss] + minions
