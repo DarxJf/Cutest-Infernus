@@ -5,18 +5,21 @@ import time
 
 from gale.state import BaseState
 
-from src.States.Game.SelectTargetState import SelectTargetState
 import settings
-from src.Utils.TurnQueue import TurnQueue
-from src.Utils.SpawnHelper import find_free_tiles, find_free_tile
-from src.Models.BattleEntity import BattleEntity
+from src.ai.BehaviorEnemy import build_enemy_brain
+from src.Definitions.Texts import BATTLE_START_TEXT, TURN_TUTORIAL_TEXT
 from src.Gui.BatleUI import BattleUI
 from src.Gui.BatleResultUI import BattleResultUI
+from src.Models.BattleEntity import BattleEntity
+from src.Utils.TurnQueue import TurnQueue
 from src.Utils.MovementCalculator import MovementCalculator
-from src.ai.BehaviorEnemy import build_enemy_brain
+from src.Utils.SpawnHelper import find_free_tiles, find_free_tile
 from src.States.Game.RunState import RunState
 from src.States.Game.GameOverState import GameOverState
 from src.States.Game.RestState import RestState
+from src.States.Game.DialogueState import DialogueState
+from src.States.Game.SelectTargetState import SelectTargetState
+
 
 class BattleState(BaseState):
     def enter(
@@ -61,7 +64,14 @@ class BattleState(BaseState):
         )
 
         self.currentGlow = self.glowSurface
-        
+
+                   
+        self.state_machine.push(
+            DialogueState(self.state_machine),
+            text=BATTLE_START_TEXT,
+            position = "bottom",
+        )
+         
         self.start_next_turn()
 
     def _place_party(self) -> None:

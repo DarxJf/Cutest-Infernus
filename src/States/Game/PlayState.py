@@ -5,16 +5,16 @@ from gale.state import BaseState
 
 import settings
 from src.States.Game.PauseMenuState import PauseMenuState
-  
-from src.States.Game.RestState import RestState
 from src.States.Game.RunState import RunState
-from src.Definitions.Entity import PLAYER_CHARACTERS, ENEMIES
+from src.States.Game.DialogueState import DialogueState
+from src.Definitions.Entity import PLAYER_CHARACTERS
 from src.Models.Room import Room
 from src.Models.BattleEntity import BattleEntity
 from src.States.Game.RunState import RunState
 from src.Utils.SpawnHelper import find_free_tile
 from src.Utils.EncounterGenerator import generate_horde
-
+from src.States.Game.DialogueState import DialogueState
+from src.Definitions.Texts import INTRO_TEXT, PLAY_TUTORIAL_TEXT
 
 class PlayState(BaseState):
     def enter(self, **kwargs: dict) -> None:
@@ -59,6 +59,24 @@ class PlayState(BaseState):
         occupied.add(tile)
 
         self.playerChar = leader
+
+        def show_play_tutorial():
+            if not self.runState.seenPlayTutorial:
+                self.runState.seenPlayTutorial = True
+                self.state_machine.push(
+                    DialogueState(self.state_machine),
+                    text=PLAY_TUTORIAL_TEXT,
+                    position="top",
+                )
+
+        if not self.runState.seenIntro:
+            self.runState.seenIntro = True
+            self.state_machine.push(
+                DialogueState(self.state_machine),
+                text=INTRO_TEXT,
+                position="bottom",
+                onClose=show_play_tutorial,    
+            )
 
     def update(self, dt: float) -> None:
         self.room.update(dt)
