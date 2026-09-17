@@ -82,6 +82,8 @@ TEXTURES = {
     "demon-walk-left":pygame.image.load(BASE_DIR/"assets"/"Sprites"/"Entities"/"Enemies"/"Demon"/"Walk"/"Zombie_walk_left.png"),
     "demon-walk-right":pygame.image.load(BASE_DIR/"assets"/"Sprites"/"Entities"/"Enemies"/"Demon"/"Walk"/"Zombie_walk_right.png"),
     "demon-walk-up": pygame.image.load(BASE_DIR/"assets"/"Sprites"/"Entities"/"Enemies"/"Demon"/"Walk"/"Zombie_walk_up.png"),
+    "boss-idle": pygame.image.load(BASE_DIR/"assets"/"Sprites"/"Entities"/"Enemies"/"Boss"/"Boss_idle_32x32.png"),
+    "boss-walk":pygame.image.load(BASE_DIR/"assets"/"Sprites"/"Entities"/"Enemies"/"Boss"/"Boss_Walk_32x32.png"),
 }
 
 FRAMES = {
@@ -118,6 +120,9 @@ FRAMES = {
     "demon-walk-left":frames.generate_frames(TEXTURES["demon-walk-left"], 16, 17),
     "demon-walk-right":frames.generate_frames(TEXTURES["demon-walk-right"], 16, 17),
     "demon-walk-up":frames.generate_frames(TEXTURES[ "demon-walk-up"], 16, 17),
+    "boss-idle":frames.generate_frames(TEXTURES["boss-idle"], 32, 32),
+    "boss-walk":frames.generate_frames(TEXTURES["boss-walk"], 32, 32),
+    
 }
 
 TILE_IDS = {
