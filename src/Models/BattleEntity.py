@@ -137,6 +137,9 @@ class BattleEntity(Entity):
         if "stun" in self.activeStatus:
             isStunned = True
 
+        # if "buff" in self.activeStatus:
+
+
         expired = []
         for status in self.activeStatus:
             self.activeStatus[status] -= 1
@@ -171,7 +174,8 @@ class BattleEntity(Entity):
             isWalkable,
         )
 
-    def apply_aoe_damage(self, action: "Action", boardCols: int, boardRows: int, targetList: list["BattleEntity"]) -> None:
+    def apply_aoe_damage(self, action: Action, boardCols: int, boardRows: int, targetList: list["BattleEntity"],
+                         status_dict: dict[str, int] = {}) -> None:
         affectedTiles = set()
 
         if action.areaType == "cross":
@@ -199,6 +203,8 @@ class BattleEntity(Entity):
                     target.heal(dmg)
                 else:
                     target.hurt(dmg)
+                    if action.effect in ["stun", "poison"]:
+                        target.apply_status(action.effect, status_dict[action.effect])
 
 
     def _calculate_xp_requirement(self) -> int:

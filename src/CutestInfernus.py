@@ -6,8 +6,9 @@ import pygame
 
 from gale.game import Game
 from gale.input_handler import InputData
-from gale.state import StateMachine, StateStack
+from gale.state import StateStack
 
+import settings
 from src.States.Game.StartState import StartState
 
 # Name probably will change
@@ -15,6 +16,8 @@ class CutestInfernus(Game):
     def init(self) -> None:
         self.stateStack = StateStack()
         self.stateStack.push(StartState(self.stateStack))
+
+    settings.play_music("main_CI")
 
     def update(self, dt: float) -> None:
         self.stateStack.update(dt)

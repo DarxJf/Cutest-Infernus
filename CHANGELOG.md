@@ -34,3 +34,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `IA` workly with a behavior tree. `IA` could move and attack nearest `Party` target. Each `Enemy` has it's own brain to do actions.
 - `Animations` included on game. Each entity have it's current state like `IdleState`, `WalkState`, `AttackState` with tweens to allow animations for every state.
 - `ActionInfoPanel` helps the player to know about character's abilities, is include in `BattleState` and `ManageActions`
+- Functions on settings to play and stop music. Main theme made by us.

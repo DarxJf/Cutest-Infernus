@@ -228,11 +228,16 @@ class ManageActionsState(BaseState):
 
         surface.blit(font.render("Actions Pool:", True, (200, 200, 200)), (20, 160))
         pool = self._get_available_pool()
+
+        arrow_left = settings.FRAMES["cursors"][settings.TILE_IDS["arrowLeft"]]
+        arrow_right = settings.FRAMES["cursors"][settings.TILE_IDS["arrowRight"]]
+        surface.blit(settings.TEXTURES["cursors"], (20, 217), area=arrow_left)
+        surface.blit(settings.TEXTURES["cursors"], (345, 217), area=arrow_right)
         
         visible_pool = pool[self.scrollOffset : self.scrollOffset + 5]
         for i, act_key in enumerate(visible_pool):
             actual_idx = i + self.scrollOffset
-            x_pos = 20 + (i * 60)
+            x_pos = 40 + (i * 60)
             rect = pygame.Rect(x_pos, 190, 55, 70)
             b_color = (100, 255, 100) if self.stage == "add" and actual_idx == self.poolIdx else (100, 100, 100)
             

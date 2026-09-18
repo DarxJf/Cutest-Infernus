@@ -78,6 +78,8 @@ class PlayState(BaseState):
                 onClose=show_play_tutorial,    
             )
 
+        settings.stop_music("main_CI")
+
     def update(self, dt: float) -> None:
         self.room.update(dt)
         self.playerChar.update(dt)

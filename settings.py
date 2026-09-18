@@ -178,5 +178,26 @@ TILE_IDS = {
 }
 
 SOUNDS = {
-    "select": pygame.mixer.Sound(BASE_DIR / "assets" / "Music" / "select.wav" )
+    "select": pygame.mixer.Sound( BASE_DIR / "assets" / "Music" / "select.wav" ),
+    "attack": pygame.mixer.Sound( BASE_DIR / "assets" / "Music" / "attack-1.wav" ),
 }
+
+MUSIC = {
+    "main_CI": pygame.mixer.Sound( BASE_DIR / "assets" / "Music" / "main_CI.mp3" ),
+}
+
+MUSIC_CHANNELS = {
+    "main_CI": None,
+}
+
+def play_music(name: str) -> None:
+    stop_music(name)
+    MUSIC_CHANNELS[name] = MUSIC[name].play(loops=-1)
+
+
+def stop_music(name: str) -> None:
+    channel = MUSIC_CHANNELS.get(name)
+
+    if channel is not None:
+        channel.stop()
+        MUSIC_CHANNELS[name] = None

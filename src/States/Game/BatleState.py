@@ -155,6 +155,9 @@ class BattleState(BaseState):
         isStunned = self.currentActor.process_status()
         self.currentActor.process_cooldowns()
 
+        if self._check_casualties():
+            return
+
         if getattr(self.currentActor, "dead", False):
             self.start_next_turn()
             return
@@ -185,11 +188,10 @@ class BattleState(BaseState):
         actor.state_machine.change("attack", actor, targetX, targetY)
 
         if action.areaType in ["cross", "square"]:
-            actor.apply_aoe_damage(action, boardCols, boardRows, targets)
+            actor.apply_aoe_damage(action, boardCols, boardRows, targets, EFFECTS)
         else:
             for target in targets:
                 if target.mapX == targetX and target.mapY == targetY and not getattr(target, 'dead', False):
-                    # NUEVO: Lógica condicional para ataques "single" vs otros
                     dx = abs(target.mapX - actor.mapX)
                     dy = abs(target.mapY - actor.mapY)
                     
@@ -314,6 +316,12 @@ class BattleState(BaseState):
 
     def _check_casualties(self) -> bool:
         deadEnemies = [e for e in self.enemies if getattr(e, 'dead', False)]
+        deadParty = [member for member in self.party if getattr(member, 'dead', False)]
+
+        for member in deadParty:
+            self.turnQueue.remove_entity(member)
+            if member in self.allUnits:
+                self.allUnits.remove(member)
         
         for enemy in deadEnemies:
             self.earnedSouls += enemy.soulValue 
@@ -466,7 +474,8 @@ class BattleState(BaseState):
         self.ui.render(surface, self.currentActor, self.upcomingTurns, hasMoved)
 
         for entity in self.party:
-            entity.render(surface, offsetX, offsetY)
+            if not getattr(entity, "dead", False):
+                entity.render(surface, offsetX, offsetY)
 
         for enemy in self.enemies:
             enemy.render(surface, offsetX, offsetY)
