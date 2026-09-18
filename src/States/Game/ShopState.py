@@ -20,6 +20,19 @@ SHOP_COSTS = {
     "sage_necklace": 70,
     "brute_belt":    90,
     "swift_boots":   80,
+  
+    "iron_sword": 65,
+    "iron_shield": 65,
+    "swift_charm": 70,
+    "arcane_orb": 75,
+
+    "assassin_dagger": 110,
+    "guardian_plate": 120,
+    "wind_cloak": 110,
+    "warlock_tome": 130,
+
+    "hero_medal": 180,
+    "cursed_ring": 200,
 }
 
 class ShopState(BaseState):
