@@ -1,6 +1,7 @@
 import random
 import pygame
 import settings
+from typing import Set, Tuple
 
 from src.Definitions.Scenery import SCENERY
 
@@ -25,6 +26,8 @@ class Room():
         self.logicalGrid = []
         self.visualGrid = []
         self.doors = []
+
+        self.beigeCells: Set[Tuple[int, int]] = set()
        
 
         self.doorSurfaces = {
@@ -61,8 +64,12 @@ class Room():
 
         for y in range(self.rows):
             for x in range(self.cols):
+
+                if self.logicalGrid[y][x] == WALKABLE:
+                    if (x + y) % 2 == 1:
+                        self.beigeCells.add((x,y))
+
                 val = self.logicalGrid[y][x]
-                
                 if val == WALL:
                     if y == 0:
                         if x == 0: tileID = settings.TILE_IDS["wallTopLeftCorner"]
@@ -174,15 +181,21 @@ class Room():
         texture = settings.TEXTURES[self.textureKey]
         frames = settings.FRAMES[self.textureKey]
         tile = settings.TILE_SIZE
+
+        beigeTexture = settings.TEXTURES["tile-set"]
+        beigeFrames = settings.FRAMES["tile-set"]
+        beigeFrames = beigeFrames[settings.TILE_IDS["floor-beige"]]
         
         for y in range(self.rows):
-            for x in range(self.cols):
-                tileID = self.visualGrid[y][x]
-                
+            for x in range(self.cols):  
                 px = self.offsetX + (x * settings.TILE_SIZE)
                 py = self.offsetY + (y * settings.TILE_SIZE)
-                
-                surface.blit(texture, (px, py), frames[tileID])
+
+                if (x,y) in self.beigeCells:
+                    surface.blit(beigeTexture, (px,py), beigeFrames)
+                else:
+                    tileID = self.visualGrid[y][x]
+                    surface.blit(texture, (px, py), frames[tileID])
         
 
         for (x, y, kind) in self.doors:
