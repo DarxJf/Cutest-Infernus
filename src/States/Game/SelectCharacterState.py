@@ -6,6 +6,8 @@ from gale.state import BaseState
 import settings
 from src.Definitions.Entity import get_main_characters
 from src.States.Game.PlayState import PlayState
+from src.States.Game.FadeInState import FadeInState
+from src.States.Game.FadeOutState import FadeOutState
 
 MAIN_ORDER: List[str] = ["Cloud", "Chloe", "Balthazar", "Pelusa"]
 
@@ -52,11 +54,29 @@ class SelectCharacterState(BaseState):
     def _confirm(self) -> None:
         settings.SOUNDS["select"].play()
         chosenKey = self.mainKeys[self.characterIndex]
-        self.state_machine.pop()
-        self.state_machine.push(
-            PlayState(self.state_machine),
-            character_selected = chosenKey,
+        
+
+        def on_complete()->None:
+            self.state_machine.pop()
+            self.state_machine.push(
+                PlayState(self.state_machine),
+                character_selected = chosenKey,
             )
+
+            self.state_machine.push(
+                FadeOutState(self.state_machine),
+                color=(0, 0, 0),
+                time=0.5,
+                onComplete=lambda: None,
+            )
+
+        self.state_machine.push(
+            FadeInState(self.state_machine),
+            color=(0, 0, 0),
+            time=1,
+            onComplete=on_complete,
+        )
+        
 
     def render(self, surface: pygame.Surface) -> None:
         x0 = -int(self.bgOffset)

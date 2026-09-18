@@ -16,7 +16,7 @@ from src.Models.ShopOffers import ShopOffers
 from src.Models.RunWallet import RunWallet
 
 
-BOSS_EVERY_N_BATTLES = 5
+BOSS_EVERY_N_BATTLES = 2
 
 
 class RunState:

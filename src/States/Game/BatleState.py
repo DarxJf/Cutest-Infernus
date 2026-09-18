@@ -7,7 +7,7 @@ from gale.state import BaseState
 
 import settings
 from src.ai.BehaviorEnemy import build_enemy_brain
-from src.Definitions.Texts import BATTLE_START_TEXT, BOSS_START_TEXT
+from src.Definitions.Texts import BATTLE_START_TEXT, BOSS_START_TEXT, TURN_TUTORIAL_TEXT
 from src.Gui.BatleUI import BattleUI
 from src.Gui.ActionInfoPanel import ActionInfoPanel
 from src.Gui.BatleResultUI import BattleResultUI
@@ -75,18 +75,28 @@ class BattleState(BaseState):
 
         self.currentGlow = self.glowSurface
 
+        def show_play_tutorial():
+            if not self.runState.seenBattleTutorial:
+                self.runState.seenBattleTutorial = True
+                self.state_machine.push(
+                    DialogueState(self.state_machine),
+                    text=TURN_TUTORIAL_TEXT,
+                    position="top",
+                )
+
         if self.isBoss:
             starText = BOSS_START_TEXT
         else: 
             starText = BATTLE_START_TEXT
-
-                   
+       
         self.state_machine.push(
             DialogueState(self.state_machine),
             text=starText,
             position = "bottom",
+            onClose = show_play_tutorial(),
         )
-         
+
+                 
         self.start_next_turn()
 
     def _place_party(self) -> None:

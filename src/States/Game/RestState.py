@@ -8,10 +8,11 @@ import pygame
 
 from gale.state import BaseState
 
-
 import settings
 from src.Gui.Menu import Menu
 from src.States.Game.HireState import HireState
+from src.States.Game.FadeInState import FadeInState
+from src.States.Game.FadeOutState import FadeOutState
 
 
 class RestState(BaseState):
@@ -82,7 +83,27 @@ class RestState(BaseState):
         )
 
     def _leave(self) -> None:
-        self.state_machine.pop()
+
+        def on_complete() -> None:
+            self.state_machine.pop()
+            
+            play_state = self.state_machine.states[-1]
+            if hasattr(play_state,"regenerate_room"):
+                play_state.regenerate_room()
+
+            self.state_machine.push(
+                FadeOutState(self.state_machine),
+                color=(0, 0, 0),
+                time=0.5,
+                onComplete=lambda: None,
+            )
+
+        self.state_machine.push(
+            FadeInState(self.state_machine),
+            color=(0, 0, 0),
+            time=1,
+            onComplete=on_complete,
+        )
 
     def _on_submenu_closed(self) -> None:
         pass

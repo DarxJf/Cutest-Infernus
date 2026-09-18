@@ -29,3 +29,7 @@ def wrap_text(font: pygame.font.Font, text: str, maxWidth: float) -> List[str]:
         lines.append(current)
 
     return lines
+
+def format_modifier(key: str, value: int) -> str:
+    sign = "+" if value >= 0 else "" 
+    return f"{key}{sign}{value}"
