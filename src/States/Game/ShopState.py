@@ -13,7 +13,7 @@ from src.Gui.Menu import Menu
 from src.Models.Inventory import Inventory
 from src.Definitions.Objects import PASSIVE_OBJECTS
 from src.Utils.Icons import icon_surface
-from src.Utils.TextUtils import wrap_text
+from src.Utils.TextUtils import wrap_text, format_modifier
 
 SHOP_COSTS = {
     "vitality_ring": 60,
@@ -194,7 +194,7 @@ class ShopState(BaseState):
             textY += lineH
 
         textY += 6
-        statsText = "   ".join(f"{k}+{v}" for k, v in objDef["stat_modifiers"].items())
+        statsText = "   ".join(format_modifier(k,v) for k, v in objDef["stat_modifiers"].items())
         statsLines = wrap_text(small, statsText, textAreaW)
         for line in statsLines:
             stats_lbl = small.render(line, True, (150, 220, 150))

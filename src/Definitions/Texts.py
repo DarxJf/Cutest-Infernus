@@ -57,9 +57,16 @@ BATTLE_START_TEXT = "A horde of adorable creatures appeared!"
 
 
 TURN_TUTORIAL_TEXT = (
-    "It's your turn.\n"
-    "Use LEFT/RIGHT to pick a card, ENTER to confirm."
+    "Use LEFT/RIGHT to pick a card, ENTER to confirm. \n"
+    "Press P to pause the battle at any moment.\n"
+    "Changed your mind while picking a target?\n"
+    "Press O to cancel and go back.\n"
+    "Want to know what a card does before using it?\n"
+    "Press I to open its details panel.\n"
+    "Press I or O again to close it."
 )
+
+
 
 DEFEAT_TEXT = "Your leader has fallen. The run ends here."
 

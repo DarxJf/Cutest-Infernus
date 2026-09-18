@@ -7,6 +7,8 @@ import settings
 from src.States.Game.PauseMenuState import PauseMenuState
 from src.States.Game.RunState import RunState
 from src.States.Game.DialogueState import DialogueState
+from src.States.Game.FadeInState import FadeInState
+from src.States.Game.FadeOutState import FadeOutState
 from src.Definitions.Entity import PLAYER_CHARACTERS
 from src.Models.Room import Room
 from src.Models.BattleEntity import BattleEntity
@@ -120,15 +122,49 @@ class PlayState(BaseState):
             for defn in horde
         ]
 
+
+        def on_complete()-> None:
+            self.state_machine.push(
+                        BattleState(self.state_machine),
+                        runState=self.runState,
+                        enemies=enemies,
+                        room=self.room,
+                        isBoss =isBoss
+            )
+
+            self.state_machine.push(
+                FadeOutState(self.state_machine),
+                color=(0, 0, 0),
+                time=0.5,
+                onComplete=lambda: None,
+            )
+
         self.state_machine.push(
-            BattleState(self.state_machine),
-            runState=self.runState,
-            enemies=enemies,
-            room=self.room,
-            isBoss =isBoss
+            FadeInState(self.state_machine),
+            color=(0, 0, 0),
+            time=1,
+            onComplete=on_complete,
         )
 
+    
+    def regenerate_room(self) -> None:
+        self.room = Room(cols=20, rows=12)
+        occupied = set()
+
+        leader = self.runState.party.lead()
+        if leader is None:
+            return
+
+        tile = find_free_tile(
+            self.room, 3, self.room.rows - 3, occupied,
+        )
+        if tile is not None:
+            leader.mapX, leader.mapY = tile
+            leader.x = tile[0] * settings.TILE_SIZE
+            leader.y = tile[1] * settings.TILE_SIZE
+
     def render(self, surface: pygame.Surface) -> None:
+        surface.fill((30, 20, 40))
         self.room.render(surface)
 
         offsetX = self.room.offsetX
