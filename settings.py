@@ -179,7 +179,7 @@ TILE_IDS = {
 
 SOUNDS = {
     "select": pygame.mixer.Sound( BASE_DIR / "assets" / "Music" / "select.wav" ),
-    "attack": pygame.mixer.Sound( BASE_DIR / "assets" / "Music" / "attack-1.wav" ),
+    "attack": pygame.mixer.Sound( BASE_DIR / "assets" / "Music" / "attack-1.mp3" ),
 }
 
 MUSIC = {

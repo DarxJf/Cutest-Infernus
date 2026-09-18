@@ -117,6 +117,18 @@ class BattleEntity(Entity):
             raw_damage = (self.agility * action.multiplier) * variance
             final_damage = math.floor(raw_damage - target.agility)
 
+        elif action.scalingStat == "defense":
+            raw_damage = (self.defense * action.multiplier) * variance
+            final_damage = math.floor(raw_damage - target.defense)
+    
+        elif action.scalingStat == "magic_defense":
+            raw_damage = (self.magic_defense * action.multiplier) * variance
+            final_damage = math.floor(raw_damage - target.magic_defense)
+    
+        elif action.scalingStat == "agility":
+            raw_damage = (self.agility * action.multiplier) * variance
+            final_damage = math.floor(raw_damage - target.agility)
+
         else:
             final_damage = 1
             

@@ -17,8 +17,6 @@ class CutestInfernus(Game):
         self.stateStack = StateStack()
         self.stateStack.push(StartState(self.stateStack))
 
-    settings.play_music("main_CI")
-
     def update(self, dt: float) -> None:
         self.stateStack.update(dt)
 

@@ -32,6 +32,8 @@ class StartState(BaseState):
         self.bgScrollSpeed = 20.0                   
         self.bgOffset = 0.0
 
+        settings.play_music("main_CI")
+
     def update(self, dt):
         self.menu.update(dt)
         self.bgOffset = (self.bgOffset + self.bgScrollSpeed * dt) % self.bgWidth

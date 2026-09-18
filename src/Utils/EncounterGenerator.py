@@ -47,7 +47,7 @@ def generate_horde(battlesFought: int) -> List[Dict[str, Any]]:
         scaled["level"] = baseDef.get("level", 1) + levelBonus
 
         if levelBonus > 0:
-            scaled["base_hp"] = baseDef["base_hp"] + levelBonus * 5
+            scaled["base_hp"] = baseDef["base_hp"] + levelBonus * 2
             scaled["base_attack"] = baseDef["base_attack"] + levelBonus * 2
             scaled["base_defense"] = baseDef["base_defense"] + levelBonus
 
@@ -81,7 +81,7 @@ def generate_boss_encounter(battlesFought: int, bossesDefeated: int = 0) -> List
         scaled = dict(baseDef)
         scaled["level"] = baseDef.get("level", 1) + levelBonus
         if levelBonus > 0:
-            scaled["base_hp"] = baseDef["base_hp"] + levelBonus * 5
+            scaled["base_hp"] = baseDef["base_hp"] + levelBonus * 3
             scaled["base_attack"] = baseDef["base_attack"] + levelBonus * 2
             scaled["base_defense"] = baseDef["base_defense"] + levelBonus
         minions.append(scaled)

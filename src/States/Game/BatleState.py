@@ -176,12 +176,14 @@ class BattleState(BaseState):
             self.enemyTurnDelay = 2
 
     def resolve_action(self, actor: BattleEntity, action: Any, targetX: int, targetY: int, is_enemy: bool) -> None:
+        actor_is_enemy = actor in self.enemies
+
         if action.targetType == "self":
             targets = [actor]
         elif action.targetType == "ally":
-            targets = self.enemies if is_enemy else self.party
+            targets = self.enemies if actor_is_enemy else self.party
         else: # "enemy"
-            targets = self.party if is_enemy else self.enemies
+            targets = self.party if actor_is_enemy else self.enemies
 
         boardCols, boardRows = self.room.cols, self.room.rows 
 

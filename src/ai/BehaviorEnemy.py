@@ -25,12 +25,15 @@ def build_enemy_brain() -> BehaviorTree:
         dist = abs(target.mapX - agent.currentActor.mapX) + abs(target.mapY - agent.currentActor.mapY)
 
         available_actions = []
-        if agent.currentActor.basicAttack:
-            available_actions.append(agent.currentActor.basicAttack)
-            
         for act in agent.currentActor.actionSlots:
             if act.name not in agent.currentActor.skillCooldowns:
                 available_actions.append(act)
+
+        if (
+            agent.currentActor.basicAttack
+            and agent.currentActor.basicAttack.name not in agent.currentActor.skillCooldowns
+        ):
+            available_actions.append(agent.currentActor.basicAttack)
 
         for act in available_actions:
             if dist <= act.gridRange:
@@ -98,10 +101,6 @@ def build_enemy_brain() -> BehaviorTree:
 
         if not best_tile:
             return Status.FAILURE
-
-        # actor.mapX, actor.mapY = best_tile
-        # actor.x = best_tile[0] * settings.TILE_SIZE
-        # actor.y = best_tile[1] * settings.TILE_SIZE
 
         actor.state_machine.change("walk", actor, best_tile[0], best_tile[1])
 

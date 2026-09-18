@@ -715,7 +715,7 @@ ENEMIES: Dict[str, Dict[str, Any]] = {
                 "interval": 0.15
             }
         },
-        "base_hp": 25,
+        "base_hp": 22,
         "base_attack": 8,
         "base_magic": 2,
         "base_agility": 2,
@@ -775,7 +775,7 @@ ENEMIES: Dict[str, Dict[str, Any]] = {
                 "interval": 0.15
             }
         },
-        "base_hp": 30,
+        "base_hp": 34,
         "base_attack": 9,
         "base_magic": 1,
         "base_agility": 4,
@@ -835,7 +835,7 @@ ENEMIES: Dict[str, Dict[str, Any]] = {
                 "interval": 0.15
             }
         },
-        "base_hp": 60,
+        "base_hp": 50,
         "base_attack": 10,
         "base_magic": 9,
         "base_agility": 6,
@@ -896,7 +896,7 @@ ENEMIES: Dict[str, Dict[str, Any]] = {
                 "interval": 0.15
             }
         },
-        "base_hp": 60,
+        "base_hp": 78,
         "base_attack": 15,
         "base_magic": 15,
         "base_agility": 15,
@@ -905,7 +905,7 @@ ENEMIES: Dict[str, Dict[str, Any]] = {
         "basic_attack": "strike",
         "base_rest": 4.0,
         "base_movement": 3,
-        "default_actions": ["dive", "hellfire_nova"],
+        "default_actions": ["dive", "hellfire_nova", "death_call"],
         "soul_value": 40,
         "exp_value": 60,
         },
