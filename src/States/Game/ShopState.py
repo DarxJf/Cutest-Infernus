@@ -41,7 +41,9 @@ class ShopState(BaseState):
         self.inventory = runState.inventory
         self.onClose = onClose or (lambda: None)
 
-        self.shopKeys = list(PASSIVE_OBJECTS.keys())
+        self.runState.shopOffers.reroll()
+
+        self.shopKeys = self.runState.shopOffers.all()
 
         items = []
         for key in self.shopKeys:
@@ -71,7 +73,10 @@ class ShopState(BaseState):
                 return
             self.runState.wallet.souls -= cost
             self.inventory.add(key)
+            self.runState.shopOffers.remove(key)
             settings.SOUNDS["select"].play()
+
+            self._rebuild_menu()
         return cb
 
     def _close(self) -> None:
@@ -93,6 +98,26 @@ class ShopState(BaseState):
         elif inputId == "pause":
             self._close()
 
+    def _rebuild_menu(self) -> None:
+        self.shopKeys = self.runState.shopOffers.all()
+
+        items = []
+        for key in self.shopKeys:
+            adef = PASSIVE_OBJECTS[key]
+            cost = SHOP_COSTS.get(key, 100)
+            owned = self.inventory.has(key)
+            label = f"{adef['name']}  ({cost})" if not owned else f"{adef['name']} (Owned)"
+            items.append((label, self._make_buy_callback(key, cost)))
+        items.append(("Back", self._close))
+
+        menuW = 160
+        menuH = settings.VIRTUAL_HEIGHT - 60
+        self.menu = Menu(
+            16, 44, menuW, menuH,
+            items=items,
+            font=settings.FONTS["small"],
+        )
+
     def render(self, surface: pygame.Surface) -> None:
         surface.fill((15, 15, 22))
 
@@ -102,11 +127,9 @@ class ShopState(BaseState):
         title = medium.render("Shop", True, (240, 220, 50))
         surface.blit(title, (16, 12))
 
-        
         soulsText = small.render(f"Souls: {self.runState.wallet.souls}", True, (240, 220, 50))
         surface.blit(soulsText, (settings.VIRTUAL_WIDTH - soulsText.get_width() - 16, 16))
 
-     
         self.menu.render(surface)
 
         self._render_item_detail(surface)
