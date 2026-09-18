@@ -79,12 +79,8 @@ class SlotSelectState(BaseState):
         self.onClose()
 
     def render(self, surface: pygame.Surface) -> None:
-     
-        overlay = pygame.Surface((settings.VIRTUAL_WIDTH, settings.VIRTUAL_HEIGHT))
-        overlay.set_alpha(200)
-        overlay.fill((0, 0, 0))
-        surface.blit(overlay, (0, 0))
-
+        surface.fill((30, 20, 40))
+    
         medium = settings.FONTS["medium"]
         titleText = "Save Game" if self.mode == "save" else "Load Game"
         title = medium.render(titleText, True, (240, 220, 50))
@@ -122,7 +118,7 @@ class SlotSelectState(BaseState):
                 textRect = text.get_rect(centerx=settings.VIRTUAL_WIDTH / 2, centery=slotY + CARD_HEIGHT / 2)
                 surface.blit(text, textRect)
 
-        hint = small.render("PAUSE: Cancel", True, (150, 150, 150))
+        hint = small.render("O: Cancel", True, (150, 150, 150))
         hintRect = hint.get_rect(center=(settings.VIRTUAL_WIDTH / 2, settings.VIRTUAL_HEIGHT - 20))
         surface.blit(hint, hintRect)
 
