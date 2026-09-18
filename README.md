@@ -1,6 +1,64 @@
 # Cutest-Infernus
 
+[![Python](https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+![Gale](https://img.shields.io/badge/Gale-1.17.0-6C5CE7)
+
 A tactical RPG game inspired by “Mewgenics” and many other from his genre but it’s so adorable that you wouldn’t even notice the pain and terror it exudes.
+
+The supreme god of your world has trapped you in a black hole that has swallowed everything you've ever known. But you're still alive! In this tactical role-playing game, which incorporates some roguelike mechanics, you'll have to venture into dungeons and defeat hordes of enemies, hire mercenaries, buy items, and lead a party of four members with unique powers to get as far as possible.
+
+## How to execute
+
+First of all, make sure you have the Gale engine installed. It is recommended to create and activate a virtual environment first.
+
+### Linux and macOS
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### Windows PowerShell
+
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+```
+
+### Windows Command Prompt
+
+```bat
+python -m venv venv
+venv\Scripts\activate.bat
+```
+
+To leave the virtual environment on any platform:
+
+```bash
+deactivate
+```
+
+### Gale Engine by pip
+
+```bash
+pip install gale-engine
+```
+
+---
+
+Then you have everything, just go to the root project (Don't enter into any carpet) and write:
+
+```bash
+python3 main.py
+```
+
+or
+
+```bash
+python3.x main.py
+```
+
+The `x` represent the version of python installed on your computer.
 
 ## Structure Rules
 
@@ -70,20 +128,41 @@ The following structure may change in the future:
 
 ```text
 📁 Raíz del Proyecto
-├── 📁 assets/  # Multimedia resources           
-│   ├── 📁 Fonts/   # typography     
-│   ├── 📁 Music/   # Music and sounds effects     
-│   └── 📁 Sprites/ # All kind of tiles and sprites    
-│
-└── 📁 src/                 
-    ├── 📁 Definitions/ 
-    ├── 📁 Entities/ 
-    ├── 📁 Models/         
-    └── 📁 World/
-    └── other Folders, just in case
+├── 📁 assets/  # Multimedia resources
+│   ├── 📁 Fonts/  # Typography
+│   ├── 📁 Music/  # Music and sound effects
+│   └── 📁 Sprites/  # All kinds of tiles and sprites
+│       ├── 📁 Entities/
+│       │   ├── 📁 Characters/
+│       │   └── 📁 Enemies/
+│       │       ├── 📁 Boss/
+│       │       ├── 📁 Demon/
+│       │       │   ├── 📁 Idle/
+│       │       │   └── 📁 Walk/
+│       │       ├── 📁 Skeleton/
+│       │       │   ├── 📁 Idle/
+│       │       │   └── 📁 Walk/
+│       │       └── 📁 Slime/
+│       ├── 📁 Objects/
+│       └── 📁 Rooms/
+|
+├── 📁 saves/
+├── 📁 src/
+    ├── 📁 ai/
+    ├── 📁 Animations/
+    ├── 📁 Definitions/
+    ├── 📁 Gui/
+    ├── 📁 Models/
+    ├── 📁 States/
+    │   ├── 📁 Entity/
+    │   └── 📁 Game/
+    └── 📁 Utils/
 ```
 
 * **Definitions:** It contains all the game's static rules, settings, and structures.
-* **Entities:** It stores the characters' dynamic behavior and individual state machines (for example, walking or resting states), and in later stages it will contain the game's AI.
+* **ai:** It contains the behavior logic used by enemies during battles.
+* **Animations:** It contains entity animation and tweening logic.
+* **Gui:** It contains the game's user interface screens and panels.
 * **Models:** It contains the core functionality and data management of the systems, such as the logic and algorithms for creating the grid or procedural board, and the main abstract classes for the characters, along with the mathematical calculations behind their interactions.
-* **World:** It controls the flow of the game and general world transitions or changes in conjunction with the global state stack and the classes that represent each game screen (Menu State, Battle State, Rest State, and Game Over). It is responsible for orchestrating the transition between these scenes.
+* **States:** It controls the flow of the game and general world transitions in conjunction with the global state stack. It includes entity states and game states such as Menu, Battle, Rest, and Game Over.
+* **Utils:** It contains reusable calculations and helpers used by the game's systems.

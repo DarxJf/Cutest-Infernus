@@ -177,6 +177,9 @@ class BattleEntity(Entity):
         for skillName in expired:
             del self.skillCooldowns[skillName]
 
+    def reset_cooldowns(self) -> None:
+        self.skillCooldowns.clear()
+
     # Aoe, possible moves
     def get_reachable_tiles(self, isWalkable: Callable[[int, int], bool]) -> Set[Tuple[int, int]]:
         return MovementCalculator.get_available_moves(

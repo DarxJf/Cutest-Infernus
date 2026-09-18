@@ -388,7 +388,7 @@ class BattleState(BaseState):
 
     def _end_battle(self) -> None:
         for e in self.party:
-            e.process_cooldowns()
+            e.reset_cooldowns()
 
         if self.resultUI is None:
             self.state_machine.pop()
