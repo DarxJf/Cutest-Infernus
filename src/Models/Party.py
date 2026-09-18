@@ -54,6 +54,11 @@ class Party:
             return False  # Already in the party
 
         newMember = self._create(key)
+        leader = self.lead()
+        if leader is not None:
+            targetLevel = max(1, leader.level - 1)
+            for _ in range(targetLevel - newMember.level):
+                newMember._level_up(newMember.classType)
 
         if self.is_full():
             if replaceIndex is None or not self._canDismiss(replaceIndex):

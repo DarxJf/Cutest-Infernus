@@ -715,7 +715,7 @@ ENEMIES: Dict[str, Dict[str, Any]] = {
                 "interval": 0.15
             }
         },
-        "base_hp": 22,
+        "base_hp": 18,
         "base_attack": 8,
         "base_magic": 2,
         "base_agility": 2,
@@ -896,12 +896,12 @@ ENEMIES: Dict[str, Dict[str, Any]] = {
                 "interval": 0.15
             }
         },
-        "base_hp": 78,
-        "base_attack": 15,
-        "base_magic": 15,
-        "base_agility": 15,
-        "base_defense": 15,
-        "base_magic_defense": 15,
+        "base_hp": 70,
+        "base_attack": 12,
+        "base_magic": 12,
+        "base_agility": 12,
+        "base_defense": 12,
+        "base_magic_defense": 12,
         "basic_attack": "strike",
         "base_rest": 4.0,
         "base_movement": 3,
@@ -976,10 +976,10 @@ CLASS_MODIFIERS: Dict[str, Dict[str, Any]] = {
 }
 
 LEVEL_GROWTH: Dict[str, Dict[str, int]] = {
-    "Warrior": {"hp": 5, "attack": 3, "magic": 1, "agility": 2, "defense": 3, "magic_defense": 3},
-    "Rogue":   {"hp": 2, "attack": 2, "magic": 1, "agility": 3, "defense": 1, "magic_defense": 1},
-    "Fairy":   {"hp": 3, "attack": 2, "magic": 4, "agility": 2, "defense": 2, "magic_defense": 2},
-    "Mage":    {"hp": 4, "attack": 1, "magic": 5, "agility": 2, "defense": 1, "magic_defense": 2},
+    "Warrior": {"hp": 5, "attack": 4, "magic": 1, "agility": 3, "defense": 4, "magic_defense": 4},
+    "Rogue":   {"hp": 5, "attack": 2, "magic": 1, "agility": 5, "defense": 1, "magic_defense": 2},
+    "Fairy":   {"hp": 5, "attack": 2, "magic": 4, "agility": 2, "defense": 3, "magic_defense": 3},
+    "Mage":    {"hp": 5, "attack": 1, "magic": 5, "agility": 2, "defense": 1, "magic_defense": 3},
 }
 
 def get_main_characters() -> Dict[str, Dict[str, Any]]:

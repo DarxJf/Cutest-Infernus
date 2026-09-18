@@ -86,11 +86,6 @@ class PlayState(BaseState):
         self.room.update(dt)
         self.playerChar.update(dt)
    
-
-    def exit(self) -> None:
-        for char in self.party.characters.Values():
-            char.clear_status()
-   
     def on_input(self, inputId: str, inputData: Any) -> None:
         if not inputData.pressed:
             return

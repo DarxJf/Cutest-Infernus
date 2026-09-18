@@ -1,7 +1,5 @@
-from typing import List, Optional, Any
-import random
+from typing import List, Any
 import pygame
-import time
 
 from gale.state import BaseState
 
@@ -198,6 +196,7 @@ class BattleState(BaseState):
         boardCols, boardRows = self.room.cols, self.room.rows 
 
         actor.state_machine.change("attack", actor, targetX, targetY)
+        settings.SOUNDS["attack"].play()
 
         if action.areaType in ["cross", "square"]:
             actor.apply_aoe_damage(action, boardCols, boardRows, targets, EFFECTS)
@@ -387,6 +386,9 @@ class BattleState(BaseState):
         )
 
     def _end_battle(self) -> None:
+        for entity in self.allUnits:
+            entity.clear_status()
+
         for e in self.party:
             e.reset_cooldowns()
 

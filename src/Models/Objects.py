@@ -29,9 +29,13 @@ class PassiveObject:
             if hasattr(entity, stat):
                 current_value = getattr(entity, stat)
                 setattr(entity, stat, current_value + modifier)
+        if "hp" in self.statModifiers and hasattr(entity, "currentHp"):
+            entity.currentHp = min(entity.currentHp, entity.hp)
 
     def unequip_object(self, entity: Any) -> None:
         for stat, modifier in self.statModifiers.items():
             if hasattr(entity, stat):
                 current_value = getattr(entity, stat)
                 setattr(entity, stat, current_value - modifier)
+        if "hp" in self.statModifiers and hasattr(entity, "currentHp"):
+            entity.currentHp = min(entity.currentHp, entity.hp)

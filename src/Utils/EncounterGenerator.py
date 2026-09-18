@@ -47,9 +47,12 @@ def generate_horde(battlesFought: int) -> List[Dict[str, Any]]:
         scaled["level"] = baseDef.get("level", 1) + levelBonus
 
         if levelBonus > 0:
-            scaled["base_hp"] = baseDef["base_hp"] + levelBonus * 2
-            scaled["base_attack"] = baseDef["base_attack"] + levelBonus * 2
-            scaled["base_defense"] = baseDef["base_defense"] + levelBonus
+            scaled["base_hp"] = baseDef["base_hp"] + levelBonus * 5
+            scaled["base_attack"] = baseDef["base_attack"] + levelBonus * 3
+            scaled["base_magic"] = baseDef.get("base_magic", 0) + levelBonus * 3
+            scaled["base_agility"] = baseDef.get("base_agility", 0) + levelBonus * 2
+            scaled["base_defense"] = baseDef["base_defense"] + levelBonus * 3
+            scaled["base_magic_defense"] = baseDef["base_magic_defense"] + levelBonus * 3
 
         horde.append(scaled)
 
@@ -68,9 +71,9 @@ def generate_boss_encounter(battlesFought: int, bossesDefeated: int = 0) -> List
     boss = dict(bossDef)
     boss["level"] = bossDef.get("level", 1) + levelBonus
     boss["base_hp"] = bossDef["base_hp"] + levelBonus * 10
-    boss["base_attack"] = bossDef["base_attack"] + levelBonus * 2
-    boss["base_defense"] = bossDef["base_defense"] + levelBonus
-    boss["base_magic"] = bossDef.get("base_magic", 0) + levelBonus
+    boss["base_attack"] = bossDef["base_attack"] + levelBonus * 3
+    boss["base_defense"] = bossDef["base_defense"] + levelBonus * 2
+    boss["base_magic"] = bossDef.get("base_magic", 0) + levelBonus * 2
 
     pool = _enemy_pool_for(battlesFought)
     minionKeys = [random.choice(pool) for _ in range(2)]
@@ -83,7 +86,7 @@ def generate_boss_encounter(battlesFought: int, bossesDefeated: int = 0) -> List
         if levelBonus > 0:
             scaled["base_hp"] = baseDef["base_hp"] + levelBonus * 3
             scaled["base_attack"] = baseDef["base_attack"] + levelBonus * 2
-            scaled["base_defense"] = baseDef["base_defense"] + levelBonus
+            scaled["base_defense"] = baseDef["base_defense"] + levelBonus * 1
         minions.append(scaled)
 
     return [boss] + minions

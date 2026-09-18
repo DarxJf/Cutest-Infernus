@@ -33,7 +33,7 @@ PASSIVE_OBJECTS: Dict[str, Dict[str, Any]] = {
         "frame_index": 55,
         "stat_modifiers": {
             "attack": 6,
-            "agility": -2  # Los objetos también pueden tener efectos negativos
+            "agility": -2
         }
     },
     "swift_boots": {
@@ -43,7 +43,7 @@ PASSIVE_OBJECTS: Dict[str, Dict[str, Any]] = {
         "frame_index": 57,
         "stat_modifiers": {
             "agility": 5,
-            "rest": -0.5  # Reduce el tiempo base de descanso
+            "defense": -1 
         }
     },
     "iron_sword": {
