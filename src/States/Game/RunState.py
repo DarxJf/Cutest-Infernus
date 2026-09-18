@@ -12,6 +12,7 @@ from typing import Any, Dict
 from src.Models.Party import Party
 from src.Models.Inventory import Inventory
 from src.Models.RestOffers import RestOffers
+from src.Models.ShopOffers import ShopOffers
 from src.Models.RunWallet import RunWallet
 
 
@@ -24,6 +25,7 @@ class RunState:
         self.inventory = Inventory()
         self.wallet = RunWallet(souls=startingSouls)
         self.offers = RestOffers(offerSize=2)
+        self.shopOffers = ShopOffers(offerSize=4)
 
      
         self.battlesFought = 0

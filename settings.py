@@ -85,6 +85,7 @@ TEXTURES = {
     "demon-walk-up": pygame.image.load(BASE_DIR/"assets"/"Sprites"/"Entities"/"Enemies"/"Demon"/"Walk"/"Zombie_walk_up.png"),
     "boss-idle": pygame.image.load(BASE_DIR/"assets"/"Sprites"/"Entities"/"Enemies"/"Boss"/"Boss_idle_32x32.png"),
     "boss-walk":pygame.image.load(BASE_DIR/"assets"/"Sprites"/"Entities"/"Enemies"/"Boss"/"Boss_Walk_32x32.png"),
+    "tile-set": pygame.image.load(BASE_DIR/ "assets"/"Sprites"/"Rooms"/"tileset.png"),
 }
 
 FRAMES = {
@@ -123,12 +124,14 @@ FRAMES = {
     "demon-walk-up":frames.generate_frames(TEXTURES[ "demon-walk-up"], 16, 17),
     "boss-idle":frames.generate_frames(TEXTURES["boss-idle"], 32, 32),
     "boss-walk":frames.generate_frames(TEXTURES["boss-walk"], 32, 32),
+    "tile-set": frames.generate_frames(TEXTURES["tile-set"],16, 16),
     
 }
 
 TILE_IDS = {
   
     "floor": 1,
+    "floor-beige": 93,
 
     "wallTopLeftCorner":  13,
     "wallTopRightCorner": 17,
