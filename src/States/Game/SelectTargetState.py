@@ -13,7 +13,8 @@ class SelectTargetState(BaseState):
         actor: Any, 
         action: Any, 
         enemies: list, 
-        callback: Callable[[int, int], None], 
+        callback: Callable[[int, int], None],
+        on_cancel: Callable[[], None] = None,
         boardCols: int = 20, 
         boardRows: int = 12,
         validTiles: set = None,
@@ -24,6 +25,7 @@ class SelectTargetState(BaseState):
         self.actor = actor
         self.action = action
         self.callback = callback
+        self.on_cancel = on_cancel
         self.boardCols = boardCols
         self.boardRows = boardRows
 
@@ -72,6 +74,9 @@ class SelectTargetState(BaseState):
             self.callback(self.cursorX, self.cursorY)
             
         elif inputId == "undo":
+            if self.on_cancel:
+                self.on_cancel()
+                
             self.state_machine.pop()
 
     def render(self, surface: pygame.Surface) -> None:

@@ -32,3 +32,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The rest area is now playable as a hub between battles. `RestState` shows a menu for `Hire companion`, `Shop`, `Inventory`, `Manage actions`, and `Leave`. `HireState` offers a random rotating pool of secondary characters each visit; `ShopState` sells passive objects; `InventoryState` handles equipping into each member's slots.
 - `RunState` bundles everything that lives for the duration of a run the `Party`, the shared `Inventory`, the `RunWallet` (mutable soul count), the current `RestOffers`, and the boss progression counters so states can receive a single `runState` argument and mutations propagate by reference.
 - `IA` workly with a behavior tree. `IA` could move and attack nearest `Party` target. Each `Enemy` has it's own brain to do actions.
+- `Animations` included on game. Each entity have it's current state like `IdleState`, `WalkState`, `AttackState` with tweens to allow animations for every state.
+- `ActionInfoPanel` helps the player to know about character's abilities, is include in `BattleState` and `ManageActions`

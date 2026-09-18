@@ -9,11 +9,12 @@ import settings
 from src.ai.BehaviorEnemy import build_enemy_brain
 from src.Definitions.Texts import BATTLE_START_TEXT, BOSS_START_TEXT
 from src.Gui.BatleUI import BattleUI
+from src.Gui.ActionInfoPanel import ActionInfoPanel
 from src.Gui.BatleResultUI import BattleResultUI
 from src.Models.BattleEntity import BattleEntity
 from src.Utils.TurnQueue import TurnQueue
 from src.Utils.MovementCalculator import MovementCalculator
-from src.Utils.SpawnHelper import find_free_tiles, find_free_tile
+from src.Utils.SpawnHelper import find_free_tiles
 from src.States.Game.RunState import RunState
 from src.States.Game.GameOverState import GameOverState
 from src.States.Game.RestState import RestState
@@ -61,7 +62,8 @@ class BattleState(BaseState):
 
         self.earnedSouls = 0
         self.battleOver = False      
-        self.resultUI = None 
+        self.resultUI = None
+        self.showActionInfo = False 
 
         # glow
         self.glowSurface = pygame.Surface((settings.TILE_SIZE, settings.TILE_SIZE), pygame.SRCALPHA)
@@ -287,17 +289,14 @@ class BattleState(BaseState):
         self.reachableTiles = reachable
     
         def on_test_target_selected(targetX: int, targetY: int) -> None:
-            # self.currentActor.mapX = targetX
-            # self.currentActor.mapY = targetY
-
-            # self.currentActor.x = targetX * settings.TILE_SIZE
-            # self.currentActor.y = targetY * settings.TILE_SIZE
-    
             self.reachableTiles = set()
 
             self.currentActor.state_machine.change("walk", self.currentActor, targetX, targetY)
 
             self.hasMoved = True
+
+        def nope_move() -> None:
+            self.reachableTiles = set()
     
         self.state_machine.push(
             SelectTargetState(self.state_machine),
@@ -305,6 +304,7 @@ class BattleState(BaseState):
             action=None,
             enemies=self.enemies,
             callback=on_test_target_selected,
+            on_cancel =nope_move,
             boardCols=self.room.cols,
             boardRows=self.room.rows,
             validTiles=reachable,
@@ -392,6 +392,13 @@ class BattleState(BaseState):
         if not inputData.pressed:
             return
 
+        # can intercept inputs :o
+        if getattr(self, "showActionInfo", False):
+            if inputId in ["undo", "info",]:
+                self.showActionInfo = False
+                settings.SOUNDS["select"].play()
+            return
+
         if inputId == "pause":
             from src.States.Game.PauseMenuState import PauseMenuState
             self.state_machine.push(
@@ -409,6 +416,14 @@ class BattleState(BaseState):
             return
     
         maxCards = 3 + len(self.currentActor.actionSlots)
+
+        if inputId == "info":
+            # Solo abrir si estamos seleccionando un ataque o habilidad (índices intermedios)
+            if self.ui.selectedCardIndex > 0 and self.ui.selectedCardIndex < maxCards - 1:
+                self.showActionInfo = True
+                settings.SOUNDS["select"].play()
+            return
+
         if inputId == "moveLeft":
             self.ui.selectedCardIndex = (self.ui.selectedCardIndex - 1) % maxCards
             settings.SOUNDS["select"].play()
@@ -458,4 +473,17 @@ class BattleState(BaseState):
      
         if self.battleOver and self.resultUI:
             self.resultUI.render(surface)
+
+        if getattr(self, "showActionInfo", False):
+            if self.ui.selectedCardIndex == 1:
+                selected_action = self.currentActor.basicAttack
+            else:
+                list_idx = self.ui.selectedCardIndex - 2
+                selected_action = self.currentActor.actionSlots[list_idx]
+
+            # right center
+            panel_x = settings.VIRTUAL_WIDTH - 240 - 16
+            panel_y = (settings.VIRTUAL_HEIGHT // 2) - 80
+            
+            ActionInfoPanel.render(surface, selected_action, panel_x, panel_y)
      

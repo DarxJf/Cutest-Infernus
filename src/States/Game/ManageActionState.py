@@ -14,8 +14,7 @@ import pygame
 from gale.state import BaseState
 
 import settings
-from src.Gui.Menu import Menu
-from src.Models.Party import Party
+from src.Gui.ActionInfoPanel import ActionInfoPanel
 from src.Models.ActionCards import Action
 from src.Definitions.ActionCards import (
     UNIVERSAL_ACTIONS,
@@ -45,6 +44,8 @@ class ManageActionsState(BaseState):
         self.errorMessage = ""
         self.errorTimer = 0.0
 
+        self.showActionInfo: bool = False
+
     def _get_action_def(self, member: Any, key: str) -> dict:
         classPool = CLASS_ACTIONS.get(member.classType, {})
         if key in classPool:
@@ -72,6 +73,24 @@ class ManageActionsState(BaseState):
 
     def on_input(self, inputId: str, inputData: Any) -> None:
         if not inputData.pressed:
+            return
+
+        if getattr(self, "showActionInfo", False):
+            if inputId in ["undo", "info",]:
+                self.showActionInfo = False
+                if "select" in settings.SOUNDS: settings.SOUNDS["select"].play()
+            return
+
+        if inputId == "info":
+            member = self.party.members[self.memberIdx]
+            if self.stage == "add":
+                if self._get_available_pool():
+                    self.showActionInfo = True
+                    if "select" in settings.SOUNDS: settings.SOUNDS["select"].play()
+            elif self.stage == "remove":
+                if member.actionSlots:
+                    self.showActionInfo = True
+                    if "select" in settings.SOUNDS: settings.SOUNDS["select"].play()
             return
 
         if self.stage == "member":
@@ -231,3 +250,22 @@ class ManageActionsState(BaseState):
         if self.errorTimer > 0:
             err_txt = settings.FONTS["medium"].render(self.errorMessage, True, (255, 50, 50))
             surface.blit(err_txt, err_txt.get_rect(center=(settings.VIRTUAL_WIDTH // 2, settings.VIRTUAL_HEIGHT - 20)))
+
+        if getattr(self, "showActionInfo", False):
+            member = self.party.members[self.memberIdx]
+            selected_action = None
+
+            if self.stage == "add":
+                pool = self._get_available_pool()
+                if pool and self.poolIdx < len(pool):
+                    act_key = pool[self.poolIdx]
+                    adef = self._get_action_def(member, act_key)
+                    selected_action = Action(act_key, adef)
+            elif self.stage == "remove":
+                if member.actionSlots and self.slotIdx < len(member.actionSlots):
+                    selected_action = member.actionSlots[self.slotIdx]
+
+            if selected_action:
+                panel_x = settings.VIRTUAL_WIDTH - 240 - 16
+                panel_y = (settings.VIRTUAL_HEIGHT // 2) - 80
+                ActionInfoPanel.render(surface, selected_action, panel_x, panel_y)

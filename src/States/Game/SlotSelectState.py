@@ -58,7 +58,7 @@ class SlotSelectState(BaseState):
             settings.SOUNDS["select"].play()
         elif inputId == "enter":
             self._confirm()
-        elif inputId == "pause":
+        elif inputId == "undo":
             self._close()
 
     def _confirm(self) -> None:
