@@ -49,6 +49,9 @@ class RestState(BaseState):
 
         self.bgTexture = settings.TEXTURES.get("")
 
+        settings.stop_music("battle")
+        settings.play_music("restroom")
+
 
     def _open_hire(self) -> None:
 
@@ -85,9 +88,11 @@ class RestState(BaseState):
     def _leave(self) -> None:
 
         def on_complete() -> None:
+            settings.stop_music("restroom")
             self.state_machine.pop()
             
             play_state = self.state_machine.states[-1]
+            settings.play_music("show")
             if hasattr(play_state,"regenerate_room"):
                 play_state.regenerate_room()
 
@@ -111,7 +116,6 @@ class RestState(BaseState):
 
     def update(self, dt: float) -> None:
         self.menu.update(dt)
-
     
     def on_input(self, inputId: str, inputData: Any) -> None:
         if not inputData.pressed:

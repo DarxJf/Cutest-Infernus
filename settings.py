@@ -184,10 +184,16 @@ SOUNDS = {
 
 MUSIC = {
     "main_CI": pygame.mixer.Sound( BASE_DIR / "assets" / "Music" / "main_CI.mp3" ),
+    "restroom": pygame.mixer.Sound( BASE_DIR / "assets" / "Music" / "rest_room.mp3" ),
+    "battle": pygame.mixer.Sound( BASE_DIR / "assets" / "Music" / "battle_1.mp3" ),
+    "show": pygame.mixer.Sound( BASE_DIR / "assets" / "Music" / "play_state.mp3" ),
 }
 
 MUSIC_CHANNELS = {
     "main_CI": None,
+    "restroom": None,
+    "battle": None,
+    "show": None,
 }
 
 def play_music(name: str) -> None:

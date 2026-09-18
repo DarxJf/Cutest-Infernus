@@ -81,6 +81,7 @@ class PlayState(BaseState):
             )
 
         settings.stop_music("main_CI")
+        settings.play_music("show")
 
     def update(self, dt: float) -> None:
         self.room.update(dt)

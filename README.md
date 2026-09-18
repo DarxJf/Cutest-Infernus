@@ -166,3 +166,33 @@ The following structure may change in the future:
 * **Models:** It contains the core functionality and data management of the systems, such as the logic and algorithms for creating the grid or procedural board, and the main abstract classes for the characters, along with the mathematical calculations behind their interactions.
 * **States:** It controls the flow of the game and general world transitions in conjunction with the global state stack. It includes entity states and game states such as Menu, Battle, Rest, and Game Over.
 * **Utils:** It contains reusable calculations and helpers used by the game's systems.
+
+## Credits
+
+This project is 100% academic, so it has no commercial purpose. For this reason, we are grateful for all the freely available resources, sounds, and music, and in this section we will include all the credits for each of them.
+
+### Music
+
+#### Restroom
+
+Song: Lullaby Waltz
+Composer: Nikos Spiliotis
+Website: https://www.youtube.com/user/nikospiliotis/videos
+License: Creative Commons (BY-ND 3.0) https://creativecommons.org/licenses/by-nd/3.0/
+Music powered by BreakingCopyright: https://breakingcopyright.com
+
+#### Battle
+
+Song: Chase
+Composer: Alexander Nakarada
+Website: https://creatorchords.com/
+License: Creative Commons (BY 3.0) https://creativecommons.org/licenses/by/3.0/
+Music powered by BreakingCopyright: https://breakingcopyright.com
+
+#### Play State
+
+Song: Devoted
+Composer: Hayden Folker
+Website: https://soundcloud.com/hayden-folker
+License: Creative Commons (BY 3.0) https://creativecommons.org/licenses/by/3.0/
+Music powered by BreakingCopyright: https://breakingcopyright.com

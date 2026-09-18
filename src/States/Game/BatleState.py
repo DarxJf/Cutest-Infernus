@@ -40,6 +40,10 @@ class BattleState(BaseState):
         self.room = room
         self.isBoss = isBoss
 
+        # music
+        settings.stop_music("show")
+        settings.play_music("battle")
+
         self._place_party()
         self._place_enemies()
         self._mark_party_flags()
