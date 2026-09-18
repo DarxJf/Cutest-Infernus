@@ -70,6 +70,7 @@ class StartState(BaseState):
 
 
     def _load_game(self) -> None:
+        settings.stop_music("main_CI")
         self.state_machine.push(
             SlotSelectState(self.state_machine),
             mode="load",
@@ -92,10 +93,11 @@ class StartState(BaseState):
         )
 
     def render(self, surface: pygame.Surface) -> None:
-
         x0 = -int(self.bgOffset)
-        surface.blit(self.bgTexture, (x0, 0))
-        surface.blit(self.bgTexture, (x0 + self.bgWidth, 0))
+        while x0 < settings.VIRTUAL_WIDTH:
+            surface.blit(self.bgTexture, (x0, 0))
+            x0 += self.bgWidth
+
         
         titleFont = settings.FONTS["large"]
     
