@@ -35,3 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Animations` included on game. Each entity have it's current state like `IdleState`, `WalkState`, `AttackState` with tweens to allow animations for every state.
 - `ActionInfoPanel` helps the player to know about character's abilities, is include in `BattleState` and `ManageActions`
 - Functions on settings to play and stop music. Main theme made by us.
+- `RestOffers` and `ShopOffers` manage the rotating offers.
+- `TurnQueue` drives the battle in rounds. At the start of each round it sorts every living entity by agility (highest first, stable tie-break), and that order stays fixed until the round is over. The HUD shows the current actor plus a preview of the next turns, and dead entities are skipped without rebuilding the round.
+- `EncounterGenerator` builds the enemy horde by scaling both the pool of available types and the level bonus with `battlesFought`. A separate `generate_boss_encounter` builds a boss plus two minions, scaling the boss further with `bossesDefeated`.
+- Save / load through `gale.save.SaveManager`.
