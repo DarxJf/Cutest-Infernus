@@ -5,6 +5,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [alpha v1.0.0] - 2026-09-18
+
 ### Added
 
 - The definitions for entities, actions, and objects have been completed, so that more can be added in the future in a stable manner.
