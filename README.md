@@ -196,3 +196,71 @@ Composer: Hayden Folker
 Website: https://soundcloud.com/hayden-folker
 License: Creative Commons (BY 3.0) https://creativecommons.org/licenses/by/3.0/
 Music powered by BreakingCopyright: https://breakingcopyright.com
+
+
+### Sound Effects
+
+#### Select sound
+
+- **Source:** Mixkit
+- **Website:** https://mixkit.co/free-sound-effects discover/ 
+- **License:** Mixkit License (free to use in any project)
+
+### Art
+
+#### Main and secondary characters
+
+- **Pack:** Pixel Champions - Character Pack
+- **Author:** AlexPixels
+- **Website:** https://alexpixels.itch.io/pixel-champions
+- **License:** Free to use, edit and redistribute as part of a game. Commercial use permitted with credit to the author.
+
+#### Enemies, room, rock and torch
+
+- **Pack:** Tiny Dungeon Pack
+- **Author:** Vryell
+- **Website:** https://vryell.itch.io/tiny-dungeon-pack 
+- **License:** Free to use in personal and comercial projects with credit to the author.
+
+#### Boss
+- **Pack:** Tiny Castle Pack
+- **Author:** Vryell
+- **Website:** https://vryell.itch.io/tiny-castle-pack 
+- **License:** Free to use in personal and comercial projects with credit to the author.
+
+#### Cursors
+- **Pack:** Pocket GUI
+- **Author:** Vryell
+- **Website:**https://vryell.itch.io/pocket-gui 
+- **License:** Free to use in personal and comercial projects with credit to the author.
+
+
+#### Action and object icons
+
+- **Pack:**Raven Fantasy Icons
+- **Author** Clockwork Raven
+- **Website:** https://clockworkraven.itch.io/raven-fantasy-icons
+- **License:** Free to use in personal and comercial projects with credit to the author.
+
+- **Pack**: RPG Items 16x16
+- **Author:** Pixel Creations
+- **Website:** https://pixelcreations.itch.io/rpg-items-16x16
+- **License:** Free to use in personal and comercial projects with credit to the author.
+
+#### Space background
+
+- **Pack:** Pixelart Starfields
+- **Author:** Space Sphere Maps
+- **Website:** https://space-spheremaps.itch.io/pixelart-starfields 
+- **License:** Free to use in personal and comercial projects with credit to the author.
+
+#### Font
+
+- **Font:** BoldPixels
+- **Author:** YukiPixels
+- **Website:** https://yukipixels.itch.io/boldpixels
+- **License:** Free to use in personal and comercial projects with credit to the author.
+
+
+
+
