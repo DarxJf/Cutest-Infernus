@@ -231,13 +231,13 @@ Music powered by BreakingCopyright: https://breakingcopyright.com
 #### Cursors
 - **Pack:** Pocket GUI
 - **Author:** Vryell
-- **Website:**https://vryell.itch.io/pocket-gui 
+- **Website:** https://vryell.itch.io/pocket-gui 
 - **License:** Free to use in personal and comercial projects with credit to the author.
 
 
 #### Action and object icons
 
-- **Pack:**Raven Fantasy Icons
+- **Pack:** Raven Fantasy Icons
 - **Author** Clockwork Raven
 - **Website:** https://clockworkraven.itch.io/raven-fantasy-icons
 - **License:** Free to use in personal and comercial projects with credit to the author.
@@ -260,6 +260,7 @@ Music powered by BreakingCopyright: https://breakingcopyright.com
 - **Author:** YukiPixels
 - **Website:** https://yukipixels.itch.io/boldpixels
 - **License:** Free to use in personal and comercial projects with credit to the author.
+
 
 
 
