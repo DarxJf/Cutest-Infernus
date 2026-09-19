@@ -86,6 +86,9 @@ class PauseMenuState(BaseState):
 
         self.state_machine.clear()
         from src.States.Game.PlayState import PlayState
+        settings.stop_music("battle")
+        settings.stop_music("show")
+       # settings.play_music("show")
         self.state_machine.push(
             PlayState(self.state_machine),
             run_state_dict=save_data,

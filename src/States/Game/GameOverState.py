@@ -5,9 +5,13 @@ from gale.input_handler import InputData
 import settings
 
 class GameOverState(BaseState):
+    def enter(self, *args, **kwargs):
+        settings.stop_music("battle")
+        
     def on_input(self, input_id, input_data):
         if input_id == "enter" and input_data.pressed:
             self.state_machine.clear()
+            settings.stop_music("battle")
             from src.States.Game.StartState import StartState
             self.state_machine.push(StartState(self.state_machine))
 

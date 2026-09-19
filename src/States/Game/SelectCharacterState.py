@@ -80,8 +80,10 @@ class SelectCharacterState(BaseState):
 
     def render(self, surface: pygame.Surface) -> None:
         x0 = -int(self.bgOffset)
-        surface.blit(self.bgTexture, (x0, 0))
-        surface.blit(self.bgTexture, (x0 + self.bgWidth, 0))
+        while x0 < settings.VIRTUAL_WIDTH:
+            surface.blit(self.bgTexture, (x0, 0))
+            x0 += self.bgWidth
+        
 
         medium = settings.FONTS["medium"]
         small = settings.FONTS["small"]
