@@ -101,11 +101,11 @@ class StartState(BaseState):
         
         titleFont = settings.FONTS["large"]
     
-        shadowSurf = titleFont.render("CUTEST INFERNO", True, (200, 50, 100))
+        shadowSurf = titleFont.render("CUTEST INFERNUS", True, (200, 50, 100))
         shadowRect = shadowSurf.get_rect(center = (settings.VIRTUAL_WIDTH / 2 + 1, settings.VIRTUAL_HEIGHT / 2 - 20 + 2))
         surface.blit(shadowSurf, shadowRect)
 
-        title = titleFont.render("CUTEST INFERNO", True, (240, 220, 50))
+        title = titleFont.render("CUTEST INFERNUS", True, (240, 220, 50))
         titleRect = title.get_rect(center = (settings.VIRTUAL_WIDTH / 2, settings.VIRTUAL_HEIGHT / 2 - 20))
         surface.blit(title, titleRect)
 
