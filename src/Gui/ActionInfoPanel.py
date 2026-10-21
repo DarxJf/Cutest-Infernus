@@ -3,6 +3,20 @@ import pygame
 
 import settings
 
+resolve_hash = {
+    "attack_buff": "Attack Up",
+    "defense_buff": "Defense Up",
+    "magic_buff": "Magic Up",
+    "magic_defense_buff": "Magic Defense Up",
+    "agility_buff": "Agility Up",
+
+    "attack_debuff": "Attack Down",
+    "defense_debuff": "Defense Down",
+    "magic_debuff": "Magic Down",
+    "magic_defense_debuff": "Magic Defense Down",
+    "agility_debuff": "Agility Down",
+}
+
 class ActionInfoPanel:
     @staticmethod
     def render(surface: pygame.Surface, action: Any, x: int, y: int, width: int = 220) -> None:
@@ -51,7 +65,7 @@ class ActionInfoPanel:
 
         if getattr(action, "effect", None):
             stat_y += 18
-            eff_lbl = small.render(f"Effect: {action.effect.capitalize()}", True, (200, 150, 255))
+            eff_lbl = small.render(f"Effect: {resolve_hash.get(action.effect, action.effect.capitalize())}", True, (200, 150, 255))
             surface.blit(eff_lbl, (x + 10, stat_y))
 
         # Description
