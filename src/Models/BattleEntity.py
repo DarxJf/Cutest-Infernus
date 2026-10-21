@@ -1,6 +1,7 @@
 from typing import Any, Dict, Callable, Set, Tuple
 import random
 import math
+import pygame
 
 from src.Definitions.ActionCards import BASIC_ATTACK_DEF, UNIVERSAL_ACTIONS,  WARRIOR_ACTIONS,  ROGUE_ACTIONS,  FAIRY_ACTIONS,  MAGE_ACTIONS,  ENEMY_ACTIONS, CONST_BUFF_DEBUFF
 from src.Models.Entity import Entity
@@ -12,6 +13,7 @@ from src.Definitions.Entity import LEVEL_GROWTH
 from src.States.Entity.IdleState import EntityIdleState
 from src.States.Entity.WalkState import EntityWalkState
 from src.States.Entity.AttackState import EntityAttackState
+import settings
 
 
 ALL_ACTIONS = {
@@ -291,3 +293,54 @@ class BattleEntity(Entity):
 
         self.currentHp = self.hp
         self.experienceToNextLevel = self._calculate_xp_requirement()
+
+    # Just created to applied the aura effect on the entity when rendering
+    def render(self, surface: pygame.Surface, offsetX: int = 0, offsetY: int = 0) -> None:
+        if self.dead:
+            return
+
+        super().render(surface, offsetX, offsetY)
+
+        if not self.activeStatus:
+            return
+
+        aura_color = None
+        if "poison" in self.activeStatus:
+            aura_color = (180, 50, 220, 110)  # Purple
+        elif "stun" in self.activeStatus:
+            aura_color = (240, 220, 50, 110)  # Yellow 
+        elif any(k.endswith("_debuff") for k in self.activeStatus):
+            aura_color = (220, 50, 50, 110)   # Red
+        elif any(k.endswith("_buff") for k in self.activeStatus):
+            aura_color = (50, 150, 255, 110)  # Blue
+
+        if aura_color is None:
+            return
+
+        if self.currentAnimation is not None and self.currentTextureId is not None:
+            textureId = self.currentTextureId
+            frame = self.currentAnimation.get_current_frame()
+        else:
+            if self.textureId is None or self.textureId not in settings.FRAMES:
+                return
+            textureId = self.textureId
+            frame = settings.FRAMES[textureId][self.frameIndex]
+
+        texture = settings.TEXTURES.get(textureId)
+        if texture is None:
+            return
+
+        # Creating a surface for the frame and applying the tint
+        frame_surf = pygame.Surface((frame.width, frame.height), pygame.SRCALPHA)
+        frame_surf.blit(texture, (0, 0), frame)
+
+        tint_surf = pygame.Surface((frame.width, frame.height), pygame.SRCALPHA)
+        tint_surf.fill(aura_color)
+        
+        # BLEND_RGBA_MULT make it transparent
+        frame_surf.blit(tint_surf, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+
+        draw_x = self.x + (settings.TILE_SIZE - frame.width) // 2
+        draw_y = self.y + (settings.TILE_SIZE - frame.height)
+
+        surface.blit(frame_surf, (draw_x + offsetX, draw_y + offsetY))

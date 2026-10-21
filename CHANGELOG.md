@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- New effects to buff and debuff stats of characters
+- New effects to buff and debuff stats of characters.
+- Aura colors, now you can know visually which effect has your character or enemy.
 
 ### Change
 
