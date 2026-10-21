@@ -190,11 +190,18 @@ class ManageActionsState(BaseState):
         surface.fill((15, 15, 22))
         font = settings.FONTS["small"]
 
-        start_x = settings.VIRTUAL_WIDTH // 2 - (len(self.party.members) * 50) // 2
+        slot_width = 80  
+        total_width = len(self.party.members) * slot_width
+        start_x = settings.VIRTUAL_WIDTH // 2 - total_width // 2
+
         for i, member in enumerate(self.party.members):
             color = (240, 220, 50) if self.stage == "member" and i == self.memberIdx else (100, 100, 100)
             txt = font.render(member.name, True, color)
-            surface.blit(txt, (start_x + i * 50, 20))
+
+            slot_center_x = start_x + i * slot_width + slot_width // 2
+            txt_rect = txt.get_rect(center=(slot_center_x, 20 + txt.get_height() // 2))
+
+            surface.blit(txt, txt_rect)
 
         if self.stage == "member":
             return 
