@@ -2,7 +2,7 @@ from typing import Any, Dict, Callable, Set, Tuple
 import random
 import math
 
-from src.Definitions.ActionCards import BASIC_ATTACK_DEF, UNIVERSAL_ACTIONS,  WARRIOR_ACTIONS,  ROGUE_ACTIONS,  FAIRY_ACTIONS,  MAGE_ACTIONS,  ENEMY_ACTIONS
+from src.Definitions.ActionCards import BASIC_ATTACK_DEF, UNIVERSAL_ACTIONS,  WARRIOR_ACTIONS,  ROGUE_ACTIONS,  FAIRY_ACTIONS,  MAGE_ACTIONS,  ENEMY_ACTIONS, CONST_BUFF_DEBUFF
 from src.Models.Entity import Entity
 from src.Models.ActionCards import Action
 from src.Utils.MovementCalculator import MovementCalculator
@@ -22,6 +22,10 @@ ALL_ACTIONS = {
     **FAIRY_ACTIONS, 
     **MAGE_ACTIONS, 
     **ENEMY_ACTIONS,
+}
+
+EFFECTS = {
+    **CONST_BUFF_DEBUFF
 }
 
 class BattleEntity(Entity):
@@ -137,19 +141,33 @@ class BattleEntity(Entity):
     # --------------
     # Status effects
 
-    def apply_status(self, statusName: str, duration: int) -> None:
+    def apply_status(self, statusName: str, duration: int = None) -> None:
+        # This could be apolied multiple times in a future
+        is_new_status = statusName not in self.activeStatus
+
+        effect_data = EFFECTS.get(statusName, {})
+        
+        if duration is None:
+            duration = effect_data.get("duration", 1)
+
+        if is_new_status and "stat" in effect_data and "amount" in effect_data:
+            stat_name = effect_data["stat"]
+            amount = effect_data["amount"]
+            
+            # add amount to base stat
+            current_val = getattr(self, stat_name)
+            setattr(self, stat_name, current_val + amount)
+
         self.activeStatus[statusName] = duration
 
     def process_status(self,) -> None:
         isStunned = False
         
         if "poison" in self.activeStatus:
-            self.hurt(5) 
+            self.hurt(5 + 1 // self.agility) 
             
         if "stun" in self.activeStatus:
             isStunned = True
-
-        # if "buff" in self.activeStatus:
 
 
         expired = []
@@ -159,11 +177,32 @@ class BattleEntity(Entity):
                 expired.append(status)
                 
         for status in expired:
+            effect_data = EFFECTS.get(status, {})
+            if "stat" in effect_data and "amount" in effect_data:
+                stat_name = effect_data["stat"]
+                amount = effect_data["amount"]
+
+                current_val = getattr(self, stat_name)
+                setattr(self, stat_name, current_val - amount)
+
+                print(f"Status {status} expired for {self.name}. Restored {amount} to {stat_name}.")
+
             del self.activeStatus[status]
             
         return isStunned
 
     def clear_status(self) -> None:
+        for status in self.activeStatus:
+            effect_data = EFFECTS.get(status, {})
+            if "stat" in effect_data and "amount" in effect_data:
+                stat_name = effect_data["stat"]
+                amount = effect_data["amount"]
+                
+                current_val = getattr(self, stat_name)
+                setattr(self, stat_name, current_val - amount)
+
+                print(f"Status {status} cleared for {self.name}. Restored {amount} to {stat_name}.")
+
         self.activeStatus.clear()
 
     # cooldowns
@@ -189,8 +228,8 @@ class BattleEntity(Entity):
             isWalkable,
         )
 
-    def apply_aoe_damage(self, action: Action, boardCols: int, boardRows: int, targetList: list["BattleEntity"],
-                         status_dict: dict[str, int] = {}) -> None:
+    def apply_aoe_damage(self, action: Action, boardCols: int, boardRows: int, 
+                         targetList: list["BattleEntity"],) -> None:
         affectedTiles = set()
 
         if action.areaType == "cross":
@@ -218,8 +257,8 @@ class BattleEntity(Entity):
                     target.heal(dmg)
                 else:
                     target.hurt(dmg)
-                    if action.effect in ["stun", "poison"]:
-                        target.apply_status(action.effect, status_dict[action.effect])
+                    if action.effect:
+                        target.apply_status(action.effect)
 
 
     def _calculate_xp_requirement(self) -> int:

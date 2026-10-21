@@ -75,14 +75,14 @@ UNIVERSAL_ACTIONS: Dict[str, Dict[str, Any]] = {
         "description": "Brace for impact, boosting defense for one turn.",
         "texture_id": "action_icons",
         "frame_index": 612,  
-        "scaling_stat": "defense",
-        "multiplier": 0.0,
+        "scaling_stat": "magic",
+        "multiplier": 1.45,
         "cooldown": 3,
         "grid_range": 1,
         "target_type": "self",
         "area_type": "single",
         "area_radius": 0,
-        "effect": None,
+        "effect": "defense_buff",
         "is_basic": False,
         }
 }
@@ -505,4 +505,24 @@ ENEMY_ACTIONS: Dict[str, Dict[str, Any]] = {
         "effect": "poison",
         "is_basic": False,
     },
+}
+
+# --------
+# Buffs Debuffs
+
+CONST_BUFF_DEBUFF: Dict[str, Dict[str, Any]] = {
+    "poison" : {"duration": 2},
+    "stun" : {"duration": 1},
+
+    "attack_buff" : {"stat": "attack", "duration": 2, "amount": 3},
+    "defense_buff" : {"stat": "defense", "duration": 2, "amount": 3},
+    "magic_buff" : {"stat": "magic", "duration": 2, "amount": 3},
+    "magic_defense_buff" : {"stat": "magic_defense", "duration": 2, "amount": 3},
+    "agility_buff" : {"stat": "agility", "duration": 2, "amount": 3},
+
+    "attack_debuff" : {"stat": "attack", "duration": 2, "amount": -3},
+    "defense_debuff" : {"stat": "defense", "duration": 2, "amount": -3},
+    "magic_debuff" : {"stat": "magic", "duration": 2, "amount": -3},
+    "magic_defense_debuff" : {"stat": "magic_defense", "duration": 2, "amount": -3},
+    "agility_debuff" : {"stat": "agility", "duration": 2, "amount": -3},
 }

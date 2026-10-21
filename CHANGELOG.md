@@ -5,6 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Added
+
+- New effects to buff and debuff stats of characters
+
+### Change
+
+- batleState just verified effects, not applied duration of effects. Instead, battleEntity manage everything about status effects.
+
 ## [alpha v1.0.0] - 2026-09-18
 
 ### Added

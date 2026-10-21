@@ -6,6 +6,7 @@ from gale.state import BaseState
 import settings
 from src.ai.BehaviorEnemy import build_enemy_brain
 from src.Definitions.Texts import BATTLE_START_TEXT, BOSS_START_TEXT, TURN_TUTORIAL_TEXT
+from src.Definitions.ActionCards import CONST_BUFF_DEBUFF
 from src.Gui.BatleUI import BattleUI
 from src.Gui.ActionInfoPanel import ActionInfoPanel
 from src.Gui.BatleResultUI import BattleResultUI
@@ -21,8 +22,7 @@ from src.States.Game.SelectTargetState import SelectTargetState
 
 
 EFFECTS = {
-    "poison": 3,
-    "stun": 1,
+    **CONST_BUFF_DEBUFF,
 }
 
 
@@ -203,7 +203,7 @@ class BattleState(BaseState):
         settings.SOUNDS["attack"].play()
 
         if action.areaType in ["cross", "square"]:
-            actor.apply_aoe_damage(action, boardCols, boardRows, targets, EFFECTS)
+            actor.apply_aoe_damage(action, boardCols, boardRows, targets)
         else:
             for target in targets:
                 if target.mapX == targetX and target.mapY == targetY and not getattr(target, 'dead', False):
@@ -223,7 +223,7 @@ class BattleState(BaseState):
                         else:
                             target.hurt(dmg)
                             if action.effect:
-                                target.apply_status(action.effect, EFFECTS[action.effect])
+                                target.apply_status(action.effect)
                     else:
                         print(f"Fallo: ¡El objetivo está a {distance} casillas, el arma solo alcanza {action.gridRange}!")
                     break
